@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<title>Piru : changer la substance d'entrées / move entries to another substance</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f6f4; --card: #ffffff; --text: #1b1b1d; --muted: #5d5d66; --line: #d9d9de;
+    --accent: #2f5bd3; --accent-text: #ffffff; --warn-bg: #fff4d6; --warn-line: #e0b440; --warn-text: #4d3800;
+    --err-bg: #fde8e8; --err-line: #d65050; --err-text: #6b1111; --ok-bg: #e5f4ea; --ok-line: #4a9d68; --ok-text: #11401f;
+    --focus: #2f5bd3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121214; --card: #1d1d21; --text: #f1f1f3; --muted: #a8a8b3; --line: #34343b;
+      --accent: #7f9cff; --accent-text: #0b0b10; --warn-bg: #3a2f10; --warn-line: #b38b2a; --warn-text: #ffe7a8;
+      --err-bg: #3d1717; --err-line: #c25454; --err-text: #ffd1d1; --ok-bg: #12301d; --ok-line: #3f8c5a; --ok-text: #c9f0d6;
+      --focus: #9fb4ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 17px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(32px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  main { max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; line-height: 1.25; margin: 8px 0 6px; }
+  h2 { font-size: 1.15rem; margin: 0 0 12px; }
+  p { margin: 0 0 10px; }
+  .muted { color: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin: 14px 0; }
+  .lang { display: flex; gap: 8px; justify-content: flex-end; }
+  .lang button {
+    min-height: 44px; min-width: 96px; padding: 8px 14px; border-radius: 22px; border: 1px solid var(--line);
+    background: var(--card); color: var(--text); font: inherit; font-size: 0.95rem; cursor: pointer;
+  }
+  .lang button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+  .privacy { display: flex; gap: 10px; align-items: flex-start; font-size: 0.95rem; }
+  .privacy .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--ok-line); margin-top: 8px; }
+  ol.steps { padding-left: 1.4em; margin: 0 0 10px; }
+  ol.steps li { margin-bottom: 8px; }
+  details > summary { cursor: pointer; min-height: 44px; padding: 10px 0; font-weight: 600; }
+  label.field { display: block; font-weight: 600; margin: 14px 0 6px; }
+  select, input[type="text"] {
+    width: 100%; min-height: 52px; padding: 10px 12px; font: inherit; color: var(--text); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 10px;
+  }
+  .btn {
+    display: flex; align-items: center; justify-content: center; width: 100%; min-height: 56px; padding: 12px 18px;
+    border-radius: 12px; border: 0; background: var(--accent); color: var(--accent-text); font: inherit; font-weight: 600;
+    cursor: pointer; text-align: center;
+  }
+  .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+  .file-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .file-input:focus-visible + label.btn { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .check { display: flex; gap: 12px; align-items: flex-start; min-height: 48px; padding: 10px 0; cursor: pointer; }
+  .check input { width: 24px; height: 24px; margin: 2px 0 0; flex: none; accent-color: var(--accent); }
+  .msg { border-radius: 10px; padding: 12px 14px; margin: 12px 0 0; border: 1px solid; }
+  .msg.err { background: var(--err-bg); border-color: var(--err-line); color: var(--err-text); }
+  .msg.warn { background: var(--warn-bg); border-color: var(--warn-line); color: var(--warn-text); }
+  .msg.ok { background: var(--ok-bg); border-color: var(--ok-line); color: var(--ok-text); }
+  .big { font-size: 1.15rem; font-weight: 600; }
+  ul.examples { margin: 6px 0 10px; padding-left: 1.2em; }
+  .hidden { display: none !important; }
+  .num { font-variant-numeric: tabular-nums; }
+  footer { font-size: 0.85rem; text-align: center; margin-top: 24px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="lang" role="group" aria-label="Langue / Language">
+    <button type="button" id="lang-fr" lang="fr" aria-pressed="true">Français</button>
+    <button type="button" id="lang-en" lang="en" aria-pressed="false">English</button>
+  </div>
+
+  <h1 data-i18n="title"></h1>
+  <p class="muted" data-i18n="subtitle"></p>
+
+  <noscript>
+    <div class="msg err">
+      <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
+      <p lang="en">This page needs JavaScript. On iPhone, the Files or Mail preview does not run it: open the page in Safari, or use a computer.</p>
+    </div>
+  </noscript>
+
+  <div class="card privacy"><span class="dot" aria-hidden="true"></span><p data-i18n="privacy"></p></div>
+
+  <section class="card" aria-labelledby="how-title">
+    <details id="how" open>
+      <summary id="how-title" data-i18n="howTitle"></summary>
+      <ol class="steps" data-i18n-html="steps"></ol>
+      <p data-i18n-html="whyDelete"></p>
+      <div class="msg warn" data-i18n-html="deleteNote"></div>
+      <p style="margin-top:12px" data-i18n-html="altNote"></p>
+    </details>
+  </section>
+
+  <section class="card" aria-labelledby="s1">
+    <h2 id="s1" data-i18n="s1"></h2>
+    <input type="file" id="file" class="file-input">
+    <label for="file" class="btn" data-i18n="openBtn"></label>
+    <div id="load-status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="card hidden" id="choose" aria-labelledby="s2">
+    <h2 id="s2" data-i18n="s2"></h2>
+    <label class="field" for="from" data-i18n="fromLabel"></label>
+    <select id="from"></select>
+    <label class="field" for="to" data-i18n="toLabel"></label>
+    <select id="to"></select>
+    <div id="typed-wrap" class="hidden">
+      <label class="field" for="typed" data-i18n="typedLabel"></label>
+      <input type="text" id="typed" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="typed-status">
+      <div id="typed-status" aria-live="polite"></div>
+    </div>
+    <details id="more" style="margin-top:14px">
+      <summary data-i18n="moreTitle"></summary>
+      <p class="muted" data-i18n="moreIntro"></p>
+      <div id="opts"></div>
+      <p class="muted" data-i18n="moreNote"></p>
+    </details>
+  </section>
+
+  <section class="card hidden" id="preview-card" aria-labelledby="s3">
+    <h2 id="s3" data-i18n="s3"></h2>
+    <div id="preview" aria-live="polite"></div>
+  </section>
+
+  <section class="card hidden" id="download-card" aria-labelledby="s4">
+    <h2 id="s4" data-i18n="s4"></h2>
+    <button type="button" class="btn" id="download" data-i18n="downloadBtn"></button>
+    <div id="download-status" role="status" aria-live="polite"></div>
+  </section>
+
+  <footer class="muted" data-i18n="footer"></footer>
+</main>
+
+<!-- Pure logic: no DOM access, so it can be tested on its own. -->
+<script id="piru-logic">
+"use strict";
+var PiruFix = (function () {
+  var SUPPORTED_VERSION = 2;
+  var DOSE_FACETS = ["isomer", "releaseForm", "productName", "saltForm", "material"];
+
+  // JSON parser that keeps source offsets, so edits touch only the changed values.
+  function parse(text) {
+    var i = 0, n = text.length;
+    if (text.charCodeAt(0) === 0xFEFF) i = 1;
+    function fail(what) { throw new SyntaxError("JSON " + what + " at " + i); }
+    function ws() {
+      while (i < n) { var c = text.charCodeAt(i); if (c === 32 || c === 9 || c === 10 || c === 13) i++; else break; }
+    }
+    function str() {
+      var s = i; i++;
+      while (i < n) {
+        var c = text.charCodeAt(i);
+        if (c === 34) { i++; return JSON.parse(text.slice(s, i)); }
+        if (c === 92) i += 2; else if (c < 32) fail("control character"); else i++;
+      }
+      fail("unterminated string");
+    }
+    var numRe = /-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/y;
+    function value() {
+      ws();
+      var s = i, c = text[i];
+      if (c === "{") {
+        i++; var members = []; ws();
+        if (text[i] === "}") { i++; return { t: "o", s: s, e: i, m: members }; }
+        for (;;) {
+          ws(); if (text[i] !== '"') fail("expected key");
+          var ks = i, key = str(); ws();
+          if (text[i] !== ":") fail("expected colon"); i++;
+          var v = value(); members.push({ k: key, ks: ks, v: v }); ws();
+          if (text[i] === ",") { i++; continue; }
+          if (text[i] === "}") { i++; break; }
+          fail("expected , or }");
+        }
+        return { t: "o", s: s, e: i, m: members };
+      }
+      if (c === "[") {
+        i++; var items = []; ws();
+        if (text[i] === "]") { i++; return { t: "a", s: s, e: i, items: items }; }
+        for (;;) {
+          items.push(value()); ws();
+          if (text[i] === ",") { i++; continue; }
+          if (text[i] === "]") { i++; break; }
+          fail("expected , or ]");
+        }
+        return { t: "a", s: s, e: i, items: items };
+      }
+      if (c === '"') { var sv = str(); return { t: "s", s: s, e: i, v: sv }; }
+      if (text.startsWith("true", i)) { i += 4; return { t: "b", s: s, e: i, v: true }; }
+      if (text.startsWith("false", i)) { i += 5; return { t: "b", s: s, e: i, v: false }; }
+      if (text.startsWith("null", i)) { i += 4; return { t: "z", s: s, e: i, v: null }; }
+      numRe.lastIndex = i;
+      var m = numRe.exec(text);
+      if (m && m[0].length) { i += m[0].length; return { t: "n", s: s, e: i, v: Number(m[0]) }; }
+      fail("unexpected character");
+    }
+    var root = value(); ws();
+    if (i !== n) fail("trailing data");
+    return root;
+  }
+
+  function member(obj, key) {
+    if (!obj || obj.t !== "o") return null;
+    for (var j = obj.m.length - 1; j >= 0; j--) if (obj.m[j].k === key) return obj.m[j];
+    return null;
+  }
+  function get(obj, key) { var mm = member(obj, key); return mm ? mm.v : null; }
+  function getStr(obj, key) { var v = get(obj, key); return v && v.t === "s" ? v.v : null; }
+  function getNum(obj, key) { var v = get(obj, key); return v && v.t === "n" ? v.v : null; }
+  function arr(obj, key) { var v = get(obj, key); return v && v.t === "a" ? v.items.filter(function (x) { return x.t === "o"; }) : []; }
+  function firstArr(obj, keys) { for (var j = 0; j < keys.length; j++) { var v = get(obj, keys[j]); if (v && v.t === "a") return arr(obj, keys[j]); } return []; }
+
+  function fold(s) {
+    return String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
+  // Reads a file's bytes and decides whether it is a plain Piru backup.
+  function analyze(bytes, fileName) {
+    var name = String(fileName || "");
+    if (/\.piruenc$/i.test(name)) return { ok: false, error: "encrypted" };
+    if (!bytes || bytes.length === 0) return { ok: false, error: "empty" };
+    var text;
+    try { text = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes); }
+    catch (e) { return { ok: false, error: "notjson" }; }
+    var root;
+    try { root = parse(text); } catch (e) { return { ok: false, error: "notjson" }; }
+    if (root.t !== "o") return { ok: false, error: "notpiru" };
+    if (member(root, "sealed") && member(root, "kind")) return { ok: false, error: "encrypted" };
+    var ver = get(root, "piruExportVersion");
+    if (!ver) {
+      if (member(root, "experiences")) return { ok: false, error: "psylog" };
+      if (member(root, "doseEntries")) return { ok: false, error: "legacy" };
+      return { ok: false, error: "notpiru" };
+    }
+    if (ver.t !== "n" || !Number.isInteger(ver.v)) return { ok: false, error: "notpiru" };
+    var sv = get(root, "sessions"), ov = get(root, "orphanDoses");
+    if ((sv && sv.t !== "a" && sv.t !== "z") || (ov && ov.t !== "a" && ov.t !== "z")) return { ok: false, error: "notpiru" };
+    var model = buildModel(text, root);
+    model.version = ver.v;
+    model.newer = ver.v > SUPPORTED_VERSION;
+    model.appVersion = getStr(root, "appVersion");
+    if (model.doses.length === 0) return { ok: false, error: "noentries", model: model };
+    return { ok: true, model: model };
+  }
+
+  function buildModel(text, root) {
+    var doses = [];
+    function addDose(node) {
+      var sub = getStr(node, "substance");
+      if (sub === null) return;
+      doses.push({
+        node: node, sub: sub, ts: getNum(node, "timestamp"), amount: getNum(node, "amount"),
+        unit: getStr(node, "unit") || "", route: getStr(node, "route") || "",
+        uid: getStr(node, "substanceUID"), snap: getStr(node, "displayNameSnapshot"),
+        hasFacet: DOSE_FACETS.some(function (f) { var v = get(node, f); return v && v.t !== "z"; }),
+        plain: !["isomer", "releaseForm", "productName"].some(function (f) { var v = get(node, f); return v && v.t !== "z"; }),
+        inv: getStr(node, "inventoryItemID")
+      });
+    }
+    arr(root, "sessions").forEach(function (s) { arr(s, "doses").forEach(addDose); });
+    arr(root, "orphanDoses").forEach(addDose);
+
+    var records = {
+      favorites: arr(root, "favorites"),
+      quickLog: arr(root, "quickLogDoses"),
+      units: firstArr(root, ["customUnits", "customUnitPresets"]),
+      drinks: firstArr(root, ["drinkPresets", "customDrinkPresets"]),
+      daily: arr(root, "dailyDoseItems"),
+      occurrences: arr(root, "routineOccurrences"),
+      inventory: arr(root, "inventory"),
+      colors: arr(root, "substanceColors")
+    };
+    var customs = arr(root, "customSubstances").map(function (c) {
+      return { name: getStr(c, "name"), displayName: getStr(c, "displayName") };
+    }).filter(function (c) { return c.name; });
+
+    var counts = new Map();
+    doses.forEach(function (d) { counts.set(d.sub, (counts.get(d.sub) || 0) + 1); });
+    var customNames = new Set(customs.map(function (c) { return c.name; }));
+    var substances = Array.from(counts, function (e) {
+      var c = customs.find(function (x) { return x.name === e[0]; });
+      return { name: e[0], count: e[1], custom: customNames.has(e[0]), label: c && c.displayName && c.displayName !== e[0] ? c.displayName : null };
+    }).sort(function (a, b) { return b.count - a.count || a.name.localeCompare(b.name); });
+
+    // Every substance name in the backup, for the "to" list and typed-name matching.
+    var other = new Set();
+    customs.forEach(function (c) { other.add(c.name); });
+    ["favorites", "quickLog", "daily", "occurrences", "inventory", "colors"].forEach(function (k) {
+      records[k].forEach(function (r) { var s = getStr(r, "substance"); if (s) other.add(s); });
+    });
+    ["units", "drinks"].forEach(function (k) {
+      records[k].forEach(function (r) { var s = getStr(r, "substanceName"); if (s) other.add(s); });
+    });
+    counts.forEach(function (_, k) { other.delete(k); });
+
+    // Alternative spellings that point at a stored name.
+    var aliases = new Map();
+    function alias(spelling, target) { if (spelling && target && !aliases.has(fold(spelling))) aliases.set(fold(spelling), target); }
+    substances.forEach(function (s) { alias(s.name, s.name); });
+    other.forEach(function (s) { alias(s, s); });
+    customs.forEach(function (c) { alias(c.displayName, c.name); });
+    doses.forEach(function (d) { alias(d.snap, d.sub); });
+
+    return {
+      text: text, root: root, doses: doses, records: records, customs: customs, customNames: customNames,
+      substances: substances, otherNames: Array.from(other).sort(function (a, b) { return a.localeCompare(b); }), aliases: aliases
+    };
+  }
+
+  function allNames(model) { return model.substances.map(function (s) { return s.name; }).concat(model.otherNames); }
+
+  // Matches a typed name against the backup. exact: same string; matched: other spelling found; none: unknown.
+  function resolveTyped(model, typed) {
+    var t = String(typed || "").trim();
+    if (!t) return { name: "", status: "empty" };
+    if (allNames(model).indexOf(t) >= 0) return { name: t, status: "exact" };
+    var hit = model.aliases.get(fold(t));
+    if (hit) return { name: hit, status: "matched", typed: t };
+    return { name: t, status: "none" };
+  }
+
+  function mostCommon(values) {
+    var c = new Map(), best = null, bestN = 0;
+    values.forEach(function (v) { if (v) { var k = (c.get(v) || 0) + 1; c.set(v, k); if (k > bestN) { best = v; bestN = k; } } });
+    return best;
+  }
+
+  function targetIdentity(model, to) {
+    var plain = model.doses.filter(function (d) { return d.sub === to && d.uid && d.snap && d.plain; });
+    var uid = mostCommon(plain.map(function (d) { return d.uid; }));
+    var snap = uid ? mostCommon(plain.filter(function (d) { return d.uid === uid; }).map(function (d) { return d.snap; })) : null;
+    var anyUID = uid || mostCommon(
+      model.doses.filter(function (d) { return d.sub === to; }).map(function (d) { return d.uid; })
+        .concat(["favorites", "quickLog", "daily", "occurrences"].reduce(function (acc, k) {
+          return acc.concat(model.records[k].filter(function (r) { return getStr(r, "substance") === to; }).map(function (r) { return getStr(r, "substanceUID"); }));
+        }, []))
+    );
+    return { uid: uid && snap ? uid : null, snap: uid && snap ? snap : null, anyUID: anyUID };
+  }
+
+  function dedupKey(sub, d) { return sub.toLowerCase() + "|" + d.ts + "|" + d.amount + "|" + d.unit.toLowerCase() + "|" + d.route; }
+
+  // What would change. options: { shortcuts, meds, stock } (all default false: entries only).
+  function plan(model, from, to, options) {
+    options = options || {};
+    var id = targetIdentity(model, to);
+    var moved = model.doses.filter(function (d) { return d.sub === from; });
+    var stay = new Set(model.doses.filter(function (d) { return d.sub !== from; }).map(function (d) { return dedupKey(d.sub, d); }));
+    var p = {
+      from: from, to: to, identity: id, doses: moved,
+      facetCount: moved.filter(function (d) { return d.hasFacet; }).length,
+      duplicates: moved.filter(function (d) { return stay.has(dedupKey(to, d)); }).length,
+      fromIsCustom: model.customNames.has(from), toIsCustom: model.customNames.has(to),
+      extra: { favorites: [], quickLog: [], units: [], drinks: [], daily: [], occurrences: [], inventory: [] },
+      skipped: { favorites: 0, daily: 0, inventory: 0 }
+    };
+    var R = model.records;
+    function bySub(list, key, name) { return list.filter(function (r) { return getStr(r, key) === name; }); }
+    if (options.shortcuts) {
+      var toFav = bySub(R.favorites, "substance", to).length > 0;
+      bySub(R.favorites, "substance", from).forEach(function (r) { if (toFav) p.skipped.favorites++; else p.extra.favorites.push(r); });
+      p.extra.quickLog = bySub(R.quickLog, "substance", from);
+      p.extra.units = bySub(R.units, "substanceName", from);
+      p.extra.drinks = bySub(R.drinks, "substanceName", from);
+    }
+    if (options.meds) {
+      var toDaily = bySub(R.daily, "substance", to).length > 0;
+      bySub(R.daily, "substance", from).forEach(function (r) { if (toDaily) p.skipped.daily++; else p.extra.daily.push(r); });
+      if (!toDaily) p.extra.occurrences = bySub(R.occurrences, "substance", from);
+    }
+    if (options.stock) {
+      var toAuto = bySub(R.inventory, "substance", to).some(function (r) { var v = get(r, "isAutomaticSource"); return v && v.v === true; });
+      bySub(R.inventory, "substance", from).forEach(function (r) {
+        var v = get(r, "isAutomaticSource");
+        if (toAuto && v && v.v === true) p.skipped.inventory++; else p.extra.inventory.push(r);
+      });
+    }
+    return p;
+  }
+
+  function counts(model, from) {
+    var R = model.records;
+    function n(list, key) { return list.filter(function (r) { return getStr(r, key) === from; }).length; }
+    return {
+      entries: model.doses.filter(function (d) { return d.sub === from; }).length,
+      shortcuts: n(R.favorites, "substance") + n(R.quickLog, "substance") + n(R.units, "substanceName") + n(R.drinks, "substanceName"),
+      meds: n(R.daily, "substance") + n(R.occurrences, "substance"),
+      stock: n(R.inventory, "substance")
+    };
+  }
+
+  // Builds the minimal text edits for one object: replace values, insert after `afterKey`, remove keys.
+  function objectEdits(text, obj, set, insert, remove, edits) {
+    var removeSet = new Set(remove.filter(function (k) { return member(obj, k); }));
+    Object.keys(set).forEach(function (k) {
+      var mm = member(obj, k);
+      if (mm) edits.push({ s: mm.v.s, e: mm.v.e, text: JSON.stringify(set[k]) });
+    });
+    var ins = Object.keys(insert).filter(function (k) { return !member(obj, k); });
+    if (ins.length) {
+      var anchorIdx = obj.m.indexOf(member(obj, insert.__after || "substance"));
+      if (anchorIdx < 0) anchorIdx = obj.m.length - 1;
+      var anchor = obj.m[anchorIdx];
+      var sep, colon;
+      colon = text.slice(anchor.ks, anchor.v.s).replace(/^"(?:[^"\\]|\\.)*"/, "");
+      if (anchorIdx + 1 < obj.m.length) sep = text.slice(anchor.v.e, obj.m[anchorIdx + 1].ks).replace(/^\s*,/, "");
+      else if (anchorIdx > 0) sep = text.slice(obj.m[anchorIdx - 1].v.e, anchor.ks).replace(/^\s*,/, "");
+      else sep = text.slice(obj.s + 1, anchor.ks);
+      var add = ins.filter(function (k) { return k !== "__after"; }).map(function (k) {
+        return "," + sep + JSON.stringify(k) + colon + JSON.stringify(insert[k]);
+      }).join("");
+      if (add) edits.push({ s: anchor.v.e, e: anchor.v.e, text: add });
+    }
+    if (removeSet.size) {
+      var m = obj.m, idx = 0;
+      while (idx < m.length) {
+        if (!removeSet.has(m[idx].k)) { idx++; continue; }
+        var a = idx; while (idx < m.length && removeSet.has(m[idx].k)) idx++;
+        var b = idx - 1;
+        if (idx < m.length) edits.push({ s: m[a].ks, e: m[idx].ks, text: "" });
+        else if (a > 0) edits.push({ s: m[a - 1].v.e, e: m[b].v.e, text: "" });
+        else edits.push({ s: m[a].ks, e: m[b].v.e, text: "" });
+      }
+    }
+  }
+
+  function identityEdits(text, r, nameKey, to, uid, snap, withSnap, facets, extraRemove, edits) {
+    var set = {}, insert = { __after: nameKey }, remove = facets.slice().concat(extraRemove || []);
+    set[nameKey] = to;
+    if (uid) { set.substanceUID = uid; insert.substanceUID = uid; } else remove.push("substanceUID");
+    if (withSnap) { if (snap) { set.displayNameSnapshot = snap; insert.displayNameSnapshot = snap; } else remove.push("displayNameSnapshot"); }
+    // A key already present is replaced in place, never re-inserted.
+    objectEdits(text, r, set, insert, remove, edits);
+  }
+
+  function applyEdits(text, edits) {
+    edits.sort(function (a, b) { return a.s - b.s || a.e - b.e; });
+    var out = [], cur = 0;
+    edits.forEach(function (ed) {
+      if (ed.s < cur) throw new Error("Overlapping edits");
+      out.push(text.slice(cur, ed.s), ed.text); cur = ed.e;
+    });
+    out.push(text.slice(cur));
+    return out.join("");
+  }
+
+  // Produces the corrected backup text. Only the listed references change.
+  function apply(model, p) {
+    var text = model.text, edits = [], id = p.identity;
+    var movedInv = new Set(p.extra.inventory.map(function (r) { return getStr(r, "id"); }).filter(Boolean));
+    p.doses.forEach(function (d) {
+      var dropInv = d.inv && !movedInv.has(d.inv) ? ["inventoryItemID"] : [];
+      identityEdits(text, d.node, "substance", p.to, id.uid, id.snap, true, DOSE_FACETS, dropInv, edits);
+    });
+    var shortUID = id.uid || id.anyUID;
+    p.extra.favorites.concat(p.extra.quickLog, p.extra.daily).forEach(function (r) {
+      identityEdits(text, r, "substance", p.to, shortUID, null, false, DOSE_FACETS, [], edits);
+    });
+    p.extra.occurrences.forEach(function (r) { identityEdits(text, r, "substance", p.to, shortUID, null, false, [], [], edits); });
+    p.extra.inventory.forEach(function (r) { objectEdits(text, r, { substance: p.to }, {}, ["saltForm"], edits); });
+    p.extra.units.concat(p.extra.drinks).forEach(function (r) { objectEdits(text, r, { substanceName: p.to }, {}, [], edits); });
+    return applyEdits(text, edits);
+  }
+
+  return {
+    SUPPORTED_VERSION: SUPPORTED_VERSION, parse: parse, analyze: analyze, resolveTyped: resolveTyped,
+    plan: plan, apply: apply, counts: counts, allNames: allNames, fold: fold
+  };
+})();
+if (typeof module !== "undefined") module.exports = PiruFix;
+</script>
+
+<script id="piru-ui">
+"use strict";
+(function () {
+  if (typeof document === "undefined") return;
+  var T = {
+    fr: {
+      title: "Déplacer des entrées Piru vers une autre substance",
+      subtitle: "Corrige une sauvegarde Piru quand des prises ont été notées sous la mauvaise substance.",
+      privacy: "Tout se passe sur cet appareil. Cette page ne se connecte jamais à internet et n'envoie votre fichier nulle part.",
+      howTitle: "Comment faire",
+      steps: "<li>Dans Piru, ouvrez <b>Settings → Data &amp; Backup → Export… → Piru Backup</b>. Ne choisissez pas « Encrypted Backup » : un fichier chiffré ne peut pas être modifié ici.</li>" +
+        "<li><b>Gardez ce fichier d'origine</b> en lieu sûr. C'est votre copie de secours si quelque chose se passe mal. Cette page ne le modifie jamais.</li>" +
+        "<li>Ouvrez ce fichier ici (étape 1), choisissez la mauvaise substance et la bonne, puis vérifiez l'aperçu.</li>" +
+        "<li>Téléchargez le fichier corrigé (<b>piru-backup-corrected.json</b>).</li>" +
+        "<li>Dans Piru, <b>Settings → Data &amp; Backup → Delete Everything</b>, puis <b>Import…</b> et choisissez le fichier corrigé.</li>",
+      whyDelete: "<b>Pourquoi tout effacer d'abord ?</b> Un fichier non chiffré est toujours <i>ajouté</i> à vos données actuelles (fusion) : Piru ignore seulement les entrées strictement identiques. Le choix « Merge » ou « Replace » n'apparaît que pour les sauvegardes chiffrées. Les entrées corrigées ont un autre nom de substance, donc Piru ne les verrait pas comme des doublons : sans effacer d'abord, vous auriez l'ancienne <i>et</i> la nouvelle version. Effacer puis importer revient à « remplacer ».",
+      deleteNote: "« Delete Everything » efface aussi les copies de récupération internes de Piru. Faites-le seulement si votre sauvegarde d'origine est bien gardée. Les données d'Apple Santé ne sont pas touchées.",
+      altNote: "<b>Peu d'entrées à corriger ?</b> Autre méthode : dans Piru, supprimez à la main les entrées mal notées, puis importez le fichier corrigé sans rien effacer. Tout le reste est identique et sera ignoré.",
+      s1: "1. Ouvrir votre sauvegarde Piru",
+      openBtn: "Ouvrir votre sauvegarde Piru",
+      s2: "2. Choisir les substances",
+      fromLabel: "Substance à corriger (la mauvaise)",
+      toLabel: "Nouvelle substance (la bonne)",
+      typedLabel: "Nom de la substance, tel qu'il apparaît dans Piru",
+      moreTitle: "Autres options (facultatif)",
+      moreIntro: "Par défaut, seules les entrées du journal sont déplacées. Vous pouvez aussi déplacer :",
+      moreNote: "Les couleurs choisies et la fiche des substances personnalisées ne sont jamais modifiées.",
+      s3: "3. Vérifier",
+      s4: "4. Télécharger",
+      downloadBtn: "Télécharger la sauvegarde corrigée",
+      footer: "Fonctionne hors ligne. Format de sauvegarde Piru pris en charge : version 2.",
+      choose: "— Choisir —",
+      groupEntries: "Dans vos entrées",
+      groupOther: "Autres noms de votre sauvegarde",
+      typeOther: "Taper un autre nom…",
+      custom: "perso",
+      entries: function (n) { return n + (n > 1 ? " entrées" : " entrée"); },
+      loaded: function (name, n, m) { return "Fichier ouvert : " + name + ". " + n + (n > 1 ? " entrées" : " entrée") + ", " + m + (m > 1 ? " substances." : " substance."); },
+      optShortcuts: function (n) { return "Favoris, boutons de saisie rapide et unités personnalisées (" + n + ")"; },
+      optMeds: function (n) { return "Médicaments quotidiens, rappels et leur historique (" + n + ")"; },
+      optStock: function (n) { return "Stock / inventaire (" + n + ")"; },
+      noOpts: "Rien d'autre ne concerne cette substance.",
+      typedExact: function (s) { return "Trouvé dans votre sauvegarde : « " + s + " »."; },
+      typedMatched: function (s) { return "Nous utiliserons « " + s + " », l'orthographe trouvée dans votre sauvegarde."; },
+      typedNone: function (s) { return "Attention : « " + s + " » n'existe pas dans votre sauvegarde. Le nom doit être exactement celui de la substance dans Piru (majuscules, accents, espaces), par exemple « Ketamine ». Sinon Piru gardera les entrées sous ce nom, sans fiche de substance."; },
+      same: "Choisissez deux substances différentes.",
+      main: function (n, a, b) { return n + (n > 1 ? " entrées seront déplacées" : " entrée sera déplacée") + " de « " + a + " » vers « " + b + " »."; },
+      examples: "Exemples :",
+      more: function (n) { return "… et " + n + " autre" + (n > 1 ? "s" : "") + "."; },
+      facets: function (n, a) { return n + (n > 1 ? " de ces entrées avaient" : " de ces entrées avait") + " un détail propre à « " + a + " » (forme de sel, isomère, libération prolongée ou nom de marque). Ce détail sera retiré, car il ne correspond pas à la nouvelle substance."; },
+      dups: function (n, b) { return n + (n > 1 ? " de ces entrées sont identiques" : " de ces entrées est identique") + " à une entrée « " + b + " » déjà présente (même heure, même quantité). Piru n'en gardera qu'une."; },
+      alsoMoved: "Aussi déplacé : ",
+      skipped: function (b) { return "Non déplacé, car « " + b + " » en a déjà : "; },
+      kinds: { favorites: "favori", quickLog: "bouton rapide", units: "unité perso", drinks: "boisson perso", daily: "médicament quotidien", occurrences: "élément d'historique des rappels", inventory: "stock" },
+      unchanged: "Tout le reste du fichier reste identique, octet pour octet.",
+      fromCustom: function (a) { return "« " + a + " » est une substance personnalisée. Sa fiche reste dans Piru ; vous pourrez la supprimer ensuite si elle ne sert plus."; },
+      typedWarnShort: "Le nom tapé n'a pas été trouvé dans votre sauvegarde. Vérifiez qu'il est écrit exactement comme dans Piru.",
+      newer: function (v) { return "Cette sauvegarde utilise un format plus récent que prévu (version " + v + "). L'outil devrait fonctionner, mais vérifiez bien le résultat et gardez votre fichier d'origine."; },
+      done: "Fichier prêt : piru-backup-corrected.json. Votre fichier d'origine n'a pas été modifié. Ensuite, dans Piru : Delete Everything, puis Import… avec ce fichier (voir « Comment faire »).",
+      err: {
+        encrypted: "Ce fichier est une sauvegarde chiffrée (Encrypted Backup). Elle ne peut pas être modifiée ici. Dans Piru, exportez plutôt Settings → Data & Backup → Export… → Piru Backup (sans chiffrement), puis ouvrez ce nouveau fichier.",
+        notjson: "Ce fichier n'est pas une sauvegarde Piru lisible. S'il s'agit d'une sauvegarde chiffrée (.piruenc), exportez plutôt une « Piru Backup » sans chiffrement.",
+        psylog: "Ce fichier est au format PsychonautWiki, pas une sauvegarde Piru. Dans Piru, choisissez Export… → Piru Backup.",
+        legacy: "Ce fichier utilise un ancien format Piru. Importez-le dans Piru, puis exportez une nouvelle « Piru Backup ».",
+        notpiru: "Ce fichier n'est pas une sauvegarde Piru. Choisissez le fichier créé par Piru avec Export… → Piru Backup.",
+        empty: "Ce fichier est vide.",
+        noentries: "Cette sauvegarde Piru ne contient aucune entrée de journal.",
+        read: "Impossible de lire ce fichier."
+      }
+    },
+    en: {
+      title: "Move Piru entries to another substance",
+      subtitle: "Fixes a Piru backup when doses were logged under the wrong substance.",
+      privacy: "Everything happens on this device. This page never connects to the internet and never sends your file anywhere.",
+      howTitle: "How it works",
+      steps: "<li>In Piru, open <b>Settings → Data &amp; Backup → Export… → Piru Backup</b>. Do not choose “Encrypted Backup”: an encrypted file can't be edited here.</li>" +
+        "<li><b>Keep this original file</b> somewhere safe. It is your way back if anything goes wrong. This page never changes it.</li>" +
+        "<li>Open the file here (step 1), choose the wrong substance and the right one, and check the preview.</li>" +
+        "<li>Download the corrected file (<b>piru-backup-corrected.json</b>).</li>" +
+        "<li>In Piru, <b>Settings → Data &amp; Backup → Delete Everything</b>, then <b>Import…</b> and pick the corrected file.</li>",
+      whyDelete: "<b>Why delete everything first?</b> A plain (unencrypted) file is always <i>added</i> to your current data (a merge): Piru only skips entries that are exactly the same. The “Merge” or “Replace” choice only appears for encrypted backups. The corrected entries carry a different substance name, so Piru would not see them as duplicates: without deleting first you would have the old <i>and</i> the new version. Deleting and then importing works like “Replace”.",
+      deleteNote: "“Delete Everything” also removes Piru's internal recovery copies. Only do it while your original backup is safely kept. Apple Health data is not affected.",
+      altNote: "<b>Only a few entries to fix?</b> Another way: in Piru, delete the wrongly logged entries by hand, then import the corrected file without deleting anything else. Everything else is identical and will be skipped.",
+      s1: "1. Open your Piru backup",
+      openBtn: "Open your Piru backup",
+      s2: "2. Choose the substances",
+      fromLabel: "Substance to fix (the wrong one)",
+      toLabel: "New substance (the right one)",
+      typedLabel: "Substance name, exactly as it appears in Piru",
+      moreTitle: "More options (optional)",
+      moreIntro: "By default only journal entries move. You can also move:",
+      moreNote: "Picked colours and custom substance definitions are never changed.",
+      s3: "3. Check",
+      s4: "4. Download",
+      downloadBtn: "Download the corrected backup",
+      footer: "Works offline. Supported Piru backup format: version 2.",
+      choose: "— Choose —",
+      groupEntries: "In your entries",
+      groupOther: "Other names in your backup",
+      typeOther: "Type another name…",
+      custom: "custom",
+      entries: function (n) { return n + (n === 1 ? " entry" : " entries"); },
+      loaded: function (name, n, m) { return "Opened: " + name + ". " + n + (n === 1 ? " entry" : " entries") + ", " + m + (m === 1 ? " substance." : " substances."); },
+      optShortcuts: function (n) { return "Favourites, quick-log buttons and custom units (" + n + ")"; },
+      optMeds: function (n) { return "Daily medications, reminders and their history (" + n + ")"; },
+      optStock: function (n) { return "Stock / inventory (" + n + ")"; },
+      noOpts: "Nothing else refers to this substance.",
+      typedExact: function (s) { return "Found in your backup: “" + s + "”."; },
+      typedMatched: function (s) { return "We will use “" + s + "”, the spelling found in your backup."; },
+      typedNone: function (s) { return "Careful: “" + s + "” is not in your backup. The name must match the substance name in Piru exactly (capitals, accents, spaces), for example “Ketamine”. Otherwise Piru keeps the entries under this name with no substance information."; },
+      same: "Choose two different substances.",
+      main: function (n, a, b) { return n + (n === 1 ? " entry" : " entries") + " will move from “" + a + "” to “" + b + "”."; },
+      examples: "Examples:",
+      more: function (n) { return "… and " + n + " more."; },
+      facets: function (n, a) { return n + (n === 1 ? " of these entries had" : " of these entries had") + " a detail that belongs to “" + a + "” (salt form, isomer, release form or brand name). It will be removed because it does not fit the new substance."; },
+      dups: function (n, b) { return n + (n === 1 ? " of these entries is" : " of these entries are") + " identical to an existing “" + b + "” entry (same time and amount). Piru will keep only one."; },
+      alsoMoved: "Also moved: ",
+      skipped: function (b) { return "Not moved because “" + b + "” already has one: "; },
+      kinds: { favorites: "favourite", quickLog: "quick-log button", units: "custom unit", drinks: "custom drink", daily: "daily medication", occurrences: "reminder history item", inventory: "stock item" },
+      unchanged: "Everything else in the file stays byte-for-byte the same.",
+      fromCustom: function (a) { return "“" + a + "” is a custom substance. Its definition stays in Piru; you can delete it afterwards if you no longer need it."; },
+      typedWarnShort: "The typed name was not found in your backup. Check that it is spelled exactly as in Piru.",
+      newer: function (v) { return "This backup uses a newer format than expected (version " + v + "). The tool should still work, but check the result carefully and keep your original file."; },
+      done: "File ready: piru-backup-corrected.json. Your original file was not changed. Next, in Piru: Delete Everything, then Import… with this file (see “How it works”).",
+      err: {
+        encrypted: "This file is an encrypted backup (Encrypted Backup). It can't be edited here. In Piru, export Settings → Data & Backup → Export… → Piru Backup instead (no encryption), then open that new file.",
+        notjson: "This file is not a readable Piru backup. If it is an encrypted backup (.piruenc), export a plain “Piru Backup” instead.",
+        psylog: "This file is in PsychonautWiki format, not a Piru backup. In Piru, choose Export… → Piru Backup.",
+        legacy: "This file uses an old Piru format. Import it into Piru, then export a new “Piru Backup”.",
+        notpiru: "This file is not a Piru backup. Pick the file Piru created with Export… → Piru Backup.",
+        empty: "This file is empty.",
+        noentries: "This Piru backup has no journal entries.",
+        read: "Couldn't read this file."
+      }
+    }
+  };
+
+  var lang = "fr";
+  var state = { model: null, fileName: "", error: null, done: false };
+  var $ = function (id) { return document.getElementById(id); };
+  var TYPE = "\u0000type";
+
+  function el(tag, attrs, text) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function msg(kind, text) { return el("div", { class: "msg " + kind }, text); }
+
+  function setLang(l) {
+    lang = l;
+    document.documentElement.lang = l;
+    $("lang-fr").setAttribute("aria-pressed", String(l === "fr"));
+    $("lang-en").setAttribute("aria-pressed", String(l === "en"));
+    document.querySelectorAll("[data-i18n]").forEach(function (e) { e.textContent = T[l][e.getAttribute("data-i18n")]; });
+    document.querySelectorAll("[data-i18n-html]").forEach(function (e) { e.innerHTML = T[l][e.getAttribute("data-i18n-html")]; });
+    document.title = T[l].title;
+    renderAll(true);
+  }
+
+  function renderLoad() {
+    var box = $("load-status"); box.textContent = "";
+    var t = T[lang];
+    if (state.error) { box.appendChild(msg("err", t.err[state.error] || t.err.read)); return; }
+    if (!state.model) return;
+    var m = state.model;
+    box.appendChild(msg("ok", t.loaded(state.fileName, m.doses.length, m.substances.length)));
+    if (m.newer) box.appendChild(msg("warn", t.newer(m.version)));
+  }
+
+  function fillFrom(keep) {
+    var sel = $("from"), t = T[lang], prev = keep ? sel.value : "";
+    sel.textContent = "";
+    sel.appendChild(el("option", { value: "" }, t.choose));
+    state.model.substances.forEach(function (s) {
+      var label = s.name + (s.label ? " (" + s.label + ")" : "") + (s.custom ? " [" + t.custom + "]" : "") + " — " + t.entries(s.count);
+      sel.appendChild(el("option", { value: s.name }, label));
+    });
+    if (prev) sel.value = prev;
+  }
+
+  function fillTo(keep) {
+    var sel = $("to"), t = T[lang], prev = keep ? sel.value : "", m = state.model, from = $("from").value;
+    sel.textContent = "";
+    sel.appendChild(el("option", { value: "" }, t.choose));
+    var g1 = el("optgroup", { label: t.groupEntries });
+    m.substances.forEach(function (s) {
+      if (s.name === from) return;
+      g1.appendChild(el("option", { value: s.name }, s.name + (s.custom ? " [" + t.custom + "]" : "") + " — " + t.entries(s.count)));
+    });
+    if (g1.children.length) sel.appendChild(g1);
+    var others = m.otherNames.filter(function (n) { return n !== from; });
+    if (others.length) {
+      var g2 = el("optgroup", { label: t.groupOther });
+      others.forEach(function (n) { g2.appendChild(el("option", { value: n }, n + (m.customNames.has(n) ? " [" + t.custom + "]" : ""))); });
+      sel.appendChild(g2);
+    }
+    sel.appendChild(el("option", { value: TYPE }, t.typeOther));
+    if (prev && Array.prototype.some.call(sel.options, function (o) { return o.value === prev; })) sel.value = prev;
+  }
+
+  function currentTarget() {
+    var v = $("to").value;
+    if (v !== TYPE) return v ? { name: v, status: "exact" } : null;
+    var r = PiruFix.resolveTyped(state.model, $("typed").value);
+    return r.status === "empty" ? null : r;
+  }
+
+  function renderTyped() {
+    var isTyped = $("to").value === TYPE;
+    $("typed-wrap").classList.toggle("hidden", !isTyped);
+    var box = $("typed-status"); box.textContent = "";
+    if (!isTyped) return;
+    var r = currentTarget(), t = T[lang];
+    if (!r) return;
+    if (r.status === "exact") box.appendChild(msg("ok", t.typedExact(r.name)));
+    else if (r.status === "matched") box.appendChild(msg("ok", t.typedMatched(r.name)));
+    else box.appendChild(msg("warn", t.typedNone(r.name)));
+  }
+
+  function renderOptions() {
+    var box = $("opts"), t = T[lang], from = $("from").value;
+    var checked = {};
+    box.querySelectorAll("input").forEach(function (i) { checked[i.value] = i.checked; });
+    box.textContent = "";
+    if (!from) return;
+    var c = PiruFix.counts(state.model, from), any = false;
+    [["shortcuts", t.optShortcuts], ["meds", t.optMeds], ["stock", t.optStock]].forEach(function (o) {
+      var n = c[o[0]]; if (!n) return; any = true;
+      var lab = el("label", { class: "check" });
+      var input = el("input", { type: "checkbox", value: o[0] });
+      input.checked = !!checked[o[0]];
+      input.addEventListener("change", renderPreview);
+      lab.appendChild(input); lab.appendChild(el("span", null, o[1](n)));
+      box.appendChild(lab);
+    });
+    if (!any) box.appendChild(el("p", null, t.noOpts));
+  }
+
+  function options() {
+    var o = {};
+    $("opts").querySelectorAll("input").forEach(function (i) { o[i.value] = i.checked; });
+    return o;
+  }
+
+  function fmtDate(ts) {
+    if (typeof ts !== "number") return "?";
+    try { return new Date(ts).toLocaleString(lang === "fr" ? "fr-FR" : "en-GB", { dateStyle: "medium", timeStyle: "short" }); }
+    catch (e) { return new Date(ts).toISOString(); }
+  }
+
+  var currentPlan = null;
+  function renderPreview() {
+    var box = $("preview"), t = T[lang], from = $("from").value, target = currentTarget();
+    box.textContent = ""; currentPlan = null;
+    $("download-status").textContent = "";
+    var ready = !!(from && target && target.name);
+    $("preview-card").classList.toggle("hidden", !ready);
+    $("download-card").classList.toggle("hidden", !ready);
+    $("download").disabled = true;
+    if (!ready) return;
+    if (target.name === from) { box.appendChild(msg("warn", t.same)); return; }
+    var p = PiruFix.plan(state.model, from, target.name, options());
+    currentPlan = p;
+    box.appendChild(el("p", { class: "big" }, t.main(p.doses.length, from, target.name)));
+    var sorted = p.doses.slice().sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });
+    var pick = sorted.length <= 5 ? sorted : [0, 1, 2, 3, 4].map(function (k) { return sorted[Math.round(k * (sorted.length - 1) / 4)]; });
+    box.appendChild(el("p", null, t.examples));
+    var ul = el("ul", { class: "examples num" });
+    pick.forEach(function (d) {
+      ul.appendChild(el("li", null, fmtDate(d.ts) + (d.amount != null ? " · " + d.amount.toLocaleString(lang === "fr" ? "fr-FR" : "en-GB", { maximumFractionDigits: 6 }) + " " + d.unit : "")));
+    });
+    if (sorted.length > pick.length) ul.appendChild(el("li", { class: "muted" }, t.more(sorted.length - pick.length)));
+    box.appendChild(ul);
+    var extras = Object.keys(p.extra).filter(function (k) { return p.extra[k].length; })
+      .map(function (k) { return p.extra[k].length + " × " + t.kinds[k]; });
+    if (extras.length) box.appendChild(el("p", null, t.alsoMoved + extras.join(", ") + "."));
+    var skipped = Object.keys(p.skipped).filter(function (k) { return p.skipped[k]; })
+      .map(function (k) { return p.skipped[k] + " × " + t.kinds[k]; });
+    if (skipped.length) box.appendChild(msg("warn", t.skipped(target.name) + skipped.join(", ") + "."));
+    if (p.facetCount) box.appendChild(msg("warn", t.facets(p.facetCount, from)));
+    if (p.duplicates) box.appendChild(msg("warn", t.dups(p.duplicates, target.name)));
+    if (target.status === "none") box.appendChild(msg("warn", t.typedWarnShort));
+    if (p.fromIsCustom) box.appendChild(el("p", { class: "muted", style: "margin-top:12px" }, t.fromCustom(from)));
+    box.appendChild(el("p", { class: "muted", style: "margin-top:12px" }, t.unchanged));
+    $("download").disabled = p.doses.length === 0;
+    if (state.done) $("download-status").appendChild(msg("ok", t.done));
+  }
+
+  function renderAll(keep) {
+    renderLoad();
+    var has = !!state.model && !state.error;
+    $("choose").classList.toggle("hidden", !has);
+    if (!has) { $("preview-card").classList.add("hidden"); $("download-card").classList.add("hidden"); return; }
+    fillFrom(keep); fillTo(keep); renderTyped(); renderOptions(); renderPreview();
+  }
+
+  $("lang-fr").addEventListener("click", function () { setLang("fr"); });
+  $("lang-en").addEventListener("click", function () { setLang("en"); });
+  $("from").addEventListener("change", function () { state.done = false; fillTo(true); renderTyped(); renderOptions(); renderPreview(); });
+  $("to").addEventListener("change", function () { state.done = false; renderTyped(); renderPreview(); if ($("to").value === TYPE) $("typed").focus(); });
+  $("typed").addEventListener("input", function () { state.done = false; renderTyped(); renderPreview(); });
+
+  $("file").addEventListener("change", function (ev) {
+    var f = ev.target.files && ev.target.files[0];
+    if (!f) return;
+    state = { model: null, fileName: f.name, error: null, done: false };
+    var reader = new FileReader();
+    reader.onload = function () {
+      var res = PiruFix.analyze(new Uint8Array(reader.result), f.name);
+      if (res.ok) state.model = res.model; else state.error = res.error;
+      $("typed").value = "";
+      renderAll(false);
+      $("how").open = false;
+    };
+    reader.onerror = function () { state.error = "read"; renderAll(false); };
+    reader.readAsArrayBuffer(f);
+    ev.target.value = "";
+  });
+
+  $("download").addEventListener("click", function () {
+    if (!currentPlan || !state.model) return;
+    var out = PiruFix.apply(state.model, currentPlan);
+    var blob = new Blob([out], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: "piru-backup-corrected.json" });
+    a.style.display = "none";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+    state.done = true;
+    var box = $("download-status"); box.textContent = ""; box.appendChild(msg("ok", T[lang].done));
+  });
+
+  setLang(lang);
+})();
+</script>
+</body>
+</html>
