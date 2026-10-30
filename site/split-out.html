@@ -339,6 +339,7 @@
     <div class="msg err">
       <p lang="en">This page needs JavaScript. On iPhone, the Files or Mail preview does not run it: open the page in Safari, or use a computer.</p>
       <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
+      <p lang="zh-Hans">此页面需要 JavaScript。在 iPhone 上，“文件”或“邮件”的预览不会运行它：请在 Safari 中打开此页面，或者使用电脑。</p>
     </div>
   </noscript>
 
@@ -966,6 +967,66 @@ var PiruUI = (function () {
         noentries: "Cette sauvegarde Piru ne contient aucune entrée de journal.",
         read: "Impossible de lire ce fichier."
       }
+    },
+    "zh-Hans": {
+      langLabel: "语言（Language）",
+      privacyLink: "隐私",
+      back: "← 所有工具",
+      privacy: "只在这台设备上运行。不会上传任何内容，你的文件也绝不会离开这台设备。",
+      footer: "可离线使用。支持的 Piru 备份格式：版本 2。",
+      siteNotice: "你好！我正在开发 Saiko Next，一款受 Piru 启发的私密日志应用。开发过程中，我顺手为遇到同样麻烦的 Piru 用户做了这些免费小工具。它们完全在你的设备上运行，你的备份绝不会离开设备。本网站与 Piru 没有关联。",
+      howTitle: "使用方法",
+      openBtn: "打开你的 Piru 备份",
+      exportHint: "请在 Piru 中通过 <b>" + en(EXPORT_PATH) + "</b> 导出备份，不要选“" + en("Encrypted Backup") + "”。请妥善保管这个文件：它是你恢复数据的途径，本页面绝不会修改它。",
+      stepExport: "在 Piru 中导出 <b>" + en(EXPORT_PATH) + "</b>。不要选“" + en("Encrypted Backup") + "”：那种文件在这里无法读取。",
+      stepKeep: "<b>妥善保管这份原始文件</b>。它是你恢复数据的途径，本页面绝不会修改它。",
+      stepDownload: function (f) { return "下载新文件（<b>" + f + "</b>）。"; },
+      stepImport: "在 Piru 中执行 <b>" + en(DELETE_PATH) + "</b>，然后用 <b>" + en("Import…") + "</b> 导入新文件。",
+      whyDelete: "<b>为什么要先删除全部数据？</b>Piru 会把未加密的备份合并到已有数据中，只跳过完全相同的副本。“" + en("Replace") + "”（替换）选项只适用于加密备份。如果不先删除，被移除的记录会留下来，改过的记录会出现两次。先删除再导入，效果就和“" + en("Replace") + "”一样。",
+      nextSteps: function (f) {
+        return "<p><b>导入之前</b></p><ol>" +
+          "<li>妥善保管你的原始备份。它是你恢复数据的唯一途径。</li>" +
+          "<li>在 Piru 中打开 <b>" + en(DELETE_PATH) + "</b>。这也会删除 Piru 自己的恢复副本，所以只有在原始备份已妥善保存时才能这样做。Apple 健康数据不受影响。</li>" +
+          "<li>然后选择 <b>" + en("Import…") + "</b>，并选取 <b>" + f + "</b>。</li></ol>";
+      },
+      choose: "— 请选择 —",
+      allSubstances: "全部物质",
+      allUnits: "全部单位",
+      custom: "自定义",
+      substance: "物质",
+      unit: "单位",
+      dateFrom: "开始日期",
+      dateTo: "结束日期（含当天）",
+      zone: "时区",
+      zoneDevice: function (z) { return z + "（本设备）"; },
+      narrowTitle: "选择日期或单条记录",
+      narrowAll: "全部日期，所有记录均已勾选。",
+      narrowSome: function (n, m) { return "已勾选 " + m + " 条中的 " + n + " 条。"; },
+      tickAll: "全部勾选",
+      untickAll: "全部取消勾选",
+      showMore: function (n) { return "再显示 " + n + " 项"; },
+      selected: function (n, m) { return "已选择 " + m + " 条记录中的 " + n + " 条。"; },
+      noMatch: "没有符合这些筛选条件的记录。",
+      noSession: "无时段",
+      sessionOf: function (d) { return d + " 的时段"; },
+      entries: function (n) { return n + " 条记录"; },
+      loaded: function (name, n, m) { return "已打开 " + name + "：" + n + " 条记录，" + m + " 种物质。"; },
+      newerRead: function (v) { return "这个备份使用的 Piru 格式（版本 " + v + "）比本页面支持的更新。部分细节可能缺失或读错。"; },
+      more: function (n) { return "……还有 " + n + " 项。"; },
+      unchanged: "文件中的其他内容逐字节保持不变。",
+      done: function (f) { return "已下载 " + f + "。你的原始文件没有改动。"; },
+      err: {
+        encrypted: "这是加密备份，无法在这里读取。请改为在 Piru 中导出 " + en(EXPORT_PATH) + "，然后打开那个文件。",
+        notjson: "这个文件不是可读取的 Piru 备份。如果它是加密备份（.piruenc），请改为导出未加密的“" + en("Piru Backup") + "”。",
+        psylog: "这个文件是 PsychonautWiki 格式，不是 Piru 备份。请在 Piru 中选择 " + en("Export… → Piru Backup") + "。",
+        legacy: "这个文件使用的是旧版 Piru 格式。请先把它导入 Piru，再重新导出一个“" + en("Piru Backup") + "”。",
+        notpiru: "这个文件不是 Piru 备份。请选择 Piru 通过 " + en("Export… → Piru Backup") + " 生成的文件。",
+        newer: "这个备份使用的 Piru 格式比本工具支持的版本（版本 2）更新，因此无法安全地编辑它。你的文件没有改动。",
+        repeated: "这个文件在同一条数据里重复了某个字段，而 Piru 从不会这样做。它可能被手动改过。请从 Piru 重新导出一个“" + en("Piru Backup") + "”，再打开那个文件。",
+        empty: "这个文件是空的。",
+        noentries: "这个 Piru 备份里没有日志记录。",
+        read: "无法读取这个文件。"
+      }
     }
   };
 
@@ -1468,10 +1529,35 @@ if (typeof module !== "undefined") module.exports = PiruSplit;
       "<li>Puis choisissez <b>" + en("Import…") + "</b> et prenez <b>" + KEPT + "</b>.</li>" +
       "<li>Dans l'autre Piru, faites simplement <b>" + en("Import…") + "</b> avec <b>" + SPLIT + "</b>. Rien n'est à effacer là-bas.</li></ol>"
   };
+  var ZH_HANS = {
+    title: "把 Piru 记录拆分到单独的备份",
+    subtitle: "把选中的记录（比如替朋友记的）从你的备份中取出，放进一个单独的备份。",
+    stepDo: "在这里打开文件，按物质、日期或逐条选出要拆分的记录。",
+    stepBoth: "下载两个文件：<b>" + KEPT + "</b>（你的备份，不含这些记录）和 <b>" + SPLIT + "</b>（只含这些记录）。",
+    stepOther: "在另一个 Piru 中，直接用 <b>" + en("Import…") + "</b> 导入 <b>" + SPLIT + "</b> 即可添加这些记录。那边不需要删除任何数据。",
+    s1: "1. 打开你的 Piru 备份", s2: "2. 选择要拆分的记录", s3: "3. 检查并下载两个文件",
+    counts: function (a, b) { return a + " 条记录移到新文件；" + b + " 条留在你的备份中。"; },
+    everything: "所有记录都已选中，这样你自己的备份将一条都不剩。请选择某种物质或某些日期，只拆分其中一部分。",
+    whole: function (n) { return n + " 个时段会整个移走，连同标题和备注。"; },
+    partial: function (n) { return n + " 个时段会被拆开：选中的记录进入新文件中 ID 相同的时段，其余的留在你的备份中。"; },
+    partialContent: function (n) { return "这些时段的标题、备注和签到设置只保留在你的备份中。"; },
+    orphans: function (n) { return n + " 条记录不属于任何时段；Piru 导入时会把它们归入时段。"; },
+    links: function (n) { return n + " 个提醒历史项指向被拆分出去的记录。它们会留在你的备份中，但将找不到对应的记录。"; },
+    customs: function (names) { return "同时把这些记录用到的自定义物质复制到新文件中：" + names; },
+    notIncluded: "新文件只包含这些记录，以及 Piru 导入它们所需的内容。设置、用药、库存、收藏和颜色都留在你的备份中。",
+    downloadKept: "下载不含这些记录的备份",
+    downloadSplit: "下载拆分出的记录",
+    nextSteps: "<p><b>导入之前</b></p><ol><li>妥善保管你的原始备份。它是你恢复数据的唯一途径。</li>" +
+      "<li>在你的 Piru 中打开 <b>" + en("Settings → Data &amp; Backup → Delete Everything") + "</b>。这也会删除 Piru 自己的恢复副本，所以只有在原始备份已妥善保存时才能这样做。Apple 健康数据不受影响。</li>" +
+      "<li>然后选择 <b>" + en("Import…") + "</b>，并选取 <b>" + KEPT + "</b>。</li>" +
+      "<li>在另一个 Piru 中，直接用 <b>" + en("Import…") + "</b> 导入 <b>" + SPLIT + "</b>。那边不需要删除任何数据。</li></ol>",
+    steps: function (x) { return [x.stepExport, x.stepKeep, x.stepDo, x.stepBoth, x.stepImportKept, x.stepOther]; },
+    stepImportKept: "在你的 Piru 中执行 <b>" + en("Settings → Data &amp; Backup → Delete Everything") + "</b>，然后用 <b>" + en("Import…") + "</b> 导入 <b>" + KEPT + "</b>。"
+  };
   EN.steps = FR.steps = function (x) { return [x.stepExport, x.stepKeep, x.stepDo, x.stepBoth, x.stepImportKept, x.stepOther]; };
   EN.stepImportKept = "In your Piru, <b>Settings → Data &amp; Backup → Delete Everything</b>, then <b>Import…</b> <b>" + KEPT + "</b>.";
   FR.stepImportKept = "Dans votre Piru, <b>" + en("Settings → Data &amp; Backup → Delete Everything") + "</b>, puis <b>" + en("Import…") + "</b> avec <b>" + KEPT + "</b>.";
-  U.init({ en: EN, fr: FR }, function () { render(); });
+  U.init({ en: EN, fr: FR, "zh-Hans": ZH_HANS }, function () { render(); });
 
   U.onFile($("file"), {}, function (res, name) {
     state = { res: res, name: name, done: {} };

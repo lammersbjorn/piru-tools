@@ -339,6 +339,7 @@
     <div class="msg err">
       <p lang="en">This page needs JavaScript. On iPhone, the Files or Mail preview does not run it: open the page in Safari, or use a computer.</p>
       <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
+      <p lang="zh-Hans">此页面需要 JavaScript。在 iPhone 上，“文件”或“邮件”的预览不会运行它：请在 Safari 中打开此页面，或者使用电脑。</p>
     </div>
   </noscript>
 
@@ -991,6 +992,66 @@ var PiruUI = (function () {
         noentries: "Cette sauvegarde Piru ne contient aucune entrée de journal.",
         read: "Impossible de lire ce fichier."
       }
+    },
+    "zh-Hans": {
+      langLabel: "语言（Language）",
+      privacyLink: "隐私",
+      back: "← 所有工具",
+      privacy: "只在这台设备上运行。不会上传任何内容，你的文件也绝不会离开这台设备。",
+      footer: "可离线使用。支持的 Piru 备份格式：版本 2。",
+      siteNotice: "你好！我正在开发 Saiko Next，一款受 Piru 启发的私密日志应用。开发过程中，我顺手为遇到同样麻烦的 Piru 用户做了这些免费小工具。它们完全在你的设备上运行，你的备份绝不会离开设备。本网站与 Piru 没有关联。",
+      howTitle: "使用方法",
+      openBtn: "打开你的 Piru 备份",
+      exportHint: "请在 Piru 中通过 <b>" + en(EXPORT_PATH) + "</b> 导出备份，不要选“" + en("Encrypted Backup") + "”。请妥善保管这个文件：它是你恢复数据的途径，本页面绝不会修改它。",
+      stepExport: "在 Piru 中导出 <b>" + en(EXPORT_PATH) + "</b>。不要选“" + en("Encrypted Backup") + "”：那种文件在这里无法读取。",
+      stepKeep: "<b>妥善保管这份原始文件</b>。它是你恢复数据的途径，本页面绝不会修改它。",
+      stepDownload: function (f) { return "下载新文件（<b>" + f + "</b>）。"; },
+      stepImport: "在 Piru 中执行 <b>" + en(DELETE_PATH) + "</b>，然后用 <b>" + en("Import…") + "</b> 导入新文件。",
+      whyDelete: "<b>为什么要先删除全部数据？</b>Piru 会把未加密的备份合并到已有数据中，只跳过完全相同的副本。“" + en("Replace") + "”（替换）选项只适用于加密备份。如果不先删除，被移除的记录会留下来，改过的记录会出现两次。先删除再导入，效果就和“" + en("Replace") + "”一样。",
+      nextSteps: function (f) {
+        return "<p><b>导入之前</b></p><ol>" +
+          "<li>妥善保管你的原始备份。它是你恢复数据的唯一途径。</li>" +
+          "<li>在 Piru 中打开 <b>" + en(DELETE_PATH) + "</b>。这也会删除 Piru 自己的恢复副本，所以只有在原始备份已妥善保存时才能这样做。Apple 健康数据不受影响。</li>" +
+          "<li>然后选择 <b>" + en("Import…") + "</b>，并选取 <b>" + f + "</b>。</li></ol>";
+      },
+      choose: "— 请选择 —",
+      allSubstances: "全部物质",
+      allUnits: "全部单位",
+      custom: "自定义",
+      substance: "物质",
+      unit: "单位",
+      dateFrom: "开始日期",
+      dateTo: "结束日期（含当天）",
+      zone: "时区",
+      zoneDevice: function (z) { return z + "（本设备）"; },
+      narrowTitle: "选择日期或单条记录",
+      narrowAll: "全部日期，所有记录均已勾选。",
+      narrowSome: function (n, m) { return "已勾选 " + m + " 条中的 " + n + " 条。"; },
+      tickAll: "全部勾选",
+      untickAll: "全部取消勾选",
+      showMore: function (n) { return "再显示 " + n + " 项"; },
+      selected: function (n, m) { return "已选择 " + m + " 条记录中的 " + n + " 条。"; },
+      noMatch: "没有符合这些筛选条件的记录。",
+      noSession: "无时段",
+      sessionOf: function (d) { return d + " 的时段"; },
+      entries: function (n) { return n + " 条记录"; },
+      loaded: function (name, n, m) { return "已打开 " + name + "：" + n + " 条记录，" + m + " 种物质。"; },
+      newerRead: function (v) { return "这个备份使用的 Piru 格式（版本 " + v + "）比本页面支持的更新。部分细节可能缺失或读错。"; },
+      more: function (n) { return "……还有 " + n + " 项。"; },
+      unchanged: "文件中的其他内容逐字节保持不变。",
+      done: function (f) { return "已下载 " + f + "。你的原始文件没有改动。"; },
+      err: {
+        encrypted: "这是加密备份，无法在这里读取。请改为在 Piru 中导出 " + en(EXPORT_PATH) + "，然后打开那个文件。",
+        notjson: "这个文件不是可读取的 Piru 备份。如果它是加密备份（.piruenc），请改为导出未加密的“" + en("Piru Backup") + "”。",
+        psylog: "这个文件是 PsychonautWiki 格式，不是 Piru 备份。请在 Piru 中选择 " + en("Export… → Piru Backup") + "。",
+        legacy: "这个文件使用的是旧版 Piru 格式。请先把它导入 Piru，再重新导出一个“" + en("Piru Backup") + "”。",
+        notpiru: "这个文件不是 Piru 备份。请选择 Piru 通过 " + en("Export… → Piru Backup") + " 生成的文件。",
+        newer: "这个备份使用的 Piru 格式比本工具支持的版本（版本 2）更新，因此无法安全地编辑它。你的文件没有改动。",
+        repeated: "这个文件在同一条数据里重复了某个字段，而 Piru 从不会这样做。它可能被手动改过。请从 Piru 重新导出一个“" + en("Piru Backup") + "”，再打开那个文件。",
+        empty: "这个文件是空的。",
+        noentries: "这个 Piru 备份里没有日志记录。",
+        read: "无法读取这个文件。"
+      }
     }
   };
 
@@ -1571,6 +1632,36 @@ if (typeof module !== "undefined") module.exports = PiruTime;
       showMore: function (n) { return "Afficher " + n + " de plus"; },
       format: "Les heures sont écrites comme Piru les enregistre (millisecondes depuis 1970, UTC), et chaque session déplacée commence à sa première entrée, comme le fait Piru à l'import.",
       downloadBtn: "Télécharger la sauvegarde décalée"
+    },
+    "zh-Hans": {
+      title: "调整 Piru 记录的时间",
+      subtitle: "把记录前后移动几小时几分钟，或移到另一个日期，例如在时钟或时区设错之后。",
+      fileName: FILE,
+      stepDo: "在这里打开文件，选择记录和调整方式，然后逐条核对调整前后的内容。",
+      s1: "1. 打开你的 Piru 备份", s2: "2. 选择记录", s3: "3. 选择调整方式", s4: "4. 检查并下载",
+      zoneHint: "这里的日期和时间按这个时区显示，日期筛选和“移到另一个日期”也以它为准。Piru 把每个时间存为一个确定的时刻，与时区无关。",
+      modeShift: "按小时和分钟移动",
+      modeShiftHint: "移动精确的时长。如果跨过夏令时切换，钟面时间会多或少移动一小时。",
+      modeDate: "移到另一个日期",
+      modeDateHint: "每条记录的钟面时间保持不变。最早的选中记录落在新日期上，其余记录移动相同的天数。",
+      direction: "方向", later: "往后", earlier: "往前", hours: "小时", minutes: "分钟", newDate: "新日期",
+      badShift: "请输入整数的小时和分钟，例如 2 和 30。",
+      shiftNotes: "如果某个时段的记录全部移动，也一并移动该时段的备注",
+      willMove: function (n) { return "将移动 " + n + " 条记录。"; },
+      byDays: function (d) { return d === 0 ? "日期相同：不会移动任何记录。" : (d > 0 ? "往后移动 " + d + " 天。" : "往前移动 " + (-d) + " 天。"); },
+      shownIn: function (z) { return "时间按 " + z + " 显示，并附 UTC 偏移。"; },
+      invalid: function (n) { return n + " 条记录会落在 1970 年之前或 2100 年之后。请检查调整设置：这样无法下载。"; },
+      gaps: function (n) { return n + " 条记录落在夏令时切换时跳过的钟面时间上，因此会按跳过的时长（通常是一小时）往后顺延。"; },
+      dupes: function (n) { return n + " 条移动后的记录会与另一条记录完全相同（物质、时间、用量、单位和途径都一样）。Piru 每组只会导入一条。"; },
+      crosses: function (n) { return n + " 条移动后的记录会落在另一个时段的时间范围内。它们仍留在原来的时段里，所以这两个时段在 Piru 中会重叠。"; },
+      longSessions: function (n) { return n + " 个时段将持续超过 24 小时，比 Piru 自动生成的时段更长。请检查调整设置。"; },
+      future: function (n) { return n + " 条记录会被移到未来。"; },
+      notesToo: function (n) { return n + " 个时段的备注会随之移动。"; },
+      noTime: function (n) { return n + " 条选中的记录没有时间，将保持不变。"; },
+      flag: "请检查", becomes: "变为",
+      showMore: function (n) { return "再显示 " + n + " 项"; },
+      format: "时间按 Piru 的存储方式写入（自 1970 年起的毫秒数，UTC），每个被移动的时段都从其最早的记录开始，与 Piru 导入时的做法一致。",
+      downloadBtn: "下载调整后的备份"
     }
   }, function () { render(); });
 

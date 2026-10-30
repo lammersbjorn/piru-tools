@@ -339,6 +339,7 @@
     <div class="msg err">
       <p lang="en">This page needs JavaScript. On iPhone, the Files or Mail preview does not run it: open the page in Safari, or use a computer.</p>
       <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
+      <p lang="zh-Hans">此页面需要 JavaScript。在 iPhone 上，“文件”或“邮件”的预览不会运行它：请在 Safari 中打开此页面，或者使用电脑。</p>
     </div>
   </noscript>
 
@@ -964,6 +965,66 @@ var PiruUI = (function () {
         noentries: "Cette sauvegarde Piru ne contient aucune entrée de journal.",
         read: "Impossible de lire ce fichier."
       }
+    },
+    "zh-Hans": {
+      langLabel: "语言（Language）",
+      privacyLink: "隐私",
+      back: "← 所有工具",
+      privacy: "只在这台设备上运行。不会上传任何内容，你的文件也绝不会离开这台设备。",
+      footer: "可离线使用。支持的 Piru 备份格式：版本 2。",
+      siteNotice: "你好！我正在开发 Saiko Next，一款受 Piru 启发的私密日志应用。开发过程中，我顺手为遇到同样麻烦的 Piru 用户做了这些免费小工具。它们完全在你的设备上运行，你的备份绝不会离开设备。本网站与 Piru 没有关联。",
+      howTitle: "使用方法",
+      openBtn: "打开你的 Piru 备份",
+      exportHint: "请在 Piru 中通过 <b>" + en(EXPORT_PATH) + "</b> 导出备份，不要选“" + en("Encrypted Backup") + "”。请妥善保管这个文件：它是你恢复数据的途径，本页面绝不会修改它。",
+      stepExport: "在 Piru 中导出 <b>" + en(EXPORT_PATH) + "</b>。不要选“" + en("Encrypted Backup") + "”：那种文件在这里无法读取。",
+      stepKeep: "<b>妥善保管这份原始文件</b>。它是你恢复数据的途径，本页面绝不会修改它。",
+      stepDownload: function (f) { return "下载新文件（<b>" + f + "</b>）。"; },
+      stepImport: "在 Piru 中执行 <b>" + en(DELETE_PATH) + "</b>，然后用 <b>" + en("Import…") + "</b> 导入新文件。",
+      whyDelete: "<b>为什么要先删除全部数据？</b>Piru 会把未加密的备份合并到已有数据中，只跳过完全相同的副本。“" + en("Replace") + "”（替换）选项只适用于加密备份。如果不先删除，被移除的记录会留下来，改过的记录会出现两次。先删除再导入，效果就和“" + en("Replace") + "”一样。",
+      nextSteps: function (f) {
+        return "<p><b>导入之前</b></p><ol>" +
+          "<li>妥善保管你的原始备份。它是你恢复数据的唯一途径。</li>" +
+          "<li>在 Piru 中打开 <b>" + en(DELETE_PATH) + "</b>。这也会删除 Piru 自己的恢复副本，所以只有在原始备份已妥善保存时才能这样做。Apple 健康数据不受影响。</li>" +
+          "<li>然后选择 <b>" + en("Import…") + "</b>，并选取 <b>" + f + "</b>。</li></ol>";
+      },
+      choose: "— 请选择 —",
+      allSubstances: "全部物质",
+      allUnits: "全部单位",
+      custom: "自定义",
+      substance: "物质",
+      unit: "单位",
+      dateFrom: "开始日期",
+      dateTo: "结束日期（含当天）",
+      zone: "时区",
+      zoneDevice: function (z) { return z + "（本设备）"; },
+      narrowTitle: "选择日期或单条记录",
+      narrowAll: "全部日期，所有记录均已勾选。",
+      narrowSome: function (n, m) { return "已勾选 " + m + " 条中的 " + n + " 条。"; },
+      tickAll: "全部勾选",
+      untickAll: "全部取消勾选",
+      showMore: function (n) { return "再显示 " + n + " 项"; },
+      selected: function (n, m) { return "已选择 " + m + " 条记录中的 " + n + " 条。"; },
+      noMatch: "没有符合这些筛选条件的记录。",
+      noSession: "无时段",
+      sessionOf: function (d) { return d + " 的时段"; },
+      entries: function (n) { return n + " 条记录"; },
+      loaded: function (name, n, m) { return "已打开 " + name + "：" + n + " 条记录，" + m + " 种物质。"; },
+      newerRead: function (v) { return "这个备份使用的 Piru 格式（版本 " + v + "）比本页面支持的更新。部分细节可能缺失或读错。"; },
+      more: function (n) { return "……还有 " + n + " 项。"; },
+      unchanged: "文件中的其他内容逐字节保持不变。",
+      done: function (f) { return "已下载 " + f + "。你的原始文件没有改动。"; },
+      err: {
+        encrypted: "这是加密备份，无法在这里读取。请改为在 Piru 中导出 " + en(EXPORT_PATH) + "，然后打开那个文件。",
+        notjson: "这个文件不是可读取的 Piru 备份。如果它是加密备份（.piruenc），请改为导出未加密的“" + en("Piru Backup") + "”。",
+        psylog: "这个文件是 PsychonautWiki 格式，不是 Piru 备份。请在 Piru 中选择 " + en("Export… → Piru Backup") + "。",
+        legacy: "这个文件使用的是旧版 Piru 格式。请先把它导入 Piru，再重新导出一个“" + en("Piru Backup") + "”。",
+        notpiru: "这个文件不是 Piru 备份。请选择 Piru 通过 " + en("Export… → Piru Backup") + " 生成的文件。",
+        newer: "这个备份使用的 Piru 格式比本工具支持的版本（版本 2）更新，因此无法安全地编辑它。你的文件没有改动。",
+        repeated: "这个文件在同一条数据里重复了某个字段，而 Piru 从不会这样做。它可能被手动改过。请从 Piru 重新导出一个“" + en("Piru Backup") + "”，再打开那个文件。",
+        empty: "这个文件是空的。",
+        noentries: "这个 Piru 备份里没有日志记录。",
+        read: "无法读取这个文件。"
+      }
     }
   };
 
@@ -1519,6 +1580,33 @@ if (typeof module !== "undefined") module.exports = PiruInspect;
       usual: "d'habitude", customCase: function (n) { return "substance perso écrite « " + n + " »"; },
       readOnly: "Cette page lit seulement votre fichier. Pour modifier quelque chose, ouvrez le même fichier dans l'outil indiqué ci-dessus.",
       p: P_FR
+    },
+    "zh-Hans": {
+      title: "检查 Piru 备份",
+      subtitle: "查看 Piru 备份里有什么，找出可能的问题。不会更改或下载任何内容。",
+      exportHint: "请在 Piru 中通过 <b>" + U.en("Settings → Data &amp; Backup → Export… → Piru Backup") + "</b> 导出备份，不要选“" + U.en("Encrypted Backup") + "”。",
+      s1: "打开你的 Piru 备份", sProblems: "可能的问题", sOverview: "概览", sDetails: "按物质和途径查看详情", sSubs: "各物质的记录数", sRoutes: "各途径的记录数", sOther: "其他数据",
+      version: "格式版本", app: "导出应用", exported: "导出日期", notRecorded: "未记录", range: "记录时间范围",
+      entriesL: "记录", substancesL: "物质", sessionsL: "时段", orphansL: "不属于任何时段的记录", sessionNotesL: "时段备注",
+      customsL: "自定义物质", medsL: "每日用药", stockL: "库存", favL: "收藏", quickL: "快捷记录按钮", unitsL: "自定义单位",
+      showMore: function (n) { return "再显示 " + n + " 项"; },
+      noProblems: "没有发现问题。",
+      problemsFound: function (n) { return "发现 " + n + " 个可能的问题。"; },
+      usual: "通常", customCase: function (n) { return "自定义物质写作“" + n + "”"; },
+      readOnly: "本页面只读取你的文件。如需更改，请在上面链接的工具中打开同一个文件。",
+      p: {
+        duplicates: { title: function (n, p) { return p.groups + " 组中共有 " + n + " 条重复记录"; }, text: function () { return "物质、时间、用量、单位和途径都相同，与 Piru 导入时比较记录的方式一致。"; }, fix: "用“删除重复记录”修正" },
+        nearDuplicates: { title: function (n) { return n + " 条可能的近似重复"; }, text: function () { return "物质、用量、单位和途径都相同，记录时间相差不到一分钟。"; }, fix: "用“删除重复记录”检查" },
+        future: { title: function (n) { return n + " 条记录的时间远在未来"; }, text: function () { return "比导出日期（或今天）晚一天以上。通常是日期或年份填错了。"; }, fix: "用“调整记录时间”修正" },
+        noTime: { title: function (n) { return n + " 条记录没有可读取的时间"; }, text: function () { return "Piru 可能会拒绝导入这个文件。"; }, fix: "从 Piru 重新导出备份。" },
+        zero: { title: function (n) { return n + " 条记录的用量为 0"; }, text: function () { return "未标记为剂量未知。"; }, fix: "请在 Piru 中编辑这些记录。" },
+        negative: { title: function (n) { return n + " 条记录的用量为负数"; }, text: function () { return "乘以 −1 即可变为正数。"; }, fix: "用“修正单位”修正（系数 −1）" },
+        units: { title: function (n) { return n + " 条记录使用了该物质不常用的单位"; }, text: function () { return "该单位在这种物质的记录中占比不到 10%，或者同一种物质同时用了两种微符号（µ 和 μ）。"; }, fix: "用“修正单位”修正" },
+        unknownSubstance: { title: function (n) { return n + " 条记录的物质名称 Piru 无法识别"; }, text: function () { return "备份中没有对应的物质库条目，也没有完全同名的自定义物质。通常是拼写错误或物质改了名。"; }, fix: "用“把记录移到其他物质”修正" },
+        longSessions: { title: function (n) { return n + " 个时段持续超过 24 小时"; }, text: function () { return "比 Piru 自动生成的时段更长。通常是某条记录的日期有误。"; }, fix: "用“调整记录时间”修正" },
+        emptySessions: { title: function (n) { return n + " 个时段没有任何记录"; }, text: function () { return "Piru 会把它们导入为空时段。"; }, fix: "用“删除重复记录”移除" },
+        repeatedSessionIds: { title: function (n) { return n + " 个时段与其他时段的 ID 重复"; }, text: function () { return "Piru 导入时会合并 ID 相同的时段。"; }, fix: null }
+      }
     }
   }, function () { render(); });
 
