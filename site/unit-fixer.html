@@ -35,6 +35,7 @@
     --success: #007835;         /* legacy.success.text */
     --success-wash: rgb(0 154 70 / 0.12);    /* legacy.success.accent */
     --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2355565F' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 8 10 4.5 13.5 8M6.5 12 10 15.5 13.5 12'/%3E%3C/svg%3E");
+    --globe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2355565F' stroke-width='1.6'%3E%3Ccircle cx='10' cy='10' r='7.6'/%3E%3Cellipse cx='10' cy='10' rx='3.3' ry='7.6'/%3E%3Cpath d='M2.4 10h15.2'/%3E%3C/svg%3E");
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -56,6 +57,7 @@
       --success: #00DF68;
       --success-wash: rgb(0 175 81 / 0.16);
       --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23C0C0CA' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 8 10 4.5 13.5 8M6.5 12 10 15.5 13.5 12'/%3E%3C/svg%3E");
+      --globe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23C0C0CA' stroke-width='1.6'%3E%3Ccircle cx='10' cy='10' r='7.6'/%3E%3Cellipse cx='10' cy='10' rx='3.3' ry='7.6'/%3E%3Cpath d='M2.4 10h15.2'/%3E%3C/svg%3E");
     }
   }
   @supports (color: color(display-p3 0 0 0)) {
@@ -90,6 +92,14 @@
     --radius-card: 22px;  /* CornerRadius card */
     --radius-inner: 14px; /* concentric inside a 16 px card inset */
   }
+  /* Simplified Chinese: PingFang SC on Apple devices, the system's own Chinese font elsewhere. No web fonts. */
+  html:lang(zh-Hans) {
+    --font: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", system-ui, sans-serif;
+    --rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", system-ui, sans-serif;
+  }
+  html:lang(zh-Hans) body, html:lang(zh-Hans) h1 { letter-spacing: 0; }
+  /* Long German, Dutch and Russian words may break with a hyphen where the browser knows how. */
+  html:lang(de) main, html:lang(nl) main, html:lang(ru) main { -webkit-hyphens: auto; hyphens: auto; }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; background: var(--page); }
   body {
@@ -121,17 +131,16 @@
     padding: 16px; margin: 0 0 16px;
   }
 
-  /* Top bar: back link and the language switch, a segmented control. */
+  /* Top bar: back link and the language menu, a native select in a capsule. */
   .topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; }
   .topbar .lang { margin-left: auto; }
   a.back { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; font-weight: 500; text-decoration: none; color: var(--tint); }
   a.back:hover { text-decoration: underline; }
-  .lang { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--raised); }
-  .lang button {
-    min-height: 44px; min-width: 44px; padding: 0 16px; border-radius: 999px; border: 0;
-    background: transparent; color: var(--text-2); font: inherit; font-size: 0.9375rem; font-weight: 500; cursor: pointer;
+  select.lang {
+    display: inline-block; width: auto; max-width: 100%; min-height: 44px; padding: 0 40px 0 38px; border-radius: 999px;
+    font-size: 0.9375rem; font-weight: 500; cursor: pointer;
+    background-image: var(--globe), var(--chevron); background-position: left 12px center, right 12px center; background-size: 18px 18px, 18px 18px;
   }
-  .lang button[aria-pressed="true"] { background: var(--tint-wash); color: var(--text); font-weight: 600; }
 
   .privacy { display: flex; gap: 10px; align-items: flex-start; font-size: 0.9375rem; color: var(--text-2); margin: 0 0 20px; }
   .privacy .glyph {
@@ -292,9 +301,7 @@
   .sub-h { font-size: 0.9375rem; font-weight: 600; color: var(--text-2); margin: 20px 0 4px; }
   details > summary h2 { margin: 0; }
   .msg, .hint, ol.steps { overflow-wrap: anywhere; }
-  .lang { flex-wrap: wrap; max-width: 100%; }
   @media (max-width: 320px) {
-    .lang button { padding: 0 10px; }
     table.stats td.n { white-space: normal; }
   }
   /* Glyphs as inline data images (allowed by img-src data:). */
@@ -311,10 +318,16 @@
 <body>
 <header class="topbar">
   <a class="back" href="index.html" data-i18n="back"></a>
-  <div class="lang" role="group" aria-label="Language / Langue">
-    <button type="button" id="lang-en" lang="en" aria-pressed="true">English</button>
-    <button type="button" id="lang-fr" lang="fr" aria-pressed="false">Français</button>
-  </div>
+  <select id="lang" class="lang" aria-label="Language">
+    <option value="en" lang="en">English</option>
+    <option value="fr" lang="fr">Français</option>
+    <option value="zh-Hans" lang="zh-Hans">中文（简体）</option>
+    <option value="es" lang="es">Español</option>
+    <option value="de" lang="de">Deutsch</option>
+    <option value="nl" lang="nl">Nederlands</option>
+    <option value="pt-BR" lang="pt-BR">Português (Brasil)</option>
+    <option value="ru" lang="ru">Русский</option>
+  </select>
 </header>
 
 <main>
@@ -386,7 +399,7 @@
 <footer>
   <p data-i18n="footer"></p>
   <p data-i18n="siteNotice"></p>
-  <p class="footer-links"><a href="https://github.com/lammersbjorn/piru-tools" rel="noopener">GitHub</a> · <a href="https://github.com/lammersbjorn/piru-tools/blob/main/LICENSE" rel="noopener">MIT License</a> · <a href="https://github.com/lammersbjorn/piru-tools/blob/main/PRIVACY.md" rel="noopener">Privacy</a></p>
+  <p class="footer-links"><a href="https://github.com/lammersbjorn/piru-tools" rel="noopener">GitHub</a> · <a href="https://github.com/lammersbjorn/piru-tools/blob/main/LICENSE" rel="noopener">MIT License</a> · <a href="https://github.com/lammersbjorn/piru-tools/blob/main/PRIVACY.md" rel="noopener" data-i18n="privacyLink">Privacy</a></p>
 </footer>
 
 <!-- Shared Piru backup core: pure logic, no DOM access, so it can be tested on its own. -->
@@ -857,6 +870,8 @@ var PiruUI = (function () {
   var DELETE_PATH = "Settings → Data &amp; Backup → Delete Everything";
   var S = {
     en: {
+      langLabel: "Language",
+      privacyLink: "Privacy",
       back: "← All tools",
       privacy: "Runs only on this device. Nothing is uploaded, and your file never leaves it.",
       footer: "Works offline. Supported Piru backup format: version 2.",
@@ -915,6 +930,8 @@ var PiruUI = (function () {
       }
     },
     fr: {
+      langLabel: "Langue (Language)",
+      privacyLink: "Confidentialité",
       back: "← Tous les outils",
       privacy: "Fonctionne uniquement sur cet appareil. Rien n'est envoyé, votre fichier ne le quitte jamais.",
       footer: "Fonctionne hors ligne. Format de sauvegarde Piru pris en charge : version 2.",
@@ -976,8 +993,39 @@ var PiruUI = (function () {
 
   var LANG_KEY = "piru-tool-lang";
   var ALL = "\u0000all";
+  // Every language in the menu, with the locale for dates and numbers, whether numbers use a
+  // decimal comma, and the writing direction. The menu's options carry each language's own name.
+  var LANGS = {
+    en: { locale: "en-GB", comma: false, dir: "ltr" },
+    fr: { locale: "fr-FR", comma: true, dir: "ltr" },
+    "zh-Hans": { locale: "zh-CN", comma: false, dir: "ltr" },
+    es: { locale: "es-ES", comma: true, dir: "ltr" },
+    de: { locale: "de-DE", comma: true, dir: "ltr" },
+    nl: { locale: "nl-NL", comma: true, dir: "ltr" },
+    "pt-BR": { locale: "pt-BR", comma: true, dir: "ltr" },
+    ru: { locale: "ru-RU", comma: true, dir: "ltr" }
+  };
+  var CODES = Object.keys(LANGS);
+  function known(l) { return typeof l === "string" && Object.prototype.hasOwnProperty.call(LANGS, l); }
+  // Maps a browser language such as "de-AT" or "zh-CN" to one of ours, or "" when none fits.
+  // Traditional Chinese (zh-Hant, zh-TW, zh-HK, zh-MO) doesn't fit Simplified Chinese.
+  function match(tag) {
+    var x = String(tag || "").toLowerCase(), base = x.split("-")[0];
+    if (base === "zh") return /-hans\b/.test(x) || !/-(hant|tw|hk|mo)\b/.test(x) ? "zh-Hans" : "";
+    if (base === "pt") return "pt-BR";
+    return known(base) ? base : "";
+  }
+  function browserLang() {
+    var prefs = [];
+    try { prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language]; } catch (e) { prefs = []; }
+    for (var i = 0; i < prefs.length; i++) { var m = match(prefs[i]); if (m) return m; }
+    return "en";
+  }
   var T = null, lang = "en", renderFn = function () {};
-  try { var saved = window.localStorage.getItem(LANG_KEY); if (saved === "fr" || saved === "en") lang = saved; } catch (e) { /* storage unavailable: stay in English */ }
+  // A language chosen in the menu wins; on a first visit, the browser's languages pick one.
+  var saved = null;
+  try { saved = window.localStorage.getItem(LANG_KEY); } catch (e) { /* storage unavailable */ }
+  lang = known(saved) ? saved : browserLang();
   var $ = function (id) { return document.getElementById(id); };
 
   function el(tag, attrs, text) {
@@ -988,7 +1036,13 @@ var PiruUI = (function () {
   }
   function msg(kind, text) { return el("div", { class: "msg " + kind }, text); }
   function t() { return T[lang]; }
-  function locale() { return lang === "fr" ? "fr-FR" : "en-GB"; }
+  function locale() { return LANGS[lang].locale; }
+  // Picks the plural form for a count by the current language's rules: forms.one, few, many or other.
+  function plural(n, forms) {
+    var k;
+    try { k = new Intl.PluralRules(locale()).select(n); } catch (e) { k = n === 1 ? "one" : "other"; }
+    return forms[k] != null ? forms[k] : forms.other;
+  }
   function reducedMotion() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return true; } }
 
   // One polite live region per page for short status lines; the preview itself is not live,
@@ -1017,8 +1071,9 @@ var PiruUI = (function () {
     lang = l;
     if (remember) { try { window.localStorage.setItem(LANG_KEY, l); } catch (e) { /* storage unavailable */ } }
     document.documentElement.lang = l;
-    $("lang-fr").setAttribute("aria-pressed", String(l === "fr"));
-    $("lang-en").setAttribute("aria-pressed", String(l === "en"));
+    document.documentElement.dir = LANGS[l].dir;
+    $("lang").value = l;
+    $("lang").setAttribute("aria-label", T[l].langLabel);
     document.querySelectorAll("[data-i18n]").forEach(function (e) { e.textContent = T[l][e.getAttribute("data-i18n")]; });
     document.querySelectorAll("[data-i18n-html]").forEach(function (e) { e.innerHTML = T[l][e.getAttribute("data-i18n-html")]; });
     document.title = T[l].title;
@@ -1027,8 +1082,9 @@ var PiruUI = (function () {
   }
 
   function init(pageT, render) {
-    T = { en: Object.assign({}, S.en, pageT.en), fr: Object.assign({}, S.fr, pageT.fr) };
-    ["en", "fr"].forEach(function (l) {
+    T = {};
+    CODES.forEach(function (l) { T[l] = Object.assign({}, S[l], pageT[l]); });
+    CODES.forEach(function (l) {
       var x = T[l];
       var list = typeof x.steps === "function" ? x.steps(x) : x.stepDo && !x.steps ? [x.stepExport, x.stepKeep, x.stepDo, x.stepDownload(x.fileName), x.stepImport] : null;
       if (list) x.steps = list.map(function (h) { return "<li>" + h + "</li>"; }).join("");
@@ -1036,8 +1092,7 @@ var PiruUI = (function () {
     });
     renderFn = render || renderFn;
     if (!$("announce")) document.querySelector("main").appendChild(el("p", { id: "announce", class: "sr-only", "aria-live": "polite" }));
-    $("lang-en").addEventListener("click", function () { setLang("en", true); });
-    $("lang-fr").addEventListener("click", function () { setLang("fr", true); });
+    $("lang").addEventListener("change", function () { if (known($("lang").value)) setLang($("lang").value, true); });
     setLang(lang);
   }
 
@@ -1095,7 +1150,7 @@ var PiruUI = (function () {
   function fmtAmount(x) {
     if (typeof x !== "number") return "?";
     var s = C.formatNumber(x);
-    return lang === "fr" ? s.replace(".", ",") : s;
+    return LANGS[lang].comma ? s.replace(".", ",") : s;
   }
   function doseLine(d, zone) {
     return fmtDate(d.ts, zone) + " · " + (d.unknown ? "?" : fmtAmount(d.amount)) + " " + d.unit + (d.route ? " · " + d.route : "");
@@ -1245,6 +1300,7 @@ var PiruUI = (function () {
 
   return {
     init: init, t: t, lang: function () { return lang; }, locale: locale, $: $, el: el, msg: msg, en: en,
+    langs: CODES, strings: function () { return T; }, plural: plural,
     announce: announce, focusStep: focusStep, downloaded: downloaded, reducedMotion: reducedMotion,
     onFile: onFile, renderLoad: renderLoad, download: download, deviceZone: deviceZone, zoneSelect: zoneSelect,
     fmtDate: fmtDate, fmtDay: fmtDay, fmtAmount: fmtAmount, doseLine: doseLine, sessionLabel: sessionLabel,

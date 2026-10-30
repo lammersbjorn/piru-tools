@@ -16,7 +16,7 @@ Offline single-page tools for [Piru](https://github.com/kageroumado/piru) backup
 
 - Each page keeps the exact strict CSP, makes no network requests and loads nothing from outside the file. `pnpm check` enforces this.
 - Edit pages byte for byte: change only what the task needs. Don't reformat, reindent or reorder a page, and don't touch the `piru-core` script on one page without the same change on every page (`logic.test.js` checks they are identical).
-- Every user-visible string goes into both the English and French i18n tables.
+- Every user-visible string goes into every language's i18n table (English, French, Simplified Chinese, Spanish, German, Dutch, Brazilian Portuguese, Russian). `pnpm check` fails if a table lacks a key English has.
 - Tools must preserve every byte of a backup they don't intend to change, and refuse encrypted backups and format versions above 2.
 - Use synthetic data only. Tests generate backups with `tests/gen.js` at run time. Never read, commit or paste a real backup or journal, and never commit `.json` fixtures.
 - No runtime dependencies and no build step. `devDependencies` are for tests only, pinned to exact versions. Use pnpm with the committed `pnpm-lock.yaml`; never add a `package-lock.json`.
@@ -30,4 +30,4 @@ pnpm exec playwright install chromium   # once
 pnpm test && pnpm check && pnpm test:e2e
 ```
 
-For a page change, also look at the page at 390 px wide in dark and light mode, in English and French. A tool change needs a logic test on synthetic backups that fails without the change.
+For a page change, also look at the page at 390 px wide in dark and light mode, in English and at least one other language; `pnpm test:e2e` covers all eight. A tool change needs a logic test on synthetic backups that fails without the change.

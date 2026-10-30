@@ -4,6 +4,8 @@ Small, free helpers for [Piru](https://github.com/kageroumado/piru) backups. The
 
 **Open the tools: https://lammersbjorn.github.io/piru-tools/**
 
+**Languages:** English, Français, 中文（简体）, Español, Deutsch, Nederlands, Português (Brasil) and Русский. The page follows your browser's language and remembers the one you pick. Piru's own menu names stay in English, as in the app. Native speakers: corrections are welcome.
+
 | Tool | What it does |
 | --- | --- |
 | Inspect a backup | Shows what a backup contains and spots possible problems. Changes nothing. |
