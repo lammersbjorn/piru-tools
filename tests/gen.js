@@ -26,7 +26,7 @@ function ser(v, ind, opts) {
   if (!keys.length) return opts.compact ? '{}' : '{' + NL + NL + ind + '}';
   return '{' + NL + keys.map(k => (opts.compact ? '' : in1) + str(k) + C + ser(v[k], in1, opts)).join(',' + NL) + NL + (opts.compact ? '' : ind) + '}';
 }
-function serialize(obj, opts) { opts = opts || {}; return (opts.bom ? '﻿' : '') + ser(obj, '', opts) + (opts.trailingNewline ? (opts.eol || '\n') : ''); }
+function serialize(obj, opts) { opts = opts || {}; return (opts.bom ? '\uFEFF' : '') + ser(obj, '', opts) + (opts.trailingNewline ? (opts.eol || '\n') : ''); }
 
 function dose(ts, o) {
   o = o || {};

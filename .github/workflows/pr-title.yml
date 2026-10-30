@@ -25,5 +25,12 @@ jobs:
         env:
           TITLE: ${{ github.event.pull_request.title }}
         run: |
+          # The hook lets Git-generated merge, revert and autosquash headers
+          # through; a PR title is never one of those.
+          case "$TITLE" in
+            "Merge "* | "Revert \""* | "fixup! "* | "squash! "* | "amend! "*)
+              echo "PR title must be type(scope): subject, not a Git-generated header." >&2
+              exit 1 ;;
+          esac
           printf '%s\n' "$TITLE" > "$RUNNER_TEMP/title"
           .githooks/commit-msg "$RUNNER_TEMP/title"
