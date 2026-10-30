@@ -6,12 +6,12 @@
 
 ## Testing
 
-<!-- The commands you ran and their results, and which pages you checked in a browser: phone width (390 px), dark and light, English and French. Add screenshots of changed pages, made with made-up data. -->
+<!-- The commands you ran, such as `pnpm test`, and their results, and which pages you checked in a browser: phone width (390 px), dark and light, English and French. Add screenshots of changed pages, made with made-up data. -->
 
 ## Checklist
 
 - [ ] I tested with synthetic, made-up data only. This PR, its tests and its screenshots contain no real backup or journal entries.
-- [ ] Every page keeps the strict Content-Security-Policy and makes no network requests (`npm run check` and `npm run test:e2e` pass).
+- [ ] Every page keeps the strict Content-Security-Policy and makes no network requests (`pnpm check` and `pnpm test:e2e` pass).
 - [ ] Edits change only the intended bytes, and new strings are in both the English and French tables.
 
 ## AI assistance

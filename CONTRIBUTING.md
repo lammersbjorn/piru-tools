@@ -34,16 +34,16 @@ Open an issue first if you're unsure whether it fits. Then send one pull request
 
 ## Development
 
-Needs Node.js (version in `.nvmrc`). The pages themselves need nothing: open any file in `site/` in a browser.
+Needs Node.js (version in `.nvmrc`) and pnpm, pinned in `package.json` (`corepack enable pnpm`, or install pnpm 12.16.1). The pages themselves need nothing: open any file in `site/` in a browser.
 
 ```bash
-npm ci
-npx playwright install chromium   # once: headless Chromium for the browser tests
+pnpm install
+pnpm exec playwright install chromium   # once: headless Chromium for the browser tests
 git config core.hooksPath .githooks   # once per clone: checks commit headers
 
-npm test            # logic tests on synthetic backups, plus keyboard checks
-npm run check       # every page keeps the strict CSP, loads nothing, links resolve
-npm run test:e2e    # every page in Chromium: dark and light, English and French, axe, downloads, no requests
+pnpm test           # logic tests on synthetic backups, plus keyboard checks
+pnpm check          # every page keeps the strict CSP, loads nothing, links resolve
+pnpm test:e2e       # every page in Chromium: dark and light, English and French, axe, downloads, no requests
 ```
 
 All three run in CI on every pull request.
