@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Piru tools. Copyright (c) 2026 Bjorn Lammers. SPDX-License-Identifier: MIT. https://github.com/lammersbjorn/piru-tools -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -280,6 +281,8 @@
   fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
   legend { padding: 0; font-size: 0.9375rem; color: var(--text-2); margin: 4px 0 4px; }
 
+  body > footer a { color: var(--text-1); text-decoration: underline; text-underline-offset: 2px; }
+  body > footer .footer-links { margin-top: 8px; }
   body > footer { margin-top: 24px; padding: 0 4px; text-align: center; font-size: 0.8125rem; line-height: 1.45; color: var(--text-2); }
   body > footer p { margin: 0 0 6px; }
 
@@ -359,6 +362,7 @@
 <footer>
   <p data-i18n="footer"></p>
   <p data-i18n="siteNotice"></p>
+  <p class="footer-links"><a href="https://github.com/lammersbjorn/piru-tools" rel="noopener">GitHub</a> · <a href="https://github.com/lammersbjorn/piru-tools/blob/main/LICENSE" rel="noopener">MIT License</a> · <a href="https://github.com/lammersbjorn/piru-tools/blob/main/PRIVACY.md" rel="noopener">Privacy</a></p>
 </footer>
 
 <!-- Shared Piru backup core: pure logic, no DOM access, so it can be tested on its own. -->
