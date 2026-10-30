@@ -1397,7 +1397,7 @@ var PiruPrompt = (function () {
       "- Add the tool to index.html and to the README.",
       "",
       "Verify before opening the PR:",
-      "- Add a small node test that runs the tool's logic on synthetic, made-up backups (never real data). Assert that only the intended bytes change and that the output is still valid Piru JSON. Run any existing tests too; everything must pass.",
+      "- Add a small node test that runs the tool's logic on synthetic, made-up backups (never real data). Assert that only the intended bytes change and that the output is still valid Piru JSON. Run the existing tests too, with pnpm test, pnpm check and pnpm test:e2e; everything must pass.",
       "- Check the page in a browser at phone width (390 px) in dark and light mode, in English and French, with no console errors and no network requests.",
       "",
       "Open the pull request on lammersbjorn/piru-tools:",

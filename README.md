@@ -48,11 +48,11 @@ When Piru includes one of these tools, please [let us know](https://github.com/l
 The pages are in `site/`, one standalone HTML file each, with no build step. Tests are in `tests/` and use synthetic backups only.
 
 ```bash
-npm ci
-npx playwright install chromium
-npm test           # logic and keyboard tests
-npm run check      # strict CSP and no network on every page
-npm run test:e2e   # every page in Chromium
+pnpm install
+pnpm exec playwright install chromium
+pnpm test           # logic and keyboard tests
+pnpm check         # strict CSP and no network on every page
+pnpm test:e2e      # every page in Chromium
 ```
 
 Pull requests run these checks in CI. Merging to `main` deploys `site/` to GitHub Pages.
