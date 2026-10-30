@@ -357,6 +357,7 @@
       <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
       <p lang="zh-Hans">此页面需要 JavaScript。在 iPhone 上，“文件”或“邮件”的预览不会运行它：请在 Safari 中打开此页面，或者使用电脑。</p>
       <p lang="es">Esta página necesita JavaScript. En iPhone, la vista previa de Archivos o de Mail no lo ejecuta: abre la página en Safari o usa un ordenador.</p>
+      <p lang="de">Diese Seite braucht JavaScript. Auf dem iPhone führt die Vorschau in Dateien oder Mail es nicht aus: Öffne die Seite in Safari oder nutze einen Computer.</p>
     </div>
   </noscript>
 
@@ -1133,6 +1134,66 @@ var PiruUI = (function () {
         noentries: "Esta copia de seguridad de Piru no tiene entradas de diario.",
         read: "No se pudo leer este archivo."
       }
+    },
+    de: {
+      langLabel: "Sprache (Language)",
+      privacyLink: "Datenschutz",
+      back: "← Alle Tools",
+      privacy: "Läuft nur auf diesem Gerät. Nichts wird hochgeladen, deine Datei verlässt es nie.",
+      footer: "Funktioniert offline. Unterstütztes Piru-Backup-Format: Version 2.",
+      siteNotice: "Hallo! Ich arbeite an Saiko Next, einem privaten Journal, inspiriert von Piru. Nebenbei baue ich kleine, kostenlose Tools für Piru-Nutzer, die auf dieselben Probleme stoßen wie ich. Sie laufen komplett auf deinem Gerät, und dein Backup verlässt es nie. Diese Website gehört nicht zu Piru.",
+      howTitle: "So geht’s",
+      openBtn: "Piru-Backup öffnen",
+      exportHint: "Exportiere es in Piru über <b>" + en(EXPORT_PATH) + "</b>, nicht „" + en("Encrypted Backup") + "“. Bewahre diese Datei sicher auf: Sie ist dein Weg zurück, und diese Seite ändert sie nie.",
+      stepExport: "Exportiere in Piru <b>" + en(EXPORT_PATH) + "</b>. Nicht „" + en("Encrypted Backup") + "“: Diese Datei kann hier nicht gelesen werden.",
+      stepKeep: "<b>Bewahre die Originaldatei</b> sicher auf. Sie ist dein Weg zurück, und diese Seite ändert sie nie.",
+      stepDownload: function (f) { return "Lade die neue Datei herunter (<b>" + f + "</b>)."; },
+      stepImport: "Wähle in Piru <b>" + en(DELETE_PATH) + "</b> und dann <b>" + en("Import…") + "</b> mit der neuen Datei.",
+      whyDelete: "<b>Warum zuerst alles löschen?</b> Piru fügt ein unverschlüsseltes Backup zu den vorhandenen Daten hinzu und überspringt nur exakte Kopien. Die Option „" + en("Replace") + "“ gibt es nur für verschlüsselte Backups. Ohne vorheriges Löschen würden entfernte Einträge bleiben und geänderte Einträge doppelt erscheinen. Erst löschen, dann importieren wirkt wie „" + en("Replace") + "“.",
+      nextSteps: function (f) {
+        return "<p><b>Vor dem Import</b></p><ol>" +
+          "<li>Bewahre dein Original-Backup sicher auf. Es ist dein einziger Weg zurück.</li>" +
+          "<li>Öffne in Piru <b>" + en(DELETE_PATH) + "</b>. Dabei werden auch Pirus eigene Wiederherstellungskopien gelöscht, also tu das nur, solange dein Original-Backup sicher ist. Daten in Apple Health sind nicht betroffen.</li>" +
+          "<li>Wähle dann <b>" + en("Import…") + "</b> und nimm <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "– Auswählen –",
+      allSubstances: "Alle Substanzen",
+      allUnits: "Alle Einheiten",
+      custom: "eigene",
+      substance: "Substanz",
+      unit: "Einheit",
+      dateFrom: "Von (Datum)",
+      dateTo: "Bis (Datum, einschließlich)",
+      zone: "Zeitzone",
+      zoneDevice: function (z) { return z + " (dieses Gerät)"; },
+      narrowTitle: "Daten oder einzelne Einträge wählen",
+      narrowAll: "Alle Daten, alle Einträge ausgewählt.",
+      narrowSome: function (n, m) { return n + " von " + m + " ausgewählt."; },
+      tickAll: "Alle auswählen",
+      untickAll: "Alle abwählen",
+      showMore: function (n) { return n + " weitere zeigen"; },
+      selected: function (n, m) { return n + " von " + m + plural(m, { one: " Eintrag", other: " Einträgen" }) + " ausgewählt."; },
+      noMatch: "Keine Einträge passen zu diesen Filtern.",
+      noSession: "keine Session",
+      sessionOf: function (d) { return "Session vom " + d; },
+      entries: function (n) { return n + plural(n, { one: " Eintrag", other: " Einträge" }); },
+      loaded: function (name, n, m) { return name + " geöffnet: " + n + plural(n, { one: " Eintrag", other: " Einträge" }) + ", " + m + plural(m, { one: " Substanz.", other: " Substanzen." }); },
+      newerRead: function (v) { return "Dieses Backup nutzt ein neueres Piru-Format (Version " + v + "), als diese Seite kennt. Manche Details fehlen vielleicht oder werden falsch gelesen."; },
+      more: function (n) { return "… und " + n + " weitere."; },
+      unchanged: "Alles andere in der Datei bleibt Byte für Byte gleich.",
+      done: function (f) { return f + " heruntergeladen. Deine Originaldatei ist unverändert."; },
+      err: {
+        encrypted: "Das ist ein verschlüsseltes Backup, das hier nicht gelesen werden kann. Exportiere in Piru stattdessen " + en(EXPORT_PATH) + " und öffne dann diese Datei.",
+        notjson: "Diese Datei ist kein lesbares Piru-Backup. Wenn es ein verschlüsseltes Backup ist (.piruenc), exportiere stattdessen ein unverschlüsseltes „" + en("Piru Backup") + "“.",
+        psylog: "Diese Datei ist im PsychonautWiki-Format, kein Piru-Backup. Wähle in Piru " + en("Export… → Piru Backup") + ".",
+        legacy: "Diese Datei nutzt ein altes Piru-Format. Importiere sie in Piru und exportiere dann ein neues „" + en("Piru Backup") + "“.",
+        notpiru: "Diese Datei ist kein Piru-Backup. Wähle die Datei, die Piru mit " + en("Export… → Piru Backup") + " erstellt hat.",
+        newer: "Dieses Backup nutzt ein neueres Piru-Format, als dieses Tool kennt (Version 2), deshalb kann es das Backup nicht sicher bearbeiten. Deine Datei ist unverändert.",
+        repeated: "Diese Datei wiederholt ein Feld innerhalb eines Datensatzes, was Piru nie tut. Vielleicht wurde sie von Hand bearbeitet. Exportiere in Piru ein frisches „" + en("Piru Backup") + "“ und öffne das.",
+        empty: "Diese Datei ist leer.",
+        noentries: "Dieses Piru-Backup enthält keine Journaleinträge.",
+        read: "Diese Datei konnte nicht gelesen werden."
+      }
     }
   };
 
@@ -1872,6 +1933,56 @@ if (typeof module !== "undefined") module.exports = PiruPrompt;
         "<li>Pega el prompt y envíalo.</li>" +
         "<li>Revisa su plan antes de que escriba código y pide cambios donde no estés de acuerdo.</li>" +
         "<li>Revisa personalmente el pull request antes de enviarlo: los cambios, las pruebas y las capturas de pantalla.</li>"
+    },
+    de: {
+      title: "Prompt zum Mitmachen erstellen",
+      subtitle: "Erstelle einen fertigen Prompt für deinen KI-Coding-Assistenten, um eine Funktion in Piru zu bringen oder dieser Website ein Tool hinzuzufügen.",
+      privacy: "Läuft nur auf diesem Gerät. Nichts, was du hier eingibst, wird irgendwohin gesendet.",
+      rulesTitle: "Bevor du loslegst",
+      rules: "<li>Schick einen kleinen Pull-Request pro Tool oder Funktion.</li>" +
+        "<li>Teste ihn vorher an deiner eigenen Kopie, mit erfundenen Daten, nie mit deinem echten Journal.</li>" +
+        "<li>Der Piru-Entwickler entscheidet, was in Piru übernommen wird.</li>" +
+        "<li>Sobald Piru ein Tool enthält, eröffne bitte ein Issue oder einen Pull-Request auf <b>lammersbjorn/piru-tools</b>, damit es von dieser Website entfernt werden kann.</li>",
+      sKind: "Was möchtest du bauen?",
+      kindTool: "Ein vorhandenes Tool in Piru bringen",
+      kindToolSub: "Ein Pull-Request an Piru, der eines dieser Tools in die App einbaut.",
+      kindPiru: "Etwas Neues zu Piru hinzufügen",
+      kindPiruSub: "Ein Pull-Request an Piru für eine Funktion, die du beschreibst.",
+      kindSite: "Ein neues Tool zu dieser Website hinzufügen",
+      kindSiteSub: "Ein Pull-Request an lammersbjorn/piru-tools für ein Tool, das dir fehlt.",
+      toolLabel: "Welches Tool?",
+      toolNames: {
+        inspector: "Backup prüfen", "move-substance": "Einträge zu einer anderen Substanz verschieben",
+        duplicates: "Duplikate entfernen", "unit-fixer": "Einheiten korrigieren",
+        "time-shift": "Einträge zeitlich verschieben", "split-out": "Einträge abtrennen"
+      },
+      textPiru: "Beschreibe die Funktion",
+      textSite: "Beschreibe das Tool, das dir fehlt",
+      textHint: "Ein oder zwei Sätze reichen. Der Prompt ist auf Englisch, deshalb schreibst du hier am besten auch Englisch.",
+      sAgent: "Welcher Assistent?",
+      agentHint: "Das ändert nur Kleinigkeiten in der Formulierung, etwa wie die Tests gestartet werden.",
+      agentOther: "Ein anderer Assistent",
+      sPlatform: "Plattformen",
+      platIos: "Nur iOS",
+      platIosSub: "Die Änderung bleibt in der iOS-App.",
+      platBoth: "iOS und Android",
+      platBothSub: "Der Assistent prüft zuerst, ob es Piru für Android gibt, und baut nur dann für beide.",
+      sExtras: "Optionale Extras",
+      detailsLabel: "Sollte der Assistent noch etwas wissen? (optional)",
+      detailsHint: "Zum Beispiel, wo die Funktion hingehört, oder einen Fall, den sie abdecken muss.",
+      selfTest: "Ich teste an meiner eigenen Kopie mit erfundenen Daten",
+      selfTestSub: "Der Assistent stoppt vor dem Pull-Request, damit du zuerst testen kannst.",
+      sResult: "Dein Prompt",
+      promptLabel: "Prompt zum Einfügen (auf Englisch)",
+      copyBtn: "Prompt kopieren",
+      copied: "Kopiert",
+      copyManual: "Kopieren hat hier nicht funktioniert. Der Prompt ist markiert: Kopiere ihn mit dem Kopierbefehl deines Geräts.",
+      ready: "Dein Prompt ist im letzten Schritt fertig.",
+      howUseTitle: "So nutzt du ihn",
+      howUse: "<li>Öffne deinen KI-Coding-Assistenten in einem neuen, leeren Ordner.</li>" +
+        "<li>Füge den Prompt ein und schick ihn ab.</li>" +
+        "<li>Prüfe seinen Plan, bevor er Code schreibt, und bitte um Änderungen, wo du anderer Meinung bist.</li>" +
+        "<li>Prüfe den Pull-Request selbst, bevor er eingereicht wird: die Änderungen, die Tests und die Screenshots.</li>"
     }
   }, function () { fillTools(); update(); });
 })();

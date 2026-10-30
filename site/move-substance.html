@@ -341,6 +341,7 @@
       <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
       <p lang="zh-Hans">此页面需要 JavaScript。在 iPhone 上，“文件”或“邮件”的预览不会运行它：请在 Safari 中打开此页面，或者使用电脑。</p>
       <p lang="es">Esta página necesita JavaScript. En iPhone, la vista previa de Archivos o de Mail no lo ejecuta: abre la página en Safari o usa un ordenador.</p>
+      <p lang="de">Diese Seite braucht JavaScript. Auf dem iPhone führt die Vorschau in Dateien oder Mail es nicht aus: Öffne die Seite in Safari oder nutze einen Computer.</p>
     </div>
   </noscript>
 
@@ -1098,6 +1099,66 @@ var PiruUI = (function () {
         empty: "Este archivo está vacío.",
         noentries: "Esta copia de seguridad de Piru no tiene entradas de diario.",
         read: "No se pudo leer este archivo."
+      }
+    },
+    de: {
+      langLabel: "Sprache (Language)",
+      privacyLink: "Datenschutz",
+      back: "← Alle Tools",
+      privacy: "Läuft nur auf diesem Gerät. Nichts wird hochgeladen, deine Datei verlässt es nie.",
+      footer: "Funktioniert offline. Unterstütztes Piru-Backup-Format: Version 2.",
+      siteNotice: "Hallo! Ich arbeite an Saiko Next, einem privaten Journal, inspiriert von Piru. Nebenbei baue ich kleine, kostenlose Tools für Piru-Nutzer, die auf dieselben Probleme stoßen wie ich. Sie laufen komplett auf deinem Gerät, und dein Backup verlässt es nie. Diese Website gehört nicht zu Piru.",
+      howTitle: "So geht’s",
+      openBtn: "Piru-Backup öffnen",
+      exportHint: "Exportiere es in Piru über <b>" + en(EXPORT_PATH) + "</b>, nicht „" + en("Encrypted Backup") + "“. Bewahre diese Datei sicher auf: Sie ist dein Weg zurück, und diese Seite ändert sie nie.",
+      stepExport: "Exportiere in Piru <b>" + en(EXPORT_PATH) + "</b>. Nicht „" + en("Encrypted Backup") + "“: Diese Datei kann hier nicht gelesen werden.",
+      stepKeep: "<b>Bewahre die Originaldatei</b> sicher auf. Sie ist dein Weg zurück, und diese Seite ändert sie nie.",
+      stepDownload: function (f) { return "Lade die neue Datei herunter (<b>" + f + "</b>)."; },
+      stepImport: "Wähle in Piru <b>" + en(DELETE_PATH) + "</b> und dann <b>" + en("Import…") + "</b> mit der neuen Datei.",
+      whyDelete: "<b>Warum zuerst alles löschen?</b> Piru fügt ein unverschlüsseltes Backup zu den vorhandenen Daten hinzu und überspringt nur exakte Kopien. Die Option „" + en("Replace") + "“ gibt es nur für verschlüsselte Backups. Ohne vorheriges Löschen würden entfernte Einträge bleiben und geänderte Einträge doppelt erscheinen. Erst löschen, dann importieren wirkt wie „" + en("Replace") + "“.",
+      nextSteps: function (f) {
+        return "<p><b>Vor dem Import</b></p><ol>" +
+          "<li>Bewahre dein Original-Backup sicher auf. Es ist dein einziger Weg zurück.</li>" +
+          "<li>Öffne in Piru <b>" + en(DELETE_PATH) + "</b>. Dabei werden auch Pirus eigene Wiederherstellungskopien gelöscht, also tu das nur, solange dein Original-Backup sicher ist. Daten in Apple Health sind nicht betroffen.</li>" +
+          "<li>Wähle dann <b>" + en("Import…") + "</b> und nimm <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "– Auswählen –",
+      allSubstances: "Alle Substanzen",
+      allUnits: "Alle Einheiten",
+      custom: "eigene",
+      substance: "Substanz",
+      unit: "Einheit",
+      dateFrom: "Von (Datum)",
+      dateTo: "Bis (Datum, einschließlich)",
+      zone: "Zeitzone",
+      zoneDevice: function (z) { return z + " (dieses Gerät)"; },
+      narrowTitle: "Daten oder einzelne Einträge wählen",
+      narrowAll: "Alle Daten, alle Einträge ausgewählt.",
+      narrowSome: function (n, m) { return n + " von " + m + " ausgewählt."; },
+      tickAll: "Alle auswählen",
+      untickAll: "Alle abwählen",
+      showMore: function (n) { return n + " weitere zeigen"; },
+      selected: function (n, m) { return n + " von " + m + plural(m, { one: " Eintrag", other: " Einträgen" }) + " ausgewählt."; },
+      noMatch: "Keine Einträge passen zu diesen Filtern.",
+      noSession: "keine Session",
+      sessionOf: function (d) { return "Session vom " + d; },
+      entries: function (n) { return n + plural(n, { one: " Eintrag", other: " Einträge" }); },
+      loaded: function (name, n, m) { return name + " geöffnet: " + n + plural(n, { one: " Eintrag", other: " Einträge" }) + ", " + m + plural(m, { one: " Substanz.", other: " Substanzen." }); },
+      newerRead: function (v) { return "Dieses Backup nutzt ein neueres Piru-Format (Version " + v + "), als diese Seite kennt. Manche Details fehlen vielleicht oder werden falsch gelesen."; },
+      more: function (n) { return "… und " + n + " weitere."; },
+      unchanged: "Alles andere in der Datei bleibt Byte für Byte gleich.",
+      done: function (f) { return f + " heruntergeladen. Deine Originaldatei ist unverändert."; },
+      err: {
+        encrypted: "Das ist ein verschlüsseltes Backup, das hier nicht gelesen werden kann. Exportiere in Piru stattdessen " + en(EXPORT_PATH) + " und öffne dann diese Datei.",
+        notjson: "Diese Datei ist kein lesbares Piru-Backup. Wenn es ein verschlüsseltes Backup ist (.piruenc), exportiere stattdessen ein unverschlüsseltes „" + en("Piru Backup") + "“.",
+        psylog: "Diese Datei ist im PsychonautWiki-Format, kein Piru-Backup. Wähle in Piru " + en("Export… → Piru Backup") + ".",
+        legacy: "Diese Datei nutzt ein altes Piru-Format. Importiere sie in Piru und exportiere dann ein neues „" + en("Piru Backup") + "“.",
+        notpiru: "Diese Datei ist kein Piru-Backup. Wähle die Datei, die Piru mit " + en("Export… → Piru Backup") + " erstellt hat.",
+        newer: "Dieses Backup nutzt ein neueres Piru-Format, als dieses Tool kennt (Version 2), deshalb kann es das Backup nicht sicher bearbeiten. Deine Datei ist unverändert.",
+        repeated: "Diese Datei wiederholt ein Feld innerhalb eines Datensatzes, was Piru nie tut. Vielleicht wurde sie von Hand bearbeitet. Exportiere in Piru ein frisches „" + en("Piru Backup") + "“ und öffne das.",
+        empty: "Diese Datei ist leer.",
+        noentries: "Dieses Piru-Backup enthält keine Journaleinträge.",
+        read: "Diese Datei konnte nicht gelesen werden."
       }
     }
   };
@@ -1986,6 +2047,42 @@ if (typeof module !== "undefined") module.exports = PiruFix;
       kinds: { favorites: "favorito", quickLog: "botón de registro rápido", units: "unidad personalizada", drinks: "bebida personalizada", daily: "medicamento diario", occurrences: "elemento del historial de recordatorios", inventory: "elemento de existencias" },
       fromCustom: function (a) { return "“" + a + "” es una sustancia personalizada. Su definición se queda en Piru; puedes borrarla después si ya no la necesitas."; },
       typedWarnShort: "El nombre que escribiste no está en tu copia de seguridad. Comprueba que esté escrito exactamente como en Piru."
+    },
+    de: {
+      title: "Piru-Einträge zu einer anderen Substanz verschieben",
+      subtitle: "Korrigiere ein Piru-Backup, wenn Dosen unter der falschen Substanz eingetragen wurden.",
+      fileName: FILE,
+      stepDo: "Öffne es hier, wähle die falsche und die richtige Substanz und prüfe die Vorschau.",
+      whyDelete: "<b>Warum zuerst alles löschen?</b> Piru fügt ein unverschlüsseltes Backup zu den vorhandenen Daten hinzu und überspringt nur exakte Kopien. Die Option „" + en("Replace") + "“ gibt es nur für verschlüsselte Backups. Die korrigierten Einträge tragen einen anderen Substanznamen, ohne vorheriges Löschen hättest du also die alte <i>und</i> die neue Version. Erst löschen, dann importieren wirkt wie „" + en("Replace") + "“.",
+      altNote: "<b>Nur wenige Einträge zu korrigieren?</b> Es geht auch anders: Lösche in Piru die falsch eingetragenen Einträge von Hand und importiere dann die korrigierte Datei, ohne sonst etwas zu löschen. Alles andere ist identisch und wird übersprungen.",
+      s1: "1. Piru-Backup öffnen", s2: "2. Substanzen wählen", s3: "3. Prüfen und herunterladen",
+      fromLabel: "Zu korrigierende Substanz (die falsche)",
+      toLabel: "Neue Substanz (die richtige)",
+      typedLabel: "Substanzname, genau wie in Piru",
+      moreTitle: "Mehr verschieben (optional)",
+      moreIntro: "Standardmäßig werden nur Journaleinträge verschoben.",
+      moreNote: "Gewählte Farben und Definitionen eigener Substanzen werden nie geändert.",
+      downloadBtn: "Korrigiertes Backup herunterladen",
+      groupEntries: "In deinen Einträgen",
+      groupOther: "Andere Namen in deinem Backup",
+      typeOther: "Anderen Namen eingeben …",
+      optShortcuts: function (n) { return "Favoriten, Schnelleintrag-Buttons und eigene Einheiten (" + n + ")"; },
+      optMeds: function (n) { return "Tägliche Medikamente, Erinnerungen und ihr Verlauf (" + n + ")"; },
+      optStock: function (n) { return "Vorrat / Bestand (" + n + ")"; },
+      noOpts: "Nichts anderes verweist auf diese Substanz.",
+      typedExact: function (s) { return "In deinem Backup gefunden: „" + s + "“."; },
+      typedMatched: function (s) { return "Wir verwenden „" + s + "“, die Schreibweise aus deinem Backup."; },
+      typedNone: function (s) { return "Achtung: „" + s + "“ ist nicht in deinem Backup. Der Name muss genau dem Substanznamen in Piru entsprechen (Groß- und Kleinschreibung, Akzente, Leerzeichen), zum Beispiel „Ketamine“. Sonst behält Piru die Einträge unter diesem Namen, ohne Substanzinformationen."; },
+      same: "Wähle zwei verschiedene Substanzen.",
+      main: function (n, a, b) { return n + PiruUI.plural(n, { one: " Eintrag wird", other: " Einträge werden" }) + " von „" + a + "“ nach „" + b + "“ verschoben."; },
+      examples: "Beispiele:",
+      facets: function (n, a) { return n + PiruUI.plural(n, { one: " dieser Einträge hatte", other: " dieser Einträge hatten" }) + " ein Detail, das zu „" + a + "“ gehört (Salzform, Isomer, Freisetzungsform oder Markenname). Es wird entfernt, weil es nicht zur neuen Substanz passt."; },
+      dups: function (n, b) { return n + PiruUI.plural(n, { one: " dieser Einträge ist", other: " dieser Einträge sind" }) + " identisch mit einem vorhandenen „" + b + "“-Eintrag (gleiche Zeit und Menge). Piru behält nur einen."; },
+      alsoMoved: "Ebenfalls verschoben: ",
+      skipped: function (b) { return "Nicht verschoben, weil „" + b + "“ schon eins hat: "; },
+      kinds: { favorites: "Favorit", quickLog: "Schnelleintrag-Button", units: "eigene Einheit", drinks: "eigenes Getränk", daily: "tägliches Medikament", occurrences: "Eintrag im Erinnerungsverlauf", inventory: "Vorratsposten" },
+      fromCustom: function (a) { return "„" + a + "“ ist eine eigene Substanz. Ihre Definition bleibt in Piru; du kannst sie danach löschen, wenn du sie nicht mehr brauchst."; },
+      typedWarnShort: "Der eingegebene Name wurde in deinem Backup nicht gefunden. Prüfe, ob er genau wie in Piru geschrieben ist."
     }
   }, function () { renderAll(true); });
 

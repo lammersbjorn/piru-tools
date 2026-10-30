@@ -341,6 +341,7 @@
       <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
       <p lang="zh-Hans">此页面需要 JavaScript。在 iPhone 上，“文件”或“邮件”的预览不会运行它：请在 Safari 中打开此页面，或者使用电脑。</p>
       <p lang="es">Esta página necesita JavaScript. En iPhone, la vista previa de Archivos o de Mail no lo ejecuta: abre la página en Safari o usa un ordenador.</p>
+      <p lang="de">Diese Seite braucht JavaScript. Auf dem iPhone führt die Vorschau in Dateien oder Mail es nicht aus: Öffne die Seite in Safari oder nutze einen Computer.</p>
     </div>
   </noscript>
 
@@ -1088,6 +1089,66 @@ var PiruUI = (function () {
         noentries: "Esta copia de seguridad de Piru no tiene entradas de diario.",
         read: "No se pudo leer este archivo."
       }
+    },
+    de: {
+      langLabel: "Sprache (Language)",
+      privacyLink: "Datenschutz",
+      back: "← Alle Tools",
+      privacy: "Läuft nur auf diesem Gerät. Nichts wird hochgeladen, deine Datei verlässt es nie.",
+      footer: "Funktioniert offline. Unterstütztes Piru-Backup-Format: Version 2.",
+      siteNotice: "Hallo! Ich arbeite an Saiko Next, einem privaten Journal, inspiriert von Piru. Nebenbei baue ich kleine, kostenlose Tools für Piru-Nutzer, die auf dieselben Probleme stoßen wie ich. Sie laufen komplett auf deinem Gerät, und dein Backup verlässt es nie. Diese Website gehört nicht zu Piru.",
+      howTitle: "So geht’s",
+      openBtn: "Piru-Backup öffnen",
+      exportHint: "Exportiere es in Piru über <b>" + en(EXPORT_PATH) + "</b>, nicht „" + en("Encrypted Backup") + "“. Bewahre diese Datei sicher auf: Sie ist dein Weg zurück, und diese Seite ändert sie nie.",
+      stepExport: "Exportiere in Piru <b>" + en(EXPORT_PATH) + "</b>. Nicht „" + en("Encrypted Backup") + "“: Diese Datei kann hier nicht gelesen werden.",
+      stepKeep: "<b>Bewahre die Originaldatei</b> sicher auf. Sie ist dein Weg zurück, und diese Seite ändert sie nie.",
+      stepDownload: function (f) { return "Lade die neue Datei herunter (<b>" + f + "</b>)."; },
+      stepImport: "Wähle in Piru <b>" + en(DELETE_PATH) + "</b> und dann <b>" + en("Import…") + "</b> mit der neuen Datei.",
+      whyDelete: "<b>Warum zuerst alles löschen?</b> Piru fügt ein unverschlüsseltes Backup zu den vorhandenen Daten hinzu und überspringt nur exakte Kopien. Die Option „" + en("Replace") + "“ gibt es nur für verschlüsselte Backups. Ohne vorheriges Löschen würden entfernte Einträge bleiben und geänderte Einträge doppelt erscheinen. Erst löschen, dann importieren wirkt wie „" + en("Replace") + "“.",
+      nextSteps: function (f) {
+        return "<p><b>Vor dem Import</b></p><ol>" +
+          "<li>Bewahre dein Original-Backup sicher auf. Es ist dein einziger Weg zurück.</li>" +
+          "<li>Öffne in Piru <b>" + en(DELETE_PATH) + "</b>. Dabei werden auch Pirus eigene Wiederherstellungskopien gelöscht, also tu das nur, solange dein Original-Backup sicher ist. Daten in Apple Health sind nicht betroffen.</li>" +
+          "<li>Wähle dann <b>" + en("Import…") + "</b> und nimm <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "– Auswählen –",
+      allSubstances: "Alle Substanzen",
+      allUnits: "Alle Einheiten",
+      custom: "eigene",
+      substance: "Substanz",
+      unit: "Einheit",
+      dateFrom: "Von (Datum)",
+      dateTo: "Bis (Datum, einschließlich)",
+      zone: "Zeitzone",
+      zoneDevice: function (z) { return z + " (dieses Gerät)"; },
+      narrowTitle: "Daten oder einzelne Einträge wählen",
+      narrowAll: "Alle Daten, alle Einträge ausgewählt.",
+      narrowSome: function (n, m) { return n + " von " + m + " ausgewählt."; },
+      tickAll: "Alle auswählen",
+      untickAll: "Alle abwählen",
+      showMore: function (n) { return n + " weitere zeigen"; },
+      selected: function (n, m) { return n + " von " + m + plural(m, { one: " Eintrag", other: " Einträgen" }) + " ausgewählt."; },
+      noMatch: "Keine Einträge passen zu diesen Filtern.",
+      noSession: "keine Session",
+      sessionOf: function (d) { return "Session vom " + d; },
+      entries: function (n) { return n + plural(n, { one: " Eintrag", other: " Einträge" }); },
+      loaded: function (name, n, m) { return name + " geöffnet: " + n + plural(n, { one: " Eintrag", other: " Einträge" }) + ", " + m + plural(m, { one: " Substanz.", other: " Substanzen." }); },
+      newerRead: function (v) { return "Dieses Backup nutzt ein neueres Piru-Format (Version " + v + "), als diese Seite kennt. Manche Details fehlen vielleicht oder werden falsch gelesen."; },
+      more: function (n) { return "… und " + n + " weitere."; },
+      unchanged: "Alles andere in der Datei bleibt Byte für Byte gleich.",
+      done: function (f) { return f + " heruntergeladen. Deine Originaldatei ist unverändert."; },
+      err: {
+        encrypted: "Das ist ein verschlüsseltes Backup, das hier nicht gelesen werden kann. Exportiere in Piru stattdessen " + en(EXPORT_PATH) + " und öffne dann diese Datei.",
+        notjson: "Diese Datei ist kein lesbares Piru-Backup. Wenn es ein verschlüsseltes Backup ist (.piruenc), exportiere stattdessen ein unverschlüsseltes „" + en("Piru Backup") + "“.",
+        psylog: "Diese Datei ist im PsychonautWiki-Format, kein Piru-Backup. Wähle in Piru " + en("Export… → Piru Backup") + ".",
+        legacy: "Diese Datei nutzt ein altes Piru-Format. Importiere sie in Piru und exportiere dann ein neues „" + en("Piru Backup") + "“.",
+        notpiru: "Diese Datei ist kein Piru-Backup. Wähle die Datei, die Piru mit " + en("Export… → Piru Backup") + " erstellt hat.",
+        newer: "Dieses Backup nutzt ein neueres Piru-Format, als dieses Tool kennt (Version 2), deshalb kann es das Backup nicht sicher bearbeiten. Deine Datei ist unverändert.",
+        repeated: "Diese Datei wiederholt ein Feld innerhalb eines Datensatzes, was Piru nie tut. Vielleicht wurde sie von Hand bearbeitet. Exportiere in Piru ein frisches „" + en("Piru Backup") + "“ und öffne das.",
+        empty: "Diese Datei ist leer.",
+        noentries: "Dieses Piru-Backup enthält keine Journaleinträge.",
+        read: "Diese Datei konnte nicht gelesen werden."
+      }
     }
   };
 
@@ -1640,10 +1701,35 @@ if (typeof module !== "undefined") module.exports = PiruSplit;
     steps: function (x) { return [x.stepExport, x.stepKeep, x.stepDo, x.stepBoth, x.stepImportKept, x.stepOther]; },
     stepImportKept: "En tu Piru, usa <b>" + en("Settings → Data &amp; Backup → Delete Everything") + "</b> y luego <b>" + en("Import…") + "</b> con <b>" + KEPT + "</b>."
   };
+  var DE = {
+    title: "Piru-Einträge in ein eigenes Backup abtrennen",
+    subtitle: "Nimm ausgewählte Einträge, etwa solche, die du für einen Freund eingetragen hast, aus deinem Backup heraus und leg sie in ein eigenes Backup.",
+    stepDo: "Öffne es hier und wähle die Einträge zum Abtrennen, nach Substanz, Datum oder einzeln.",
+    stepBoth: "Lade beide Dateien herunter: <b>" + KEPT + "</b> (dein Backup ohne sie) und <b>" + SPLIT + "</b> (nur diese Einträge).",
+    stepOther: "In der anderen Piru-App fügt ein einfacher <b>" + en("Import…") + "</b> von <b>" + SPLIT + "</b> sie hinzu. Dort muss nichts gelöscht werden.",
+    s1: "1. Piru-Backup öffnen", s2: "2. Einträge zum Abtrennen wählen", s3: "3. Prüfen und beide Dateien herunterladen",
+    counts: function (a, b) { return a + PiruUI.plural(a, { one: " Eintrag kommt", other: " Einträge kommen" }) + " in die neue Datei; " + b + PiruUI.plural(b, { one: " bleibt", other: " bleiben" }) + " in deiner."; },
+    everything: "Alle Einträge sind ausgewählt, dein eigenes Backup würde also keinen behalten. Wähle eine Substanz oder Daten, um nur einen Teil abzutrennen.",
+    whole: function (n) { return n + PiruUI.plural(n, { one: " Session wandert komplett mit, samt Titel und Notizen.", other: " Sessions wandern komplett mit, samt Titel und Notizen." }); },
+    partial: function (n) { return n + PiruUI.plural(n, { one: " Session wird", other: " Sessions werden" }) + " geteilt: Die ausgewählten Einträge kommen in der neuen Datei in eine Session mit derselben ID, die anderen bleiben in deiner."; },
+    partialContent: function (n) { return "Titel, Notizen und Check-in-Einstellungen " + PiruUI.plural(n, { one: "dieser Session", other: "dieser Sessions" }) + " bleiben nur in deinem Backup."; },
+    orphans: function (n) { return n + PiruUI.plural(n, { one: " Eintrag hat", other: " Einträge haben" }) + " keine Session; Piru ordnet " + PiruUI.plural(n, { one: "ihn", other: "sie" }) + " beim Import Sessions zu."; },
+    links: function (n) { return n + PiruUI.plural(n, { one: " Eintrag im Erinnerungsverlauf zeigt", other: " Einträge im Erinnerungsverlauf zeigen" }) + " auf einen abgetrennten Eintrag. " + PiruUI.plural(n, { one: "Er bleibt", other: "Sie bleiben" }) + " in deinem Backup und " + PiruUI.plural(n, { one: "findet seinen", other: "finden ihren" }) + " Eintrag nicht mehr."; },
+    customs: function (names) { return "Auch die eigenen Substanzen, die diese Einträge nutzen, in die neue Datei kopieren: " + names; },
+    notIncluded: "Die neue Datei enthält nur diese Einträge und das, was Piru zum Importieren braucht. Einstellungen, Medikamente, Vorrat, Favoriten und Farben bleiben in deinem Backup.",
+    downloadKept: "Dein Backup ohne sie herunterladen",
+    downloadSplit: "Abgetrennte Einträge herunterladen",
+    nextSteps: "<p><b>Vor dem Import</b></p><ol><li>Bewahre dein Original-Backup sicher auf. Es ist dein einziger Weg zurück.</li>" +
+      "<li>Öffne in deiner Piru-App <b>" + en("Settings → Data &amp; Backup → Delete Everything") + "</b>. Dabei werden auch Pirus eigene Wiederherstellungskopien gelöscht, also tu das nur, solange dein Original-Backup sicher ist. Daten in Apple Health sind nicht betroffen.</li>" +
+      "<li>Wähle dann <b>" + en("Import…") + "</b> und nimm <b>" + KEPT + "</b>.</li>" +
+      "<li>Wähle in der anderen Piru-App einfach <b>" + en("Import…") + "</b> mit <b>" + SPLIT + "</b>. Dort muss nichts gelöscht werden.</li></ol>",
+    steps: function (x) { return [x.stepExport, x.stepKeep, x.stepDo, x.stepBoth, x.stepImportKept, x.stepOther]; },
+    stepImportKept: "Wähle in deiner Piru-App <b>" + en("Settings → Data &amp; Backup → Delete Everything") + "</b> und dann <b>" + en("Import…") + "</b> mit <b>" + KEPT + "</b>."
+  };
   EN.steps = FR.steps = function (x) { return [x.stepExport, x.stepKeep, x.stepDo, x.stepBoth, x.stepImportKept, x.stepOther]; };
   EN.stepImportKept = "In your Piru, <b>Settings → Data &amp; Backup → Delete Everything</b>, then <b>Import…</b> <b>" + KEPT + "</b>.";
   FR.stepImportKept = "Dans votre Piru, <b>" + en("Settings → Data &amp; Backup → Delete Everything") + "</b>, puis <b>" + en("Import…") + "</b> avec <b>" + KEPT + "</b>.";
-  U.init({ en: EN, fr: FR, "zh-Hans": ZH_HANS, es: ES }, function () { render(); });
+  U.init({ en: EN, fr: FR, "zh-Hans": ZH_HANS, es: ES, de: DE }, function () { render(); });
 
   U.onFile($("file"), {}, function (res, name) {
     state = { res: res, name: name, done: {} };
