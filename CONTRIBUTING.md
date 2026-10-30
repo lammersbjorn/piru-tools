@@ -18,14 +18,14 @@ Open an issue first if you're unsure whether it fits. Then send one pull request
 1. Copy the structure of an existing page, such as `site/unit-fixer.html`, exactly.
 2. Add the tool to `site/index.html` and to the README's table.
 3. Add a test in `tests/` that runs the tool's logic on synthetic backups from `tests/gen.js`, and add the page to the flows in `tests/e2e.js`.
-4. Check the page in a browser at phone width (390 px), in dark and light mode, in English and French.
+4. Check the page in a browser at phone width (390 px), in dark and light mode, in English and at least one other language.
 
 ## Rules
 
 - **One standalone HTML file per tool**, in `site/`. Inline CSS and JavaScript, no build step, no external files, no frameworks.
 - **The strict Content-Security-Policy**, unchanged: `default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'`.
 - **No network.** No requests, analytics, external fonts, scripts or images. A backup never leaves the device.
-- **English and French.** Every string goes into both i18n tables, with the same language switch and footer as the other pages.
+- **Every language.** Every string goes into every i18n table (English, French, Simplified Chinese, Spanish, German, Dutch, Brazilian Portuguese and Russian), with the same language menu and footer as the other pages. If you can't write a language, say so in the pull request; `pnpm check` lists the missing keys.
 - **Byte-preserving edits.** A tool changes only the values the person chose. Unknown fields, key order, spacing, line endings and the byte order mark stay exactly as they were. Keep the shared `piru-core` script identical on every page; it refuses encrypted backups and format versions above 2, as Piru does.
 - **Data safety.** Show exactly what will change before anything is downloaded, never change the original file, and explain how to import the result into Piru.
 - **Tests on synthetic data only.** Tests generate made-up backups at run time. Never commit, attach or paste a real backup, journal entry or screenshot of one, anywhere: code, tests, issues, pull requests.
@@ -43,7 +43,7 @@ git config core.hooksPath .githooks   # once per clone: checks commit headers
 
 pnpm test           # logic tests on synthetic backups, plus keyboard checks
 pnpm check          # every page keeps the strict CSP, loads nothing, links resolve
-pnpm test:e2e       # every page in Chromium: dark and light, English and French, axe, downloads, no requests
+pnpm test:e2e       # every page in Chromium: dark and light, every language, axe, downloads, no requests
 ```
 
 All three run in CI on every pull request.

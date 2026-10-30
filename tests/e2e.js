@@ -1,4 +1,5 @@
-// End-to-end checks in headless Chromium at 390 px: every page, dark and light, English and French.
+// End-to-end checks in headless Chromium at 390 px: every page, dark and light, in every language.
+// E2E_LANGS=de,nl limits the run to some languages.
 const fs = require('fs'), assert = require('assert');
 const { chromium } = require('playwright');
 const load = require('./load');
@@ -32,12 +33,14 @@ const flows = {
   'time-shift': { run: async p => { await p.setInputFiles('#file', FILE); await p.waitForSelector('#load-status .msg'); await p.selectOption('#picker-sub', 'Caffeine'); await p.fill('#hours', '2'); await p.fill('#minutes', '30'); }, dl: ['#download'] },
   'split-out': { run: async p => { await p.setInputFiles('#file', FILE); await p.waitForSelector('#load-status .msg'); await p.selectOption('#picker-sub', 'Caffeine'); }, dl: ['#download-kept', '#download-split'] },
 };
+const LANGS = ['en', 'fr', 'zh-Hans', 'es', 'de', 'nl', 'pt-BR', 'ru'];
+const RUN_LANGS = process.env.E2E_LANGS ? process.env.E2E_LANGS.split(',') : LANGS;
 let pass = 0, fail = 0; const heights = {}; const problems = [];
 function check(name, cond, info) { if (cond) pass++; else { fail++; problems.push(name + (info ? ' ' + info : '')); } }
 
 (async () => {
   const b = await chromium.launch(LAUNCH);
-  for (const scheme of ['dark', 'light']) for (const lang of ['en', 'fr']) for (const name of Object.keys(flows)) {
+  for (const scheme of ['dark', 'light']) for (const lang of RUN_LANGS) for (const name of Object.keys(flows)) {
     const tag = name + '/' + scheme + '/' + lang;
     const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, colorScheme: scheme, acceptDownloads: true, timezoneId: ZONE, locale: 'en-GB' });
     await ctx.addInitScript(() => { window.__csp = []; document.addEventListener('securitypolicyviolation', e => window.__csp.push(e.violatedDirective + ' ' + e.blockedURI)); });
@@ -46,7 +49,14 @@ function check(name, cond, info) { if (cond) pass++; else { fail++; problems.pus
     p.on('pageerror', e => errs.push(e.message));
     p.on('request', r => { if (!/^(file|data|blob):/.test(r.url())) reqs.push(r.url()); });
     await p.goto(SITE + name + '.html');
-    if (lang === 'fr') await p.click('#lang-fr'); else await p.click('#lang-en');
+    await p.selectOption('#lang', lang);
+    // The menu shows the language, the page is marked with it, and every table has English's keys.
+    const m = await p.evaluate(l => { const T = PiruUI.strings(), en = Object.keys(T.en), x = T[l] || {};
+      return { value: document.getElementById('lang').value, dir: document.documentElement.dir, label: document.getElementById('lang').getAttribute('aria-label') === x.langLabel,
+        saved: localStorage.getItem('piru-tool-lang'), missing: en.filter(k => !(k in x)) }; }, lang);
+    check(tag + ' menu', m.value === lang && m.label && m.saved === lang, JSON.stringify(m));
+    check(tag + ' dir', m.dir === 'ltr', m.dir);
+    check(tag + ' keys', !m.missing.length, m.missing.join());
     const h0 = await p.evaluate(() => Math.ceil(document.body.getBoundingClientRect().height));
     await flows[name].run(p); await p.waitForTimeout(250);
     const h1 = await p.evaluate(() => Math.ceil(document.body.getBoundingClientRect().height));
@@ -95,6 +105,21 @@ function check(name, cond, info) { if (cond) pass++; else { fail++; problems.pus
     check(tag + ' network', !reqs.length, reqs.join());
     await ctx.close();
   }
+  // First visit: the browser's languages pick the page language; a choice in the menu wins after that.
+  const firstVisit = { 'en-US': 'en', 'fr-CA': 'fr', 'zh-CN': 'zh-Hans', 'zh-Hans-SG': 'zh-Hans', 'zh-TW': 'en', 'es-MX': 'es', 'de-AT': 'de', 'nl-BE': 'nl', 'pt-PT': 'pt-BR', 'pt-BR': 'pt-BR', 'ru-RU': 'ru', 'ja-JP': 'en' };
+  for (const [locale, want] of Object.entries(firstVisit)) {
+    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale }); const p = await ctx.newPage();
+    await p.goto(SITE + 'index.html');
+    const got = await p.evaluate(() => [document.documentElement.lang, document.getElementById('lang').value, localStorage.getItem('piru-tool-lang')]);
+    check('first visit ' + locale, got[0] === want && got[1] === want && got[2] === null, got.join());
+    await ctx.close();
+  }
+  { const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'de-DE' }); const p = await ctx.newPage();
+    await p.goto(SITE + 'index.html'); await p.selectOption('#lang', 'ru');
+    await p.goto(SITE + 'move-substance.html');
+    const got = await p.evaluate(() => [document.documentElement.lang, document.getElementById('lang').value, document.title]);
+    check('choice persists over the browser language', got[0] === 'ru' && got[1] === 'ru' && /[а-я]/i.test(got[2]), got.join());
+    await ctx.close(); }
   await b.close();
   console.log(problems.join('\n')); console.log(pass + ' passed, ' + fail + ' failed'); console.log(JSON.stringify(heights)); process.exitCode = fail ? 1 : 0;
 })().catch(e => { console.error(e); process.exit(1); });

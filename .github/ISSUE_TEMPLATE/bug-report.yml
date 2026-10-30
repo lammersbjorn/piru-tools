@@ -48,6 +48,12 @@ body:
       options:
         - English
         - Français
+        - 中文（简体）
+        - Español
+        - Deutsch
+        - Nederlands
+        - Português (Brasil)
+        - Русский
   - type: checkboxes
     id: privacy
     attributes:
