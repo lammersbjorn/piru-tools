@@ -35,26 +35,27 @@ Nothing is uploaded, and there are no analytics or cookies. See [PRIVACY.md](PRI
 
 Made by Bjorn Lammers while building Saiko Next, a private journal inspired by Piru. Not affiliated with or endorsed by Piru or its developers. "Piru" is used only to describe compatibility.
 
-Found a bug or have an idea? [Open an issue](https://github.com/lammersbjorn/piru-tools/issues).
+Found a bug or have an idea? [Open an issue](https://github.com/lammersbjorn/piru-tools/issues/new/choose). A bug that changes or loses data: see [SECURITY.md](SECURITY.md).
 
 ## Contributing
 
-These tools fix Piru backups from the outside. It would be better if Piru could do these things itself, so the most useful contribution is often a pull request to Piru rather than to this repository.
+Often the best contribution is a pull request to Piru itself, so it can do these things natively. You can also add a tool here. [Make a prompt to contribute](https://lammersbjorn.github.io/piru-tools/prompt-maker.html) builds a ready-to-paste prompt for an AI coding assistant. [CONTRIBUTING.md](CONTRIBUTING.md) has both paths and the rules.
 
-[Make a prompt to contribute](https://lammersbjorn.github.io/piru-tools/prompt-maker.html) builds a ready-to-paste prompt for an AI coding assistant such as Claude Code, Codex or Cursor. It runs in your browser and sends nothing anywhere.
+When Piru includes one of these tools, please [let us know](https://github.com/lammersbjorn/piru-tools/issues/new?template=piru-includes-tool.yml) with the merged Piru pull request, so the tool can be removed here.
 
-There are two ways to contribute:
+## Development
 
-1. **Bring a feature into Piru.** Open a pull request on [kageroumado/piru](https://github.com/kageroumado/piru) that builds one of these tools, or something new, natively into the app. Use the matching page here as the reference for behaviour, edge cases and safety rules, and credit it: "Behaviour based on lammersbjorn/piru-tools (MIT)." The Piru developer decides what gets merged.
-2. **Add a tool to this site.** Open a pull request here for a tool you're missing. Copy the structure of an existing page exactly: one standalone HTML file, the same strict Content-Security-Policy with no network access, the shared CSS, the English and French strings, the same footer, and the shared backup parsing that refuses encrypted backups and versions above 2. Edits must change only the intended bytes. Add a small node test on synthetic backups, add the tool to `index.html` and this README, and check the page at phone width in dark and light mode.
+The pages are in `site/`, one standalone HTML file each, with no build step. Tests are in `tests/` and use synthetic backups only.
 
-For either path:
+```bash
+npm ci
+npx playwright install chromium
+npm test           # logic and keyboard tests
+npm run check      # strict CSP and no network on every page
+npm run test:e2e   # every page in Chromium
+```
 
-- Send one small pull request per tool or feature.
-- Test on your own copy with made-up data, never a real journal.
-- Say in the pull request that it was written with AI assistance, if it was, and that you reviewed and tested it.
-
-**Remove once merged into Piru.** When Piru includes a tool, please open an issue or pull request here that links the merged Piru pull request, so the tool can be removed from this site.
+Pull requests run these checks in CI. Merging to `main` deploys `site/` to GitHub Pages.
 
 ## License
 

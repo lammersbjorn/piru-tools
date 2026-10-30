@@ -1,0 +1,11 @@
+node_modules/
+test-results/
+playwright-report/
+*.log
+.DS_Store
+
+# Never commit backups or exports. Tests generate synthetic data at run time.
+*.json
+!package.json
+!package-lock.json
+*.piruenc
