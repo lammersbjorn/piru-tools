@@ -1,97 +1,254 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'">
 <meta name="referrer" content="no-referrer">
-<meta name="color-scheme" content="light dark">
-<title>Piru : changer la substance d'entrées / move entries to another substance</title>
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ECECF2" media="(prefers-color-scheme: light)">
+<title>Move Piru entries to another substance</title>
 <style>
+  /* Saiko G-alt palette (App/design/visual-tokens.json, docs/design/VISUAL_LANGUAGE.md).
+     sRGB fallbacks first; Display P3 values below where the token lies outside sRGB. */
   :root {
     color-scheme: light dark;
-    --bg: #f6f6f4; --card: #ffffff; --text: #1b1b1d; --muted: #5d5d66; --line: #d9d9de;
-    --accent: #2f5bd3; --accent-text: #ffffff; --warn-bg: #fff4d6; --warn-line: #e0b440; --warn-text: #4d3800;
-    --err-bg: #fde8e8; --err-line: #d65050; --err-text: #6b1111; --ok-bg: #e5f4ea; --ok-line: #4a9d68; --ok-text: #11401f;
-    --focus: #2f5bd3;
+    /* Light appearance */
+    --page: #ECECF2;            /* surface.page */
+    --cell: #FFFFFF;            /* surface.cell */
+    --raised: #F3F3F9;          /* surface.cellRaised, fill.control */
+    --separator: #D8D8E0;       /* line.separator */
+    --card-edge: transparent;
+    --text: #0F0F15;            /* text.primary */
+    --text-2: #55565F;          /* text.secondary */
+    --text-3: #63646D;          /* text.tertiary */
+    --tint: #BD0052;            /* accent.tint */
+    --fill: #D5005D;            /* accent.fill */
+    --on-fill: #FFFFFF;         /* accent.onFill */
+    --tint-wash: rgb(189 0 82 / 0.10);
+    --problem: #BC0013;         /* status.problem */
+    --problem-wash: rgb(236 0 26 / 0.10);    /* status.problemFill */
+    --caution: #825B00;         /* status.caution */
+    --caution-wash: rgb(167 118 0 / 0.18);   /* legacy.caution.accent at 18% */
+    --success: #007835;         /* legacy.success.text */
+    --success-wash: rgb(0 154 70 / 0.12);    /* legacy.success.accent */
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2355565F' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 8 10 4.5 13.5 8M6.5 12 10 15.5 13.5 12'/%3E%3C/svg%3E");
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #121214; --card: #1d1d21; --text: #f1f1f3; --muted: #a8a8b3; --line: #34343b;
-      --accent: #7f9cff; --accent-text: #0b0b10; --warn-bg: #3a2f10; --warn-line: #b38b2a; --warn-text: #ffe7a8;
-      --err-bg: #3d1717; --err-line: #c25454; --err-text: #ffd1d1; --ok-bg: #12301d; --ok-line: #3f8c5a; --ok-text: #c9f0d6;
-      --focus: #9fb4ff;
+      --page: #000000;
+      --cell: #111113;
+      --raised: #202024;
+      --separator: #333439;
+      --card-edge: #202024;
+      --text: #F6F6F9;
+      --text-2: #C0C0CA;
+      --text-3: #9797A1;
+      --tint: #FF5C89;
+      --fill: #D5005D;
+      --tint-wash: rgb(255 92 137 / 0.14);
+      --problem: #FF9B90;
+      --problem-wash: rgb(236 0 26 / 0.20);
+      --caution: #F1AD00;
+      --caution-wash: rgb(189 135 0 / 0.18);
+      --success: #00DF68;
+      --success-wash: rgb(0 175 81 / 0.16);
+      --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23C0C0CA' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 8 10 4.5 13.5 8M6.5 12 10 15.5 13.5 12'/%3E%3C/svg%3E");
     }
   }
+  @supports (color: color(display-p3 0 0 0)) {
+    :root {
+      --tint: color(display-p3 0.7047 0.0288 0.3145);
+      --fill: color(display-p3 0.7903 0.0693 0.3599);
+      --tint-wash: color(display-p3 0.7047 0.0288 0.3145 / 0.10);
+      --problem: color(display-p3 0.6839 0.1116 0.1095);
+      --problem-wash: color(display-p3 0.8784 0.0828 0.115 / 0.10);
+      --caution: color(display-p3 0.4918 0.3619 0.0768);
+      --caution-wash: color(display-p3 0.6318 0.4686 0.1106 / 0.18);
+      --success: color(display-p3 0.0946 0.4794 0.1819);
+      --success-wash: color(display-p3 0.133 0.6162 0.2426 / 0.12);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --tint: color(display-p3 0.9902 0.3136 0.518);
+        --fill: color(display-p3 0.7903 0.0693 0.3599);
+        --tint-wash: color(display-p3 0.9902 0.3136 0.518 / 0.14);
+        --problem: color(display-p3 0.9758 0.6069 0.5543);
+        --problem-wash: color(display-p3 0.8784 0.0828 0.115 / 0.20);
+        --caution: color(display-p3 0.9099 0.6852 0.2023);
+        --caution-wash: color(display-p3 0.7187 0.5349 0.1316 / 0.18);
+        --success: color(display-p3 0.392 0.8631 0.4584);
+        --success-wash: color(display-p3 0.1568 0.7011 0.2802 / 0.16);
+      }
+    }
+  }
+  :root {
+    --font: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --radius-card: 22px;  /* CornerRadius card */
+    --radius-inner: 14px; /* concentric inside a 16 px card inset */
+  }
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; background: var(--page); }
   body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font: 17px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
-    padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(32px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    margin: 0; background: var(--page); color: var(--text);
+    font: 17px/1.47 var(--font); letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(32px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   }
   main { max-width: 640px; margin: 0 auto; }
-  h1 { font-size: 1.5rem; line-height: 1.25; margin: 8px 0 6px; }
-  h2 { font-size: 1.15rem; margin: 0 0 12px; }
-  p { margin: 0 0 10px; }
-  .muted { color: var(--muted); }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; margin: 14px 0; }
-  .lang { display: flex; gap: 8px; justify-content: flex-end; }
+  h1 {
+    font-family: var(--rounded); font-weight: 700; font-size: 2rem; line-height: 1.15; letter-spacing: -0.01em;
+    margin: 20px 0 8px; overflow-wrap: anywhere;
+  }
+  h2 { font-size: 1.0625rem; line-height: 1.3; font-weight: 600; margin: 0 0 12px; }
+  p { margin: 0 0 12px; }
+  p:last-child { margin-bottom: 0; }
+  b { font-weight: 600; }
+  a { color: var(--tint); }
+  .muted { color: var(--text-2); }
+  .subtitle { font-size: 1.0625rem; color: var(--text-2); margin-bottom: 0; }
+
+  /* Cards: opaque cells on the page, 22 pt corners, 16 pt inset. */
+  .card {
+    background: var(--cell); border: 1px solid var(--card-edge); border-radius: var(--radius-card);
+    padding: 16px; margin: 0 0 20px;
+  }
+  .intro { margin-bottom: 28px; }
+
+  /* Language switch: segmented control, selected segment on an accent wash. */
+  .topbar { display: flex; justify-content: flex-end; }
+  .lang { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--raised); }
   .lang button {
-    min-height: 44px; min-width: 96px; padding: 8px 14px; border-radius: 22px; border: 1px solid var(--line);
-    background: var(--card); color: var(--text); font: inherit; font-size: 0.95rem; cursor: pointer;
+    min-height: 44px; min-width: 92px; padding: 0 16px; border-radius: 999px; border: 0;
+    background: transparent; color: var(--text-2); font: inherit; font-size: 0.9375rem; font-weight: 500; cursor: pointer;
   }
-  .lang button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
-  .privacy { display: flex; gap: 10px; align-items: flex-start; font-size: 0.95rem; }
-  .privacy .dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--ok-line); margin-top: 8px; }
-  ol.steps { padding-left: 1.4em; margin: 0 0 10px; }
-  ol.steps li { margin-bottom: 8px; }
-  details > summary { cursor: pointer; min-height: 44px; padding: 10px 0; font-weight: 600; }
-  label.field { display: block; font-weight: 600; margin: 14px 0 6px; }
+  .lang button[aria-pressed="true"] { background: var(--tint-wash); color: var(--tint); font-weight: 600; }
+
+  .privacy { display: flex; gap: 12px; align-items: flex-start; font-size: 0.9375rem; }
+  .privacy .glyph {
+    flex: none; width: 22px; height: 22px; margin-top: 1px; background: var(--success);
+    -webkit-mask: var(--lock) center / contain no-repeat; mask: var(--lock) center / contain no-repeat;
+  }
+
+  ol.steps { padding-left: 1.5em; margin: 4px 0 12px; }
+  ol.steps li { margin-bottom: 10px; padding-left: 2px; }
+  ol.steps li::marker { font-family: var(--rounded); font-weight: 600; color: var(--tint); font-variant-numeric: tabular-nums; }
+
+  details > summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    list-style: none; cursor: pointer; min-height: 44px; font-weight: 600;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::after {
+    content: ""; flex: none; width: 14px; height: 14px; background: var(--text-3);
+    -webkit-mask: var(--chev-right) center / contain no-repeat; mask: var(--chev-right) center / contain no-repeat;
+    transition: transform 0.2s ease;
+  }
+  details[open] > summary::after { transform: rotate(90deg); }
+  details[open] > summary { margin-bottom: 8px; }
+  #how > summary { font-size: 1.0625rem; }
+  #more { margin-top: 16px; border-top: 1px solid var(--separator); padding-top: 4px; }
+  #more > summary { color: var(--tint); font-weight: 500; }
+
+  label.field { display: block; font-size: 0.9375rem; color: var(--text-2); margin: 16px 0 8px; }
+  label.field:first-of-type { margin-top: 4px; }
   select, input[type="text"] {
-    width: 100%; min-height: 52px; padding: 10px 12px; font: inherit; color: var(--text); background: var(--bg);
-    border: 1px solid var(--line); border-radius: 10px;
+    display: block; width: 100%; min-height: 50px; padding: 12px 14px; font: inherit; color: var(--text);
+    background-color: var(--raised); border: 1px solid transparent; border-radius: var(--radius-inner);
   }
+  select {
+    -webkit-appearance: none; appearance: none; padding-right: 44px; text-overflow: ellipsis;
+    background-image: var(--chevron); background-repeat: no-repeat; background-position: right 14px center; background-size: 20px 20px;
+  }
+  select:hover, input[type="text"]:hover { border-color: var(--separator); }
+  input[type="text"]::placeholder { color: var(--text-3); }
+
+  /* Buttons: capsules on the one accent fill. */
   .btn {
-    display: flex; align-items: center; justify-content: center; width: 100%; min-height: 56px; padding: 12px 18px;
-    border-radius: 12px; border: 0; background: var(--accent); color: var(--accent-text); font: inherit; font-weight: 600;
-    cursor: pointer; text-align: center;
+    display: flex; align-items: center; justify-content: center; width: 100%; min-height: 52px; padding: 12px 22px;
+    border-radius: 999px; border: 0; background: var(--fill); color: var(--on-fill); font: inherit; font-weight: 600;
+    cursor: pointer; text-align: center; -webkit-tap-highlight-color: transparent; transition: transform 0.12s ease, filter 0.12s ease;
   }
-  .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+  .btn:active { transform: scale(0.98); filter: brightness(0.92); }
+  .btn[disabled] { background: var(--raised); color: var(--text-3); cursor: not-allowed; transform: none; filter: none; }
   .file-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
-  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-  .file-input:focus-visible + label.btn { outline: 3px solid var(--focus); outline-offset: 2px; }
+  :focus-visible { outline: 3px solid var(--tint); outline-offset: 2px; }
+  select:focus-visible, input[type="text"]:focus-visible { outline: 0; border-color: var(--tint); box-shadow: 0 0 0 3px var(--tint-wash); }
+  .file-input:focus-visible + label.btn { outline: 3px solid var(--tint); outline-offset: 2px; }
+
   .check { display: flex; gap: 12px; align-items: flex-start; min-height: 48px; padding: 10px 0; cursor: pointer; }
-  .check input { width: 24px; height: 24px; margin: 2px 0 0; flex: none; accent-color: var(--accent); }
-  .msg { border-radius: 10px; padding: 12px 14px; margin: 12px 0 0; border: 1px solid; }
-  .msg.err { background: var(--err-bg); border-color: var(--err-line); color: var(--err-text); }
-  .msg.warn { background: var(--warn-bg); border-color: var(--warn-line); color: var(--warn-text); }
-  .msg.ok { background: var(--ok-bg); border-color: var(--ok-line); color: var(--ok-text); }
-  .big { font-size: 1.15rem; font-weight: 600; }
-  ul.examples { margin: 6px 0 10px; padding-left: 1.2em; }
+  .check + .check { border-top: 1px solid var(--separator); }
+  .check input { width: 22px; height: 22px; margin: 1px 0 0; flex: none; accent-color: var(--fill); }
+
+  /* Notices: a glyph and words; the hue only supports them. */
+  .msg {
+    position: relative; border-radius: var(--radius-inner); padding: 12px 14px 12px 44px; margin: 12px 0 0;
+    font-size: 0.9375rem; line-height: 1.45; color: var(--text); background: var(--raised);
+  }
+  .msg::before {
+    content: ""; position: absolute; left: 14px; top: 13px; width: 20px; height: 20px; background: var(--text-2);
+    -webkit-mask: var(--g-info) center / contain no-repeat; mask: var(--g-info) center / contain no-repeat;
+  }
+  .msg.err { background: var(--problem-wash); }
+  .msg.err::before { background: var(--problem); -webkit-mask-image: var(--g-problem); mask-image: var(--g-problem); }
+  .msg.warn { background: var(--caution-wash); }
+  .msg.warn::before { background: var(--caution); -webkit-mask-image: var(--g-caution); mask-image: var(--g-caution); }
+  .msg.ok { background: var(--success-wash); }
+  .msg.ok::before { background: var(--success); -webkit-mask-image: var(--g-ok); mask-image: var(--g-ok); }
+  .msg p { margin: 0 0 8px; }
+  .msg p:last-child { margin: 0; }
+
+  .big { font-family: var(--rounded); font-size: 1.25rem; line-height: 1.3; font-weight: 600; }
+  ul.examples { margin: 4px 0 12px; padding: 0; list-style: none; }
+  ul.examples li { padding: 10px 0; border-top: 1px solid var(--separator); }
+  ul.examples li:first-child { border-top: 0; }
   .hidden { display: none !important; }
-  .num { font-variant-numeric: tabular-nums; }
-  footer { font-size: 0.85rem; text-align: center; margin-top: 24px; }
+  .num { font-family: var(--rounded); font-variant-numeric: tabular-nums; }
+  #preview > p.muted { font-size: 0.9375rem; }
+
+  footer { margin-top: 28px; padding: 0 4px; text-align: center; font-size: 0.8125rem; line-height: 1.4; color: var(--text-2); }
+  footer p { margin: 0 0 4px; }
+  .caption { font-size: 0.75rem; color: var(--text-3); }
+  #site-notice:empty { display: none; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (min-width: 560px) { h1 { font-size: 2.125rem; } }
+
+  /* Glyphs as inline data images (allowed by img-src data:). */
+  :root {
+    --lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6.5 9V6.5a3.5 3.5 0 0 1 7 0V9' fill='none' stroke='black' stroke-width='2'/%3E%3Crect x='3.5' y='8.5' width='13' height='10' rx='2.5'/%3E%3C/svg%3E");
+    --chev-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3.5 13.5 10 7 16.5'/%3E%3C/svg%3E");
+    --g-problem: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' d='M8.7 2.3a1.5 1.5 0 0 1 2.6 0l7.6 13.4a1.5 1.5 0 0 1-1.3 2.3H2.4a1.5 1.5 0 0 1-1.3-2.3zM9 7h2v5H9zm1 6.6a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z'/%3E%3C/svg%3E");
+    --g-caution: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' d='M10 1a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM9 5h2v6.5H9zm1 8a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z'/%3E%3C/svg%3E");
+    --g-ok: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' d='M10 1a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm-1.4 12.6L4.9 9.9l1.4-1.4 2.3 2.3 5.1-5.1 1.4 1.4z'/%3E%3C/svg%3E");
+    --g-info: var(--g-caution);
+  }
 </style>
 </head>
 <body>
 <main>
-  <div class="lang" role="group" aria-label="Langue / Language">
-    <button type="button" id="lang-fr" lang="fr" aria-pressed="true">Français</button>
-    <button type="button" id="lang-en" lang="en" aria-pressed="false">English</button>
+  <div class="topbar">
+    <div class="lang" role="group" aria-label="Language / Langue">
+      <button type="button" id="lang-en" lang="en" aria-pressed="true">English</button>
+      <button type="button" id="lang-fr" lang="fr" aria-pressed="false">Français</button>
+    </div>
   </div>
 
-  <h1 data-i18n="title"></h1>
-  <p class="muted" data-i18n="subtitle"></p>
+  <header class="intro">
+    <h1 data-i18n="title"></h1>
+    <p class="subtitle" data-i18n="subtitle"></p>
+  </header>
 
   <noscript>
     <div class="msg err">
-      <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
       <p lang="en">This page needs JavaScript. On iPhone, the Files or Mail preview does not run it: open the page in Safari, or use a computer.</p>
+      <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
     </div>
   </noscript>
 
-  <div class="card privacy"><span class="dot" aria-hidden="true"></span><p data-i18n="privacy"></p></div>
+  <div class="card privacy"><span class="glyph" aria-hidden="true"></span><p data-i18n="privacy"></p></div>
 
   <section class="card" aria-labelledby="how-title">
     <details id="how" open>
@@ -121,7 +278,7 @@
       <input type="text" id="typed" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="typed-status">
       <div id="typed-status" aria-live="polite"></div>
     </div>
-    <details id="more" style="margin-top:14px">
+    <details id="more">
       <summary data-i18n="moreTitle"></summary>
       <p class="muted" data-i18n="moreIntro"></p>
       <div id="opts"></div>
@@ -140,7 +297,11 @@
     <div id="download-status" role="status" aria-live="polite"></div>
   </section>
 
-  <footer class="muted" data-i18n="footer"></footer>
+  <footer>
+    <p data-i18n="footer"></p>
+    <p data-i18n="notAffiliated"></p>
+    <p id="site-notice" class="caption"></p>
+  </footer>
 </main>
 
 <!-- Pure logic: no DOM access, so it can be tested on its own. -->
@@ -512,6 +673,7 @@ if (typeof module !== "undefined") module.exports = PiruFix;
       s4: "4. Télécharger",
       downloadBtn: "Télécharger la sauvegarde corrigée",
       footer: "Fonctionne hors ligne. Format de sauvegarde Piru pris en charge : version 2.",
+      notAffiliated: "Non affilié à Piru.",
       choose: "— Choisir —",
       groupEntries: "Dans vos entrées",
       groupOther: "Autres noms de votre sauvegarde",
@@ -577,6 +739,7 @@ if (typeof module !== "undefined") module.exports = PiruFix;
       s4: "4. Download",
       downloadBtn: "Download the corrected backup",
       footer: "Works offline. Supported Piru backup format: version 2.",
+      notAffiliated: "Not affiliated with Piru.",
       choose: "— Choose —",
       groupEntries: "In your entries",
       groupOther: "Other names in your backup",
@@ -618,7 +781,9 @@ if (typeof module !== "undefined") module.exports = PiruFix;
     }
   };
 
-  var lang = "fr";
+  var LANG_KEY = "piru-tool-lang";
+  var lang = "en";
+  try { var saved = window.localStorage.getItem(LANG_KEY); if (saved === "fr" || saved === "en") lang = saved; } catch (e) { /* storage unavailable: stay in English */ }
   var state = { model: null, fileName: "", error: null, done: false };
   var $ = function (id) { return document.getElementById(id); };
   var TYPE = "\u0000type";
@@ -631,8 +796,9 @@ if (typeof module !== "undefined") module.exports = PiruFix;
   }
   function msg(kind, text) { return el("div", { class: "msg " + kind }, text); }
 
-  function setLang(l) {
+  function setLang(l, remember) {
     lang = l;
+    if (remember) { try { window.localStorage.setItem(LANG_KEY, l); } catch (e) { /* storage unavailable */ } }
     document.documentElement.lang = l;
     $("lang-fr").setAttribute("aria-pressed", String(l === "fr"));
     $("lang-en").setAttribute("aria-pressed", String(l === "en"));
@@ -779,8 +945,8 @@ if (typeof module !== "undefined") module.exports = PiruFix;
     fillFrom(keep); fillTo(keep); renderTyped(); renderOptions(); renderPreview();
   }
 
-  $("lang-fr").addEventListener("click", function () { setLang("fr"); });
-  $("lang-en").addEventListener("click", function () { setLang("en"); });
+  $("lang-en").addEventListener("click", function () { setLang("en", true); });
+  $("lang-fr").addEventListener("click", function () { setLang("fr", true); });
   $("from").addEventListener("change", function () { state.done = false; fillTo(true); renderTyped(); renderOptions(); renderPreview(); });
   $("to").addEventListener("change", function () { state.done = false; renderTyped(); renderPreview(); if ($("to").value === TYPE) $("typed").focus(); });
   $("typed").addEventListener("input", function () { state.done = false; renderTyped(); renderPreview(); });
