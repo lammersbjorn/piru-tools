@@ -343,6 +343,7 @@
       <p lang="es">Esta página necesita JavaScript. En iPhone, la vista previa de Archivos o de Mail no lo ejecuta: abre la página en Safari o usa un ordenador.</p>
       <p lang="de">Diese Seite braucht JavaScript. Auf dem iPhone führt die Vorschau in Dateien oder Mail es nicht aus: Öffne die Seite in Safari oder nutze einen Computer.</p>
       <p lang="nl">Deze pagina heeft JavaScript nodig. Op de iPhone voert de voorvertoning in Bestanden of Mail dat niet uit: open de pagina in Safari, of gebruik een computer.</p>
+      <p lang="pt-BR">Esta página precisa de JavaScript. No iPhone, a pré-visualização do Arquivos ou do Mail não executa JavaScript: abra a página no Safari ou use um computador.</p>
     </div>
   </noscript>
 
@@ -1208,6 +1209,66 @@ var PiruUI = (function () {
         noentries: "Deze Piru-back-up bevat geen registraties in het dagboek.",
         read: "Dit bestand kon niet worden gelezen."
       }
+    },
+    "pt-BR": {
+      langLabel: "Idioma (Language)",
+      privacyLink: "Privacidade",
+      back: "← Todas as ferramentas",
+      privacy: "Funciona só neste aparelho. Nada é enviado, e seu arquivo nunca sai dele.",
+      footer: "Funciona offline. Formato de backup do Piru compatível: versão 2.",
+      siteNotice: "Oi! Estou criando o Saiko Next, um diário privado inspirado no Piru. No caminho, faço pequenas ferramentas gratuitas para quem usa o Piru e esbarra nos mesmos problemas que eu. Elas funcionam inteiramente no seu aparelho, e seu backup nunca sai dele. Este site não tem vínculo com o Piru.",
+      howTitle: "Como funciona",
+      openBtn: "Abrir seu backup do Piru",
+      exportHint: "Exporte o backup no Piru em <b>" + en(EXPORT_PATH) + "</b>, não em “" + en("Encrypted Backup") + "”. Guarde esse arquivo em segurança: é o seu caminho de volta, e esta página nunca o altera.",
+      stepExport: "No Piru, exporte em <b>" + en(EXPORT_PATH) + "</b>. Não use “" + en("Encrypted Backup") + "”: esse arquivo não pode ser lido aqui.",
+      stepKeep: "<b>Guarde esse arquivo original</b> em segurança. Ele é o seu caminho de volta, e esta página nunca o altera.",
+      stepDownload: function (f) { return "Baixe o novo arquivo (<b>" + f + "</b>)."; },
+      stepImport: "No Piru, use <b>" + en(DELETE_PATH) + "</b> e depois <b>" + en("Import…") + "</b> com o novo arquivo.",
+      whyDelete: "<b>Por que apagar tudo antes?</b> O Piru soma um backup comum aos dados que já tem e ignora só as cópias idênticas. A opção “" + en("Replace") + "” existe apenas para backups criptografados. Sem apagar antes, registros removidos continuariam lá e registros alterados apareceriam duas vezes. Apagar e depois importar funciona como “" + en("Replace") + "”.",
+      nextSteps: function (f) {
+        return "<p><b>Antes de importar</b></p><ol>" +
+          "<li>Guarde seu backup original em segurança. Ele é o seu único caminho de volta.</li>" +
+          "<li>No Piru, abra <b>" + en(DELETE_PATH) + "</b>. Isso também apaga as cópias de recuperação do próprio Piru, então faça isso só enquanto seu backup original estiver em segurança. Os dados do Apple Saúde não são afetados.</li>" +
+          "<li>Depois escolha <b>" + en("Import…") + "</b> e selecione <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "— Escolher —",
+      allSubstances: "Todas as substâncias",
+      allUnits: "Todas as unidades",
+      custom: "personalizada",
+      substance: "Substância",
+      unit: "Unidade",
+      dateFrom: "De (data)",
+      dateTo: "Até (data, inclusive)",
+      zone: "Fuso horário",
+      zoneDevice: function (z) { return z + " (este aparelho)"; },
+      narrowTitle: "Escolher datas ou registros específicos",
+      narrowAll: "Todas as datas, todos os registros marcados.",
+      narrowSome: function (n, m) { return n + " de " + m + plural(m, { one: " marcado.", other: " marcados." }); },
+      tickAll: "Marcar tudo",
+      untickAll: "Desmarcar tudo",
+      showMore: function (n) { return "Mostrar mais " + n; },
+      selected: function (n, m) { return n + " de " + m + plural(m, { one: " registro selecionado.", other: " registros selecionados." }); },
+      noMatch: "Nenhum registro corresponde a esses filtros.",
+      noSession: "sem sessão",
+      sessionOf: function (d) { return "sessão de " + d; },
+      entries: function (n) { return n + plural(n, { one: " registro", other: " registros" }); },
+      loaded: function (name, n, m) { return "Arquivo aberto, " + name + ": " + n + plural(n, { one: " registro", other: " registros" }) + ", " + m + plural(m, { one: " substância.", other: " substâncias." }); },
+      newerRead: function (v) { return "Este backup usa um formato do Piru mais novo (versão " + v + ") do que esta página conhece. Alguns detalhes podem faltar ou ser lidos errado."; },
+      more: function (n) { return "… e mais " + n + "."; },
+      unchanged: "Todo o resto do arquivo continua idêntico, byte por byte.",
+      done: function (f) { return "Baixado: " + f + ". Seu arquivo original não foi alterado."; },
+      err: {
+        encrypted: "Este é um backup criptografado, que não pode ser lido aqui. No Piru, exporte um backup comum em " + en(EXPORT_PATH) + " e abra esse arquivo.",
+        notjson: "Este arquivo não é um backup do Piru legível. Se for um backup criptografado (.piruenc), exporte um “" + en("Piru Backup") + "” comum.",
+        psylog: "Este arquivo está no formato do PsychonautWiki, não é um backup do Piru. No Piru, escolha " + en("Export… → Piru Backup") + ".",
+        legacy: "Este arquivo usa um formato antigo do Piru. Importe-o no Piru e depois exporte um novo “" + en("Piru Backup") + "”.",
+        notpiru: "Este arquivo não é um backup do Piru. Escolha o arquivo que o Piru criou com " + en("Export… → Piru Backup") + ".",
+        newer: "Este backup usa um formato do Piru mais novo do que esta ferramenta conhece (versão 2), então ela não pode editá-lo com segurança. Seu arquivo não foi alterado.",
+        repeated: "Este arquivo repete um campo dentro de um mesmo registro, algo que o Piru nunca faz. Ele pode ter sido editado à mão. Exporte um novo “" + en("Piru Backup") + "” do Piru e abra esse arquivo.",
+        empty: "Este arquivo está vazio.",
+        noentries: "Este backup do Piru não tem nenhum registro no diário.",
+        read: "Não foi possível ler este arquivo."
+      }
     }
   };
 
@@ -1870,6 +1931,33 @@ if (typeof module !== "undefined") module.exports = PiruInspect;
         longSessions: { title: function (n) { return n + PiruUI.plural(n, { one: " sessie duurt", other: " sessies duren" }) + " langer dan 24 uur"; }, text: function () { return "Langer dan Piru zelf sessies maakt. Vaak door een registratie met een verkeerde datum."; }, fix: "Oplossen met “Registraties in de tijd verschuiven”" },
         emptySessions: { title: function (n) { return n + PiruUI.plural(n, { one: " sessie heeft", other: " sessies hebben" }) + " geen registraties"; }, text: function () { return "Piru importeert ze als lege sessies."; }, fix: "Verwijderen met “Dubbelingen verwijderen”" },
         repeatedSessionIds: { title: function (n) { return n + PiruUI.plural(n, { one: " sessie herhaalt", other: " sessies herhalen" }) + " de id van een andere sessie"; }, text: function () { return "Piru voegt sessies met dezelfde id bij het importeren samen."; }, fix: null }
+      }
+    },
+    "pt-BR": {
+      title: "Inspecionar um backup do Piru",
+      subtitle: "Veja o que um backup do Piru contém e encontre possíveis problemas. Nada é alterado nem baixado.",
+      exportHint: "Exporte o backup no Piru em <b>" + U.en("Settings → Data &amp; Backup → Export… → Piru Backup") + "</b>, não em “" + U.en("Encrypted Backup") + "”.",
+      s1: "Abrir seu backup do Piru", sProblems: "Possíveis problemas", sOverview: "Visão geral", sDetails: "Detalhes por substância e via", sSubs: "Registros por substância", sRoutes: "Registros por via", sOther: "Outros dados",
+      version: "Versão do formato", app: "Exportado por", exported: "Data da exportação", notRecorded: "não registrada", range: "Registros de – até",
+      entriesL: "Registros", substancesL: "Substâncias", sessionsL: "Sessões", orphansL: "Registros sem sessão", sessionNotesL: "Notas de sessão",
+      customsL: "Substâncias personalizadas", medsL: "Medicamentos diários", stockL: "Estoque", favL: "Favoritos", quickL: "Botões de registro rápido", unitsL: "Unidades personalizadas",
+      showMore: function (n) { return "Mostrar mais " + n; },
+      noProblems: "Nenhum problema encontrado.",
+      problemsFound: function (n) { return n + PiruUI.plural(n, { one: " possível problema encontrado.", other: " possíveis problemas encontrados." }); },
+      usual: "normalmente", customCase: function (n) { return "substância personalizada escrita “" + n + "”"; },
+      readOnly: "Esta página só lê o seu arquivo. Para alterar algo, abra o mesmo arquivo na ferramenta indicada acima.",
+      p: {
+        duplicates: { title: function (n, p) { return n + PiruUI.plural(n, { one: " registro duplicado", other: " registros duplicados" }) + " em " + p.groups + PiruUI.plural(p.groups, { one: " grupo", other: " grupos" }); }, text: function () { return "Mesma substância, horário, quantidade, unidade e via, do jeito que a importação do Piru compara registros."; }, fix: "Corrija com Remover duplicados" },
+        nearDuplicates: { title: function (n) { return n + PiruUI.plural(n, { one: " possível quase duplicado", other: " possíveis quase duplicados" }); }, text: function () { return "Mesma substância, quantidade, unidade e via, registrados com menos de um minuto de diferença."; }, fix: "Confira com Remover duplicados" },
+        future: { title: function (n) { return n + PiruUI.plural(n, { one: " registro", other: " registros" }) + " muito no futuro"; }, text: function () { return "Mais de um dia depois da data da exportação (ou de hoje). Muitas vezes é uma data ou um ano errado."; }, fix: "Corrija com Ajustar o horário de registros" },
+        noTime: { title: function (n) { return n + PiruUI.plural(n, { one: " registro não tem", other: " registros não têm" }) + " horário legível"; }, text: function () { return "O Piru pode se recusar a importar este arquivo."; }, fix: "Exporte o backup de novo no Piru." },
+        zero: { title: function (n) { return n + PiruUI.plural(n, { one: " registro tem", other: " registros têm" }) + " quantidade 0"; }, text: function () { return "Não marcado como dose desconhecida."; }, fix: "Edite esses registros no Piru." },
+        negative: { title: function (n) { return n + PiruUI.plural(n, { one: " registro tem", other: " registros têm" }) + " quantidade negativa"; }, text: function () { return "Multiplicar por −1 deixa o valor positivo."; }, fix: "Corrija com Corrigir unidades (fator −1)" },
+        units: { title: function (n) { return n + PiruUI.plural(n, { one: " registro usa", other: " registros usam" }) + " uma unidade incomum para a substância"; }, text: function () { return "Usada em menos de 10 % dos registros dessa substância, ou os dois sinais de micro (µ e μ) usados para a mesma substância."; }, fix: "Corrija com Corrigir unidades" },
+        unknownSubstance: { title: function (n) { return n + PiruUI.plural(n, { one: " registro cita", other: " registros citam" }) + " uma substância que o Piru não consegue identificar"; }, text: function () { return "Nenhuma identidade da biblioteca no backup e nenhuma substância personalizada com esse nome exato. Muitas vezes é um erro de digitação ou uma substância renomeada."; }, fix: "Corrija com Mover registros para outra substância" },
+        longSessions: { title: function (n) { return n + PiruUI.plural(n, { one: " sessão dura", other: " sessões duram" }) + " mais de 24 horas"; }, text: function () { return "Mais longa do que o Piru cria sozinho. Muitas vezes causada por um registro com data errada."; }, fix: "Corrija com Ajustar o horário de registros" },
+        emptySessions: { title: function (n) { return n + PiruUI.plural(n, { one: " sessão não tem", other: " sessões não têm" }) + " nenhum registro"; }, text: function () { return "O Piru as importa como sessões vazias."; }, fix: "Remova com Remover duplicados" },
+        repeatedSessionIds: { title: function (n) { return n + PiruUI.plural(n, { one: " sessão repete", other: " sessões repetem" }) + " o id de outra sessão"; }, text: function () { return "Na importação, o Piru junta as sessões que têm o mesmo id."; }, fix: null }
       }
     }
   }, function () { render(); });

@@ -343,6 +343,7 @@
       <p lang="es">Esta página necesita JavaScript. En iPhone, la vista previa de Archivos o de Mail no lo ejecuta: abre la página en Safari o usa un ordenador.</p>
       <p lang="de">Diese Seite braucht JavaScript. Auf dem iPhone führt die Vorschau in Dateien oder Mail es nicht aus: Öffne die Seite in Safari oder nutze einen Computer.</p>
       <p lang="nl">Deze pagina heeft JavaScript nodig. Op de iPhone voert de voorvertoning in Bestanden of Mail dat niet uit: open de pagina in Safari, of gebruik een computer.</p>
+      <p lang="pt-BR">Esta página precisa de JavaScript. No iPhone, a pré-visualização do Arquivos ou do Mail não executa JavaScript: abra a página no Safari ou use um computador.</p>
     </div>
   </noscript>
 
@@ -1235,6 +1236,66 @@ var PiruUI = (function () {
         noentries: "Deze Piru-back-up bevat geen registraties in het dagboek.",
         read: "Dit bestand kon niet worden gelezen."
       }
+    },
+    "pt-BR": {
+      langLabel: "Idioma (Language)",
+      privacyLink: "Privacidade",
+      back: "← Todas as ferramentas",
+      privacy: "Funciona só neste aparelho. Nada é enviado, e seu arquivo nunca sai dele.",
+      footer: "Funciona offline. Formato de backup do Piru compatível: versão 2.",
+      siteNotice: "Oi! Estou criando o Saiko Next, um diário privado inspirado no Piru. No caminho, faço pequenas ferramentas gratuitas para quem usa o Piru e esbarra nos mesmos problemas que eu. Elas funcionam inteiramente no seu aparelho, e seu backup nunca sai dele. Este site não tem vínculo com o Piru.",
+      howTitle: "Como funciona",
+      openBtn: "Abrir seu backup do Piru",
+      exportHint: "Exporte o backup no Piru em <b>" + en(EXPORT_PATH) + "</b>, não em “" + en("Encrypted Backup") + "”. Guarde esse arquivo em segurança: é o seu caminho de volta, e esta página nunca o altera.",
+      stepExport: "No Piru, exporte em <b>" + en(EXPORT_PATH) + "</b>. Não use “" + en("Encrypted Backup") + "”: esse arquivo não pode ser lido aqui.",
+      stepKeep: "<b>Guarde esse arquivo original</b> em segurança. Ele é o seu caminho de volta, e esta página nunca o altera.",
+      stepDownload: function (f) { return "Baixe o novo arquivo (<b>" + f + "</b>)."; },
+      stepImport: "No Piru, use <b>" + en(DELETE_PATH) + "</b> e depois <b>" + en("Import…") + "</b> com o novo arquivo.",
+      whyDelete: "<b>Por que apagar tudo antes?</b> O Piru soma um backup comum aos dados que já tem e ignora só as cópias idênticas. A opção “" + en("Replace") + "” existe apenas para backups criptografados. Sem apagar antes, registros removidos continuariam lá e registros alterados apareceriam duas vezes. Apagar e depois importar funciona como “" + en("Replace") + "”.",
+      nextSteps: function (f) {
+        return "<p><b>Antes de importar</b></p><ol>" +
+          "<li>Guarde seu backup original em segurança. Ele é o seu único caminho de volta.</li>" +
+          "<li>No Piru, abra <b>" + en(DELETE_PATH) + "</b>. Isso também apaga as cópias de recuperação do próprio Piru, então faça isso só enquanto seu backup original estiver em segurança. Os dados do Apple Saúde não são afetados.</li>" +
+          "<li>Depois escolha <b>" + en("Import…") + "</b> e selecione <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "— Escolher —",
+      allSubstances: "Todas as substâncias",
+      allUnits: "Todas as unidades",
+      custom: "personalizada",
+      substance: "Substância",
+      unit: "Unidade",
+      dateFrom: "De (data)",
+      dateTo: "Até (data, inclusive)",
+      zone: "Fuso horário",
+      zoneDevice: function (z) { return z + " (este aparelho)"; },
+      narrowTitle: "Escolher datas ou registros específicos",
+      narrowAll: "Todas as datas, todos os registros marcados.",
+      narrowSome: function (n, m) { return n + " de " + m + plural(m, { one: " marcado.", other: " marcados." }); },
+      tickAll: "Marcar tudo",
+      untickAll: "Desmarcar tudo",
+      showMore: function (n) { return "Mostrar mais " + n; },
+      selected: function (n, m) { return n + " de " + m + plural(m, { one: " registro selecionado.", other: " registros selecionados." }); },
+      noMatch: "Nenhum registro corresponde a esses filtros.",
+      noSession: "sem sessão",
+      sessionOf: function (d) { return "sessão de " + d; },
+      entries: function (n) { return n + plural(n, { one: " registro", other: " registros" }); },
+      loaded: function (name, n, m) { return "Arquivo aberto, " + name + ": " + n + plural(n, { one: " registro", other: " registros" }) + ", " + m + plural(m, { one: " substância.", other: " substâncias." }); },
+      newerRead: function (v) { return "Este backup usa um formato do Piru mais novo (versão " + v + ") do que esta página conhece. Alguns detalhes podem faltar ou ser lidos errado."; },
+      more: function (n) { return "… e mais " + n + "."; },
+      unchanged: "Todo o resto do arquivo continua idêntico, byte por byte.",
+      done: function (f) { return "Baixado: " + f + ". Seu arquivo original não foi alterado."; },
+      err: {
+        encrypted: "Este é um backup criptografado, que não pode ser lido aqui. No Piru, exporte um backup comum em " + en(EXPORT_PATH) + " e abra esse arquivo.",
+        notjson: "Este arquivo não é um backup do Piru legível. Se for um backup criptografado (.piruenc), exporte um “" + en("Piru Backup") + "” comum.",
+        psylog: "Este arquivo está no formato do PsychonautWiki, não é um backup do Piru. No Piru, escolha " + en("Export… → Piru Backup") + ".",
+        legacy: "Este arquivo usa um formato antigo do Piru. Importe-o no Piru e depois exporte um novo “" + en("Piru Backup") + "”.",
+        notpiru: "Este arquivo não é um backup do Piru. Escolha o arquivo que o Piru criou com " + en("Export… → Piru Backup") + ".",
+        newer: "Este backup usa um formato do Piru mais novo do que esta ferramenta conhece (versão 2), então ela não pode editá-lo com segurança. Seu arquivo não foi alterado.",
+        repeated: "Este arquivo repete um campo dentro de um mesmo registro, algo que o Piru nunca faz. Ele pode ter sido editado à mão. Exporte um novo “" + en("Piru Backup") + "” do Piru e abra esse arquivo.",
+        empty: "Este arquivo está vazio.",
+        noentries: "Este backup do Piru não tem nenhum registro no diário.",
+        read: "Não foi possível ler este arquivo."
+      }
     }
   };
 
@@ -1935,6 +1996,36 @@ if (typeof module !== "undefined") module.exports = PiruTime;
       showMore: function (n) { return "Nog " + n + " tonen"; },
       format: "Tijden worden geschreven zoals Piru ze opslaat (milliseconden sinds 1970, UTC), en elke verschoven sessie begint bij haar vroegste registratie, zoals Piru bij het importeren doet.",
       downloadBtn: "Verschoven back-up downloaden"
+    },
+    "pt-BR": {
+      title: "Ajustar o horário de registros do Piru",
+      subtitle: "Mova registros algumas horas e minutos, ou para outra data, por exemplo depois de um relógio ou fuso horário errado.",
+      fileName: FILE,
+      stepDo: "Abra o arquivo aqui, escolha os registros e o ajuste, e confira cada antes e depois.",
+      s1: "1. Abrir seu backup do Piru", s2: "2. Escolher os registros", s3: "3. Escolher o ajuste", s4: "4. Conferir e baixar",
+      zoneHint: "As datas e horários aqui aparecem neste fuso, e os filtros de data e “Mover para outra data” também o usam. O Piru guarda cada horário como um instante, sem depender de fuso horário.",
+      modeShift: "Mover algumas horas e minutos",
+      modeShiftHint: "Uma duração exata. Se passar por uma mudança de horário de verão, o horário no relógio muda uma hora a mais ou a menos.",
+      modeDate: "Mover para outra data",
+      modeDateHint: "Mantém o horário de cada registro. O registro selecionado mais antigo vai para a nova data; os outros se movem o mesmo número de dias.",
+      direction: "Sentido", later: "Mais tarde", earlier: "Mais cedo", hours: "Horas", minutes: "Minutos", newDate: "Nova data",
+      badShift: "Digite horas e minutos inteiros, como 2 e 30.",
+      shiftNotes: "Mover também as notas das sessões em que todos os registros se movem",
+      willMove: function (n) { return n + PiruUI.plural(n, { one: " registro será movido.", other: " registros serão movidos." }); },
+      byDays: function (d) { return d === 0 ? "Mesma data: nada se move." : (d > 0 ? "Movido " + d + PiruUI.plural(d, { one: " dia para depois.", other: " dias para depois." }) : "Movido " + (-d) + PiruUI.plural(-d, { one: " dia para antes.", other: " dias para antes." })); },
+      shownIn: function (z) { return "Horários mostrados no fuso " + z + ", com a diferença em relação ao UTC."; },
+      invalid: function (n) { return n + PiruUI.plural(n, { one: " registro ficaria", other: " registros ficariam" }) + " antes de 1970 ou depois de 2100. Confira o ajuste: não é possível baixar assim."; },
+      gaps: function (n) { return n + PiruUI.plural(n, { one: " registro cai em um horário pulado pela mudança do horário de verão, então ele avança", other: " registros caem em um horário pulado pela mudança do horário de verão, então eles avançam" }) + " o tamanho do salto (normalmente uma hora)."; },
+      dupes: function (n) { return n + PiruUI.plural(n, { one: " registro movido fica idêntico", other: " registros movidos ficam idênticos" }) + " a outro registro (mesma substância, horário, quantidade, unidade e via). O Piru vai importar só um de cada."; },
+      crosses: function (n) { return n + PiruUI.plural(n, { one: " registro movido cai dentro do período de outra sessão. Ele continua na própria sessão", other: " registros movidos caem dentro do período de outra sessão. Eles continuam na própria sessão" }) + ", então as duas sessões vão se sobrepor no Piru."; },
+      longSessions: function (n) { return n + PiruUI.plural(n, { one: " sessão vai durar", other: " sessões vão durar" }) + " mais de 24 horas, mais do que o Piru cria sozinho. Confira o ajuste."; },
+      future: function (n) { return n + PiruUI.plural(n, { one: " registro vai", other: " registros vão" }) + " para o futuro."; },
+      notesToo: function (n) { return "As notas de " + n + PiruUI.plural(n, { one: " sessão também se movem.", other: " sessões também se movem." }); },
+      noTime: function (n) { return n + PiruUI.plural(n, { one: " registro selecionado não tem horário e fica como está.", other: " registros selecionados não têm horário e ficam como estão." }); },
+      flag: "conferir", becomes: "vira",
+      showMore: function (n) { return "Mostrar mais " + n; },
+      format: "Os horários são gravados como o Piru os guarda (milissegundos desde 1970, UTC), e cada sessão movida começa no seu registro mais antigo, como o Piru faz na importação.",
+      downloadBtn: "Baixar o backup ajustado"
     }
   }, function () { render(); });
 

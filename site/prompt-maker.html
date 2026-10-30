@@ -359,6 +359,7 @@
       <p lang="es">Esta página necesita JavaScript. En iPhone, la vista previa de Archivos o de Mail no lo ejecuta: abre la página en Safari o usa un ordenador.</p>
       <p lang="de">Diese Seite braucht JavaScript. Auf dem iPhone führt die Vorschau in Dateien oder Mail es nicht aus: Öffne die Seite in Safari oder nutze einen Computer.</p>
       <p lang="nl">Deze pagina heeft JavaScript nodig. Op de iPhone voert de voorvertoning in Bestanden of Mail dat niet uit: open de pagina in Safari, of gebruik een computer.</p>
+      <p lang="pt-BR">Esta página precisa de JavaScript. No iPhone, a pré-visualização do Arquivos ou do Mail não executa JavaScript: abra a página no Safari ou use um computador.</p>
     </div>
   </noscript>
 
@@ -1255,6 +1256,66 @@ var PiruUI = (function () {
         noentries: "Deze Piru-back-up bevat geen registraties in het dagboek.",
         read: "Dit bestand kon niet worden gelezen."
       }
+    },
+    "pt-BR": {
+      langLabel: "Idioma (Language)",
+      privacyLink: "Privacidade",
+      back: "← Todas as ferramentas",
+      privacy: "Funciona só neste aparelho. Nada é enviado, e seu arquivo nunca sai dele.",
+      footer: "Funciona offline. Formato de backup do Piru compatível: versão 2.",
+      siteNotice: "Oi! Estou criando o Saiko Next, um diário privado inspirado no Piru. No caminho, faço pequenas ferramentas gratuitas para quem usa o Piru e esbarra nos mesmos problemas que eu. Elas funcionam inteiramente no seu aparelho, e seu backup nunca sai dele. Este site não tem vínculo com o Piru.",
+      howTitle: "Como funciona",
+      openBtn: "Abrir seu backup do Piru",
+      exportHint: "Exporte o backup no Piru em <b>" + en(EXPORT_PATH) + "</b>, não em “" + en("Encrypted Backup") + "”. Guarde esse arquivo em segurança: é o seu caminho de volta, e esta página nunca o altera.",
+      stepExport: "No Piru, exporte em <b>" + en(EXPORT_PATH) + "</b>. Não use “" + en("Encrypted Backup") + "”: esse arquivo não pode ser lido aqui.",
+      stepKeep: "<b>Guarde esse arquivo original</b> em segurança. Ele é o seu caminho de volta, e esta página nunca o altera.",
+      stepDownload: function (f) { return "Baixe o novo arquivo (<b>" + f + "</b>)."; },
+      stepImport: "No Piru, use <b>" + en(DELETE_PATH) + "</b> e depois <b>" + en("Import…") + "</b> com o novo arquivo.",
+      whyDelete: "<b>Por que apagar tudo antes?</b> O Piru soma um backup comum aos dados que já tem e ignora só as cópias idênticas. A opção “" + en("Replace") + "” existe apenas para backups criptografados. Sem apagar antes, registros removidos continuariam lá e registros alterados apareceriam duas vezes. Apagar e depois importar funciona como “" + en("Replace") + "”.",
+      nextSteps: function (f) {
+        return "<p><b>Antes de importar</b></p><ol>" +
+          "<li>Guarde seu backup original em segurança. Ele é o seu único caminho de volta.</li>" +
+          "<li>No Piru, abra <b>" + en(DELETE_PATH) + "</b>. Isso também apaga as cópias de recuperação do próprio Piru, então faça isso só enquanto seu backup original estiver em segurança. Os dados do Apple Saúde não são afetados.</li>" +
+          "<li>Depois escolha <b>" + en("Import…") + "</b> e selecione <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "— Escolher —",
+      allSubstances: "Todas as substâncias",
+      allUnits: "Todas as unidades",
+      custom: "personalizada",
+      substance: "Substância",
+      unit: "Unidade",
+      dateFrom: "De (data)",
+      dateTo: "Até (data, inclusive)",
+      zone: "Fuso horário",
+      zoneDevice: function (z) { return z + " (este aparelho)"; },
+      narrowTitle: "Escolher datas ou registros específicos",
+      narrowAll: "Todas as datas, todos os registros marcados.",
+      narrowSome: function (n, m) { return n + " de " + m + plural(m, { one: " marcado.", other: " marcados." }); },
+      tickAll: "Marcar tudo",
+      untickAll: "Desmarcar tudo",
+      showMore: function (n) { return "Mostrar mais " + n; },
+      selected: function (n, m) { return n + " de " + m + plural(m, { one: " registro selecionado.", other: " registros selecionados." }); },
+      noMatch: "Nenhum registro corresponde a esses filtros.",
+      noSession: "sem sessão",
+      sessionOf: function (d) { return "sessão de " + d; },
+      entries: function (n) { return n + plural(n, { one: " registro", other: " registros" }); },
+      loaded: function (name, n, m) { return "Arquivo aberto, " + name + ": " + n + plural(n, { one: " registro", other: " registros" }) + ", " + m + plural(m, { one: " substância.", other: " substâncias." }); },
+      newerRead: function (v) { return "Este backup usa um formato do Piru mais novo (versão " + v + ") do que esta página conhece. Alguns detalhes podem faltar ou ser lidos errado."; },
+      more: function (n) { return "… e mais " + n + "."; },
+      unchanged: "Todo o resto do arquivo continua idêntico, byte por byte.",
+      done: function (f) { return "Baixado: " + f + ". Seu arquivo original não foi alterado."; },
+      err: {
+        encrypted: "Este é um backup criptografado, que não pode ser lido aqui. No Piru, exporte um backup comum em " + en(EXPORT_PATH) + " e abra esse arquivo.",
+        notjson: "Este arquivo não é um backup do Piru legível. Se for um backup criptografado (.piruenc), exporte um “" + en("Piru Backup") + "” comum.",
+        psylog: "Este arquivo está no formato do PsychonautWiki, não é um backup do Piru. No Piru, escolha " + en("Export… → Piru Backup") + ".",
+        legacy: "Este arquivo usa um formato antigo do Piru. Importe-o no Piru e depois exporte um novo “" + en("Piru Backup") + "”.",
+        notpiru: "Este arquivo não é um backup do Piru. Escolha o arquivo que o Piru criou com " + en("Export… → Piru Backup") + ".",
+        newer: "Este backup usa um formato do Piru mais novo do que esta ferramenta conhece (versão 2), então ela não pode editá-lo com segurança. Seu arquivo não foi alterado.",
+        repeated: "Este arquivo repete um campo dentro de um mesmo registro, algo que o Piru nunca faz. Ele pode ter sido editado à mão. Exporte um novo “" + en("Piru Backup") + "” do Piru e abra esse arquivo.",
+        empty: "Este arquivo está vazio.",
+        noentries: "Este backup do Piru não tem nenhum registro no diário.",
+        read: "Não foi possível ler este arquivo."
+      }
     }
   };
 
@@ -2090,6 +2151,56 @@ if (typeof module !== "undefined") module.exports = PiruPrompt;
         "<li>Plak de prompt en verstuur hem.</li>" +
         "<li>Bekijk het plan van de assistent voordat die code schrijft, en vraag om aanpassingen waar je het niet mee eens bent.</li>" +
         "<li>Controleer de pull request zelf voordat die wordt ingediend: de wijzigingen, de tests en de screenshots.</li>"
+    },
+    "pt-BR": {
+      title: "Criar um prompt para contribuir",
+      subtitle: "Monte um prompt pronto para colar no seu assistente de programação com IA, para levar um recurso ao Piru ou adicionar uma ferramenta a este site.",
+      privacy: "Funciona só neste aparelho. Nada do que você digita aqui é enviado.",
+      rulesTitle: "Antes de começar",
+      rules: "<li>Envie um pull request pequeno por ferramenta ou recurso.</li>" +
+        "<li>Teste antes na sua própria cópia, com dados inventados, nunca com o seu diário de verdade.</li>" +
+        "<li>Quem decide o que entra no Piru é o desenvolvedor do Piru.</li>" +
+        "<li>Quando o Piru incluir uma ferramenta, abra uma issue ou um pull request em <b>lammersbjorn/piru-tools</b> para que ela seja retirada deste site.</li>",
+      sKind: "O que você quer criar?",
+      kindTool: "Levar uma ferramenta existente para o Piru",
+      kindToolSub: "Um pull request para o Piru que coloca uma destas ferramentas dentro do app.",
+      kindPiru: "Adicionar algo novo ao Piru",
+      kindPiruSub: "Um pull request para o Piru com um recurso que você descreve.",
+      kindSite: "Adicionar uma nova ferramenta a este site",
+      kindSiteSub: "Um pull request para lammersbjorn/piru-tools com uma ferramenta que está faltando para você.",
+      toolLabel: "Qual ferramenta?",
+      toolNames: {
+        inspector: "Inspecionar um backup", "move-substance": "Mover registros para outra substância",
+        duplicates: "Remover duplicados", "unit-fixer": "Corrigir unidades",
+        "time-shift": "Ajustar o horário de registros", "split-out": "Separar registros"
+      },
+      textPiru: "Descreva o recurso",
+      textSite: "Descreva a ferramenta que está faltando",
+      textHint: "Uma ou duas frases bastam. O prompt é em inglês, então escrever em inglês aqui funciona melhor.",
+      sAgent: "Qual assistente?",
+      agentHint: "Isso só muda pequenos detalhes do texto, como o jeito de rodar os testes.",
+      agentOther: "Outro assistente",
+      sPlatform: "Plataformas",
+      platIos: "Só iOS",
+      platIosSub: "A mudança fica só no app para iOS.",
+      platBoth: "iOS e Android",
+      platBothSub: "O assistente primeiro verifica se o Piru tem um app para Android e só cria para os dois se tiver.",
+      sExtras: "Extras opcionais",
+      detailsLabel: "Mais alguma coisa que o assistente deve saber? (opcional)",
+      detailsHint: "Por exemplo, onde o recurso deve ficar ou um caso que ele precisa tratar.",
+      selfTest: "Vou testar na minha própria cópia com dados inventados",
+      selfTestSub: "O assistente para antes do pull request para você testar primeiro.",
+      sResult: "Seu prompt",
+      promptLabel: "Prompt pronto para colar (em inglês)",
+      copyBtn: "Copiar o prompt",
+      copied: "Copiado",
+      copyManual: "Não foi possível copiar aqui. O prompt está selecionado: copie-o com o comando de copiar do seu aparelho.",
+      ready: "Seu prompt está pronto na última etapa.",
+      howUseTitle: "Como usar",
+      howUse: "<li>Abra seu assistente de programação com IA em uma pasta nova e vazia.</li>" +
+        "<li>Cole o prompt e envie.</li>" +
+        "<li>Revise o plano dele antes que ele escreva código, e peça mudanças onde não concordar.</li>" +
+        "<li>Confira você mesmo o pull request antes de ele ser enviado: as mudanças, os testes e as capturas de tela.</li>"
     }
   }, function () { fillTools(); update(); });
 })();
