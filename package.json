@@ -1,0 +1,23 @@
+{
+  "name": "piru-tools",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Offline single-page tools for Piru backups. The pages in site/ have no build step and no runtime dependencies.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lammersbjorn/piru-tools.git"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node tests/logic.test.js && node tests/kbd.js",
+    "test:e2e": "node tests/e2e.js",
+    "check": "node tests/check.js"
+  },
+  "devDependencies": {
+    "axe-core": "4.14.0",
+    "playwright": "1.64.1"
+  }
+}

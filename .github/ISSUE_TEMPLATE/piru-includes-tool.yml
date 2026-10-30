@@ -1,0 +1,36 @@
+name: Piru now includes this tool
+description: Piru merged a feature that replaces a tool here, so the tool can be removed.
+title: "Piru now includes: "
+labels: ["piru-merged"]
+body:
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Tool
+      options:
+        - Inspect a backup
+        - Move entries to another substance
+        - Remove duplicates
+        - Fix units
+        - Shift entries in time
+        - Split out entries
+    validations:
+      required: true
+  - type: input
+    id: piru-pr
+    attributes:
+      label: Merged Piru pull request
+      description: The link to the merged pull request on kageroumado/piru.
+      placeholder: https://github.com/kageroumado/piru/pull/123
+    validations:
+      required: true
+  - type: input
+    id: release
+    attributes:
+      label: Piru release
+      description: The first Piru version that includes it, if it has shipped.
+  - type: textarea
+    id: differences
+    attributes:
+      label: Differences
+      description: Anything the tool here does that Piru's version doesn't, so people can still be pointed to it until then.

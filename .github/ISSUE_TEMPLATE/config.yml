@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a data-corrupting bug privately
+    url: https://github.com/lammersbjorn/piru-tools/security/advisories/new
+    about: A tool changed, lost or exposed data. Report it privately, without a real backup.
+  - name: Piru itself
+    url: https://github.com/kageroumado/piru/issues
+    about: Problems with the Piru app belong in Piru's own repository.

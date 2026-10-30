@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Checks the commit header against the Conventional Commits rules in
+# CONTRIBUTING.md. Enable with:
+#   git config core.hooksPath .githooks
+set -euo pipefail
+# Byte-wise matching, so macOS and Linux runners agree whatever their locale.
+export LC_ALL=C
+
+header="$(grep -v '^#' "$1" | sed -n '/[^[:space:]]/{p;q;}')"
+
+# Git-generated headers pass unchanged.
+case "$header" in
+  "Merge "* | "Revert \""* | "fixup! "* | "squash! "* | "amend! "*) exit 0 ;;
+esac
+
+types='feat|fix|docs|test|refactor|perf|build|ci|chore|revert'
+pattern="^($types)(\([a-z0-9-]+\))?!?: [^[:space:]].*[^.[:space:]]$"
+
+if [[ ! "$header" =~ $pattern ]]; then
+  {
+    echo "commit-msg: header does not follow Conventional Commits:"
+    echo "  $header"
+    echo "Expected: type(scope): subject   with type one of: ${types//|/, }"
+    echo "No trailing period. See CONTRIBUTING.md."
+  } >&2
+  exit 1
+fi
+
+# Count UTF-8 characters, not bytes, whatever the runner's locale is.
+length="$(printf '%s' "$header" | tr -d '\200-\277' | wc -c | tr -d ' ')"
+if (( length > 72 )); then
+  echo "commit-msg: header is $length characters; keep it at 72 or fewer." >&2
+  exit 1
+fi

@@ -1,0 +1,27 @@
+name: Tool request
+description: A fix or check you need for a Piru backup.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If Piru could do this itself, that is often the better place. See [CONTRIBUTING.md](https://github.com/lammersbjorn/piru-tools/blob/main/CONTRIBUTING.md) and the [prompt maker](https://lammersbjorn.github.io/piru-tools/prompt-maker.html).
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would help
+      description: What you were trying to do with your backup, and what got in the way. Describe the problem before a solution.
+    validations:
+      required: true
+  - type: textarea
+    id: piru
+    attributes:
+      label: In Piru
+      description: Can Piru do any of this today? Is there a Piru issue or pull request about it?
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: This request contains no real backup, journal entries or screenshots of them.
+          required: true
