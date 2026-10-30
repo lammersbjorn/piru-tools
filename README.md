@@ -1,7 +1,14 @@
 # Piru tools
 
-Small offline helpers for Piru users. They run entirely in your browser; nothing is uploaded.
+Small free helpers for Piru backups. They run entirely in your browser; nothing is uploaded.
 
-- [Move entries to another substance](https://lammersbjorn.github.io/piru-tools/): fix entries logged under the wrong substance in a Piru backup.
+Open: https://lammersbjorn.github.io/piru-tools/
+
+- Inspect a backup (read-only)
+- Move entries to another substance
+- Remove duplicates
+- Fix units
+- Shift entries in time
+- Split out entries
 
 Not affiliated with Piru.
