@@ -307,6 +307,43 @@
     --g-info: var(--g-caution);
   }
 </style>
+<style id="page-style">
+  /* This page only: the contribute entry and the one-time contribute card. */
+  a.tool .tool-tag { display: inline-block; margin-bottom: 4px; font-size: 0.75rem; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--tint-wash); color: var(--tint); }
+  .contrib { position: relative; padding-top: 14px; }
+  .contrib h2 { font-family: var(--rounded); font-size: 1.25rem; margin: 0 52px 8px 0; }
+  .contrib p { font-size: 0.9375rem; }
+  .contrib .btn-row { margin: 12px 0; }
+  .contrib a.btn { text-decoration: none; }
+  .contrib .fine { font-size: 0.8125rem; color: var(--text-2); margin-top: 4px; }
+  .contrib-close {
+    position: absolute; top: 4px; right: 4px; width: 44px; height: 44px; border: 0; border-radius: 999px;
+    background: transparent; color: var(--text-2); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .contrib-close::before {
+    content: ""; width: 14px; height: 14px; background: currentColor;
+    -webkit-mask: var(--g-close) center / contain no-repeat; mask: var(--g-close) center / contain no-repeat;
+  }
+  .contrib-close:hover { background: var(--raised); color: var(--text); }
+  .copy-status { margin: 0; font-size: 0.9375rem; color: var(--success); font-weight: 600; min-height: 0; }
+  .copy-status:empty { display: none; }
+  textarea {
+    display: block; width: 100%; min-width: 0; padding: 12px 14px; color: var(--text); background: var(--raised);
+    border: 1px solid transparent; border-radius: var(--radius-inner); resize: vertical;
+    font: 0.8125rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  textarea:focus-visible { outline: 0; border-color: var(--tint); box-shadow: 0 0 0 3px var(--tint-wash); }
+  /* Floating: a card that slides up from the bottom edge, non-modal. */
+  .contrib.floating {
+    position: fixed; z-index: 10; left: 0; right: 0; bottom: max(12px, env(safe-area-inset-bottom));
+    width: auto; max-width: 640px; margin: 0 max(12px, env(safe-area-inset-left)) 0 max(12px, env(safe-area-inset-right));
+    max-height: calc(100vh - 24px); overflow-y: auto; border-color: var(--separator);
+    box-shadow: 0 12px 40px rgb(0 0 0 / 0.28); transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease;
+  }
+  @media (min-width: 664px) { .contrib.floating { margin-left: auto; margin-right: auto; } }
+  .contrib.floating.off { transform: translateY(calc(100% + 24px)); opacity: 0; }
+  :root { --g-close: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M4 4l12 12M16 4 4 16'/%3E%3C/svg%3E"); }
+</style>
 </head>
 <body>
 <header class="topbar">
@@ -337,8 +374,27 @@
       <li><a class="tool" href="unit-fixer.html"><span class="tool-text"><span class="tool-name" data-i18n="unitName"></span><span class="tool-desc" data-i18n="unitDesc"></span></span></a></li>
       <li><a class="tool" href="time-shift.html"><span class="tool-text"><span class="tool-name" data-i18n="timeName"></span><span class="tool-desc" data-i18n="timeDesc"></span></span></a></li>
       <li><a class="tool" href="split-out.html"><span class="tool-text"><span class="tool-name" data-i18n="splitName"></span><span class="tool-desc" data-i18n="splitDesc"></span></span></a></li>
+      <li><a class="tool" id="contrib-link" href="prompt-maker.html"><span class="tool-text"><span class="tool-tag" data-i18n="contribTag"></span><span class="tool-name" data-i18n="promptName"></span><span class="tool-desc" data-i18n="promptDesc"></span></span></a></li>
     </ul>
   </nav>
+
+  <!-- Shown once per visitor (localStorage). Without storage it stays in the page flow instead. -->
+  <section class="card contrib hidden" id="contrib" role="dialog" aria-labelledby="contrib-title" aria-describedby="contrib-body">
+    <button type="button" class="contrib-close" id="contrib-close"></button>
+    <h2 id="contrib-title" data-i18n="contribTitle"></h2>
+    <p id="contrib-body" data-i18n="contribBody"></p>
+    <div class="btn-row">
+      <a class="btn small" href="prompt-maker.html" id="contrib-make" data-i18n="contribMake"></a>
+      <button type="button" class="btn small secondary" id="contrib-copy" data-i18n="contribCopy"></button>
+      <button type="button" class="btn small secondary" id="contrib-later" data-i18n="contribLater"></button>
+    </div>
+    <p class="copy-status" id="contrib-status" role="status" aria-live="polite"></p>
+    <div class="hidden" id="contrib-fallback">
+      <label class="field" for="contrib-text" data-i18n="copyFallback"></label>
+      <textarea id="contrib-text" rows="6" readonly></textarea>
+    </div>
+    <p class="fine" data-i18n="contribFine"></p>
+  </section>
 </main>
 
 <footer>
@@ -1211,10 +1267,216 @@ var PiruUI = (function () {
 })();
 </script>
 
+<script id="prompt-logic">
+"use strict";
+// Contribution prompts (same block on index.html and prompt-maker.html). Pure logic: no DOM access.
+// The prompt is plain text. User text is cleaned here and only ever shown as text, never as HTML.
+var PiruPrompt = (function () {
+  var PIRU_REPO = "https://github.com/kageroumado/piru";
+  var TOOLS_REPO = "https://github.com/lammersbjorn/piru-tools";
+  var TOOLS_SITE = "https://lammersbjorn.github.io/piru-tools/";
+  var MAX_TEXT = 2000;
+  var TOOLS = [
+    { id: "inspector", name: "Inspect a backup", page: "inspector.html", what: "show what the journal contains and flag possible problems, without changing anything" },
+    { id: "move-substance", name: "Move entries to another substance", page: "move-substance.html", what: "move doses that were logged under the wrong substance to the right one" },
+    { id: "duplicates", name: "Remove duplicates", page: "duplicates.html", what: "find entries logged twice and keep one of each" },
+    { id: "unit-fixer", name: "Fix units", page: "unit-fixer.html", what: "convert entries between units, or fix an amount logged in the wrong unit" },
+    { id: "time-shift", name: "Shift entries in time", page: "time-shift.html", what: "move entries by hours and minutes, or to another date, for example after a wrong clock or time zone" },
+    { id: "split-out", name: "Split out entries", page: "split-out.html", what: "move chosen entries, such as a friend's, out of the journal into a separate backup" }
+  ];
+  var RULES = "README, any CONTRIBUTING, AGENTS.md or CLAUDE.md";
+  // Only small wording changes per assistant; no claims about features an assistant may lack.
+  var AGENTS = {
+    claude: { rules: RULES, run: "Run the build and the tests yourself in the terminal and show me the results.", runTests: "Run the tests yourself in the terminal and show me the results." },
+    codex: { rules: RULES, run: "Run the build and the tests yourself and show me the results. If you can't run them where you are, for example without Xcode or network access, tell me the exact commands to run instead.", runTests: "Run the tests yourself and show me the results. If you can't run them where you are, tell me the exact commands to run instead." },
+    cursor: { rules: "README, any CONTRIBUTING, AGENTS.md, CLAUDE.md or Cursor rules (.cursor/rules)", run: "Run the build and the tests in the terminal and show me the results.", runTests: "Run the tests in the terminal and show me the results." },
+    other: { rules: RULES, run: "Run the build and the tests yourself if you can; otherwise tell me the exact commands to run.", runTests: "Run the tests yourself if you can; otherwise tell me the exact commands to run." }
+  };
+  var PLATFORM = {
+    ios: "Platform: iOS only. Leave any other platform's code untouched.",
+    both: "Platforms: iOS and Android. First check whether the Piru repository contains an Android app. If it does, build the feature on both, with the same behaviour, following each platform's own patterns. If it doesn't, build it for iOS only and say so in the pull request."
+  };
+
+  function tool(id) { for (var j = 0; j < TOOLS.length; j++) if (TOOLS[j].id === id) return TOOLS[j]; return null; }
+
+  // Free text as plain prompt text: no control or direction-override characters, no runs of
+  // blank lines, at most MAX_TEXT characters.
+  function clean(s) {
+    s = String(s == null ? "" : s).replace(/\r\n?/g, "\n").replace(/\t/g, "  ");
+    s = s.replace(/[\u0000-\u0009\u000B-\u001F\u007F-\u009F؜‎‏‪-‮⁦-⁩]/g, "");
+    s = s.replace(/[  ]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+    var chars = Array.from(s);
+    if (chars.length > MAX_TEXT) s = chars.slice(0, MAX_TEXT).join("").trim() + " …";
+    return s;
+  }
+  // Continuation lines are indented so multi-line text stays inside its field.
+  function indent(s) { return s.split("\n").map(function (l, k) { return k && l ? "  " + l : l; }).join("\n"); }
+
+  function workWithMe(o, piru) {
+    var a = AGENTS[o.agent] || AGENTS.other;
+    var L = ["", "How to work with me:",
+      "- Before writing code, show me your plan and wait for my go-ahead.",
+      "- " + (piru ? a.run : a.runTests)];
+    if (o.selfTest) L.push(piru
+      ? "- I will test it on my own copy of Piru with synthetic data before the pull request is opened. When the feature works, stop, give me short steps to install your build and test it, and wait for my go-ahead."
+      : "- I will test the page on my own copy with made-up backups before the pull request is opened. When it works, stop, tell me how to open it locally, and wait for my go-ahead.");
+    L.push("- Show me the pull request title and description before you open it. Open it from my fork with the GitHub CLI (gh pr create) if it is installed and signed in; otherwise tell me how to open it on github.com.");
+    return L;
+  }
+
+  // o: { kind: "tool" | "piru" | "site", tool, text, agent, platform: "ios" | "both", details, selfTest }
+  function piruPrompt(o) {
+    var t = o.kind === "tool" ? tool(o.tool) : null, isTool = o.kind === "tool";
+    var a = AGENTS[o.agent] || AGENTS.other;
+    var feature = isTool
+      ? (t ? t.name + ": " + t.what + ". Matching page: " + t.page + "."
+           : "[Name one tool from " + TOOLS_SITE + " here, for example “Remove duplicates”.]")
+      : (clean(o.text) ? indent(clean(o.text)) : "[Describe the feature here.]");
+    var details = clean(o.details);
+    var L = [
+      "You are contributing a feature to Piru, an open-source substance journal app (" + PIRU_REPO + "). Your goal is one small, high-quality pull request that the maintainer would be happy to merge.",
+      "",
+      "Feature to build: " + feature
+    ];
+    if (details) L.push("", "Details from me: " + indent(details));
+    L.push("");
+    if (isTool) L.push("Reference implementation: " + TOOLS_REPO + " (MIT licensed, offline web tools that do this on exported Piru backups). Read the matching HTML page to understand the exact behaviour, edge cases and safety rules. Reimplement it natively inside Piru on Piru's own data model; do not embed the web page.");
+    else L.push("Reference implementation: there is none. Work out the exact behaviour, edge cases and safety rules from the description above and from how Piru already works, and include them in your plan before writing code.");
+    L.push("",
+      "Before writing code:",
+      "1. Fork and clone Piru. Read its " + a.rules + ", and follow them exactly.",
+      "2. Find how Piru stores doses, sessions, custom substances, medications and stock, and how its import, export and duplicate detection work (look for DataExportImport and the model types). Match its naming, architecture, localisation and UI patterns.",
+      "3. Check open issues and pull requests so you don't duplicate work, and keep the change limited to this one feature.",
+      "",
+      "Requirements:",
+      "- Data safety first: show a clear preview of exactly what will change; ask for confirmation; offer Undo or make a recovery backup before any destructive change; never touch records the user didn't select.",
+      "- Reuse Piru's existing views, components and strings style. No new dependencies.",
+      "- Localise all new strings the way Piru does.",
+      "- Accessible: VoiceOver labels, Dynamic Type at the largest sizes, sufficient contrast.",
+      "- " + (PLATFORM[o.platform] || PLATFORM.ios),
+      "",
+      "Verify before opening the PR:",
+      "- Add unit tests for the core logic, covering " + (isTool ? "edge cases" : "the edge cases that apply") + " (micro sign µ vs Greek μ, time zones and daylight saving, empty sessions, custom substances, large journals).",
+      "- Build the app and run the full existing test suite; everything must pass.",
+      "- Run the feature in the simulator on synthetic data only and take before/after screenshots.",
+      "",
+      "Open the pull request:",
+      "- Clear title and a short description of the problem it solves, how it works, how you tested it, and the screenshots.",
+      "- State that it was written with AI assistance and that you reviewed and tested it.");
+    if (isTool) L.push("- Credit the reference: \"Behaviour based on lammersbjorn/piru-tools (MIT).\"");
+    L.push("- Keep it small and focused; one feature per pull request.");
+    if (isTool) L.push("",
+      "After Piru merges it:",
+      "- Open an issue or pull request on " + TOOLS_REPO + " saying which tool Piru now includes (link the merged PR), so it can be removed from the tools site.");
+    return L.concat(workWithMe(o, true)).join("\n");
+  }
+
+  function sitePrompt(o) {
+    var a = AGENTS[o.agent] || AGENTS.other;
+    var text = clean(o.text), details = clean(o.details);
+    var L = [
+      "You are adding a new tool to Piru tools (" + TOOLS_REPO + "), a set of free, offline, single-page web tools that fix or check exported backups of Piru, an open-source substance journal app (" + PIRU_REPO + "). Your goal is one small, high-quality pull request that the maintainer would be happy to merge.",
+      "",
+      "Tool to build: " + (text ? indent(text) : "[Describe the tool here.]")
+    ];
+    if (details) L.push("", "Details from me: " + indent(details));
+    L.push("",
+      "First, a check: if this really belongs inside Piru itself, tell me before you start. A pull request to Piru may serve people better than a web tool.",
+      "",
+      "Before writing code:",
+      "1. Fork and clone lammersbjorn/piru-tools. Read its README, PRIVACY and LICENSE, and any CONTRIBUTING, AGENTS.md" + (o.agent === "cursor" ? ", CLAUDE.md or Cursor rules (.cursor/rules)" : " or CLAUDE.md") + ", and follow them exactly.",
+      "2. Study an existing tool page, such as unit-fixer.html, and copy its structure exactly: one standalone HTML file; the same strict Content-Security-Policy with no network access; the same shared CSS and design tokens; the same English and French i18n tables and language switch; the same footer; and the same shared backup parsing and validation, unchanged, which refuses encrypted backups and backup versions above 2.",
+      "3. Check open issues and pull requests so you don't duplicate work.",
+      "",
+      "Requirements:",
+      "- Edit byte for byte: only the intended values change. Unknown fields, key order, spacing and line endings stay exactly as they were.",
+      "- Data safety first: show a clear preview of exactly what will change, never change the original file, and explain how to import the result into Piru.",
+      "- Everything runs on the device: no network requests, no analytics, no external fonts or scripts.",
+      "- Translate every new string into English and French.",
+      "- Accessible: one h1, labelled controls, status messages in an aria-live region, focus moved to each new step, 44 pt touch targets, reduced motion respected, 4.5:1 text contrast in dark and light mode.",
+      "- Add the tool to index.html and to the README.",
+      "",
+      "Verify before opening the PR:",
+      "- Add a small node test that runs the tool's logic on synthetic, made-up backups (never real data). Assert that only the intended bytes change and that the output is still valid Piru JSON. Run any existing tests too; everything must pass.",
+      "- Check the page in a browser at phone width (390 px) in dark and light mode, in English and French, with no console errors and no network requests.",
+      "",
+      "Open the pull request on lammersbjorn/piru-tools:",
+      "- Clear title and a short description of what the tool does, why it is needed, and how you tested it, with screenshots.",
+      "- State that it was written with AI assistance and that you reviewed and tested it.",
+      "- Keep it to one tool per pull request.");
+    return L.concat(workWithMe(o, false)).join("\n");
+  }
+
+  function build(o) { return o.kind === "site" ? sitePrompt(o) : piruPrompt(o); }
+  // The quick prompt: a Piru pull request, with the tool left for the person to fill in.
+  function quick() { return build({ kind: "tool", tool: null, agent: "other", platform: "ios" }); }
+
+  return { TOOLS: TOOLS, tool: tool, clean: clean, build: build, quick: quick, MAX_TEXT: MAX_TEXT };
+})();
+if (typeof module !== "undefined") module.exports = PiruPrompt;
+</script>
+
 <script id="tool-ui">
 "use strict";
 (function () {
   if (typeof document === "undefined") return;
+  var U = PiruUI, $ = U.$;
+  var SEEN_KEY = "piruToolsContribSeen";
+  var box = $("contrib"), floating = false, closeTimer = null;
+
+  function render() {
+    $("contrib-close").setAttribute("aria-label", U.t().contribClose);
+    $("contrib-status").textContent = "";
+    pad();
+  }
+  // Keeps the end of the page reachable above the floating card.
+  function pad() { document.body.style.paddingBottom = floating && !box.classList.contains("hidden") ? (box.offsetHeight + 36) + "px" : ""; }
+
+  function show(asFloating) {
+    floating = asFloating;
+    box.classList.toggle("floating", floating);
+    if (floating) box.classList.add("off");
+    box.classList.remove("hidden");
+    pad();
+    if (floating) requestAnimationFrame(function () { requestAnimationFrame(function () { box.classList.remove("off"); }); });
+  }
+  function dismiss() {
+    if (box.classList.contains("hidden")) return;
+    var hadFocus = box.contains(document.activeElement);
+    clearTimeout(closeTimer);
+    if (floating && !U.reducedMotion()) {
+      box.classList.add("off");
+      closeTimer = setTimeout(function () { box.classList.add("hidden"); pad(); }, 360);
+    } else { box.classList.add("hidden"); }
+    document.body.style.paddingBottom = "";
+    if (hadFocus) $("contrib-link").focus();
+  }
+
+  // Copies with the Clipboard API, else from a selectable box; "Copied" goes to a live region.
+  function copy(text) {
+    var status = $("contrib-status"), wrap = $("contrib-fallback"), area = $("contrib-text");
+    function done() { status.textContent = ""; setTimeout(function () { status.textContent = U.t().copied; }, 60); }
+    function fallback() {
+      area.value = text; wrap.classList.remove("hidden"); pad();
+      area.focus(); area.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      if (ok) { done(); return; }
+      status.textContent = U.t().copyManual;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
+  }
+
+  $("contrib-close").addEventListener("click", dismiss);
+  $("contrib-later").addEventListener("click", dismiss);
+  $("contrib-copy").addEventListener("click", function () { copy(PiruPrompt.quick()); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape" || box.classList.contains("hidden")) return;
+    if (floating || box.contains(document.activeElement)) { e.preventDefault(); dismiss(); }
+  });
+  window.addEventListener("resize", pad);
+
   PiruUI.init({
     en: {
       title: "Piru tools",
@@ -1232,7 +1494,20 @@ var PiruUI = (function () {
       timeName: "Shift entries in time",
       timeDesc: "Move entries by hours and minutes, or to another date.",
       splitName: "Split out entries",
-      splitDesc: "Move chosen entries, such as a friend's, into a separate backup."
+      splitDesc: "Move chosen entries, such as a friend's, into a separate backup.",
+      contribTag: "Contribute",
+      promptName: "Make a prompt to contribute",
+      promptDesc: "Bring a tool into Piru, or add a new tool here, with your AI coding assistant.",
+      contribTitle: "Want these inside Piru?",
+      contribBody: "These tools fix backups from the outside. It would be better if Piru could do this itself. If you use an AI coding assistant such as Claude Code, Codex or Cursor, you can turn one of these tools into a real Piru feature and send it to Piru as a pull request.",
+      contribMake: "Make a prompt",
+      contribCopy: "Copy the quick prompt",
+      contribLater: "Not now",
+      contribClose: "Close",
+      contribFine: "Please send one small pull request per tool, and test it on your own copy first. The Piru developer decides what gets merged. Once Piru includes a tool, please open an issue or pull request on lammersbjorn/piru-tools so it can be removed from this site.",
+      copied: "Copied",
+      copyFallback: "The quick prompt",
+      copyManual: "Copying didn't work here. The prompt is selected below: copy it with your device's copy command."
     },
     fr: {
       title: "Outils Piru",
@@ -1250,9 +1525,32 @@ var PiruUI = (function () {
       timeName: "Décaler des entrées dans le temps",
       timeDesc: "Décaler des entrées d'heures et de minutes, ou les déplacer à une autre date.",
       splitName: "Séparer des entrées",
-      splitDesc: "Mettre des entrées choisies, par exemple celles d'un ami, dans une sauvegarde à part."
+      splitDesc: "Mettre des entrées choisies, par exemple celles d'un ami, dans une sauvegarde à part.",
+      contribTag: "Contribuer",
+      promptName: "Créer un prompt pour contribuer",
+      promptDesc: "Intégrer un outil à Piru, ou ajouter un nouvel outil ici, avec votre assistant de code IA.",
+      contribTitle: "Envie de les voir dans Piru ?",
+      contribBody: "Ces outils corrigent les sauvegardes de l'extérieur. Ce serait mieux si Piru pouvait le faire lui-même. Si vous utilisez un assistant de code IA comme Claude Code, Codex ou Cursor, vous pouvez transformer l'un de ces outils en véritable fonctionnalité de Piru et la proposer à Piru sous forme de pull request.",
+      contribMake: "Créer un prompt",
+      contribCopy: "Copier le prompt rapide",
+      contribLater: "Pas maintenant",
+      contribClose: "Fermer",
+      contribFine: "Merci d'envoyer une petite pull request par outil, et de la tester d'abord sur votre propre copie. C'est le développeur de Piru qui décide de ce qui est intégré. Quand Piru inclut un outil, merci d'ouvrir une issue ou une pull request sur lammersbjorn/piru-tools pour qu'il soit retiré de ce site.",
+      copied: "Copié",
+      copyFallback: "Le prompt rapide",
+      copyManual: "La copie n'a pas fonctionné ici. Le prompt est sélectionné ci-dessous : copiez-le avec la commande Copier de votre appareil."
     }
-  });
+  }, render);
+
+  // Once per visitor: slides up a moment after the list appears. Without storage, the card
+  // sits in the page after the list instead, so it never floats over every visit.
+  var mode;
+  try { mode = window.localStorage.getItem(SEEN_KEY) ? "seen" : "float"; } catch (e) { mode = "inline"; }
+  if (mode === "inline") show(false);
+  else if (mode === "float") setTimeout(function () {
+    try { window.localStorage.setItem(SEEN_KEY, "1"); } catch (e) { show(false); return; }
+    show(true);
+  }, 700);
 })();
 </script>
 </body>

@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<!-- Piru tools. Copyright (c) 2026 Bjorn Lammers. SPDX-License-Identifier: MIT. https://github.com/lammersbjorn/piru-tools -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ECECF2" media="(prefers-color-scheme: light)">
+<title>Make a prompt to contribute</title>
+<style>
+  /* Saiko G-alt palette (App/design/visual-tokens.json, docs/design/VISUAL_LANGUAGE.md).
+     sRGB fallbacks first; Display P3 values below where the token lies outside sRGB. */
+  :root {
+    color-scheme: light dark;
+    /* Light appearance */
+    --page: #ECECF2;            /* surface.page */
+    --cell: #FFFFFF;            /* surface.cell */
+    --raised: #F3F3F9;          /* surface.cellRaised, fill.control */
+    --separator: #D8D8E0;       /* line.separator */
+    --card-edge: transparent;
+    --text: #0F0F15;            /* text.primary */
+    --text-2: #55565F;          /* text.secondary */
+    --text-3: #63646D;          /* text.tertiary */
+    --tint: #BD0052;            /* accent.tint */
+    --fill: #D5005D;            /* accent.fill */
+    --on-fill: #FFFFFF;         /* accent.onFill */
+    --tint-wash: rgb(189 0 82 / 0.10);
+    --problem: #BC0013;         /* status.problem */
+    --problem-wash: rgb(236 0 26 / 0.10);    /* status.problemFill */
+    --caution: #825B00;         /* status.caution */
+    --caution-wash: rgb(167 118 0 / 0.18);   /* legacy.caution.accent at 18% */
+    --success: #007835;         /* legacy.success.text */
+    --success-wash: rgb(0 154 70 / 0.12);    /* legacy.success.accent */
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%2355565F' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 8 10 4.5 13.5 8M6.5 12 10 15.5 13.5 12'/%3E%3C/svg%3E");
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #000000;
+      --cell: #111113;
+      --raised: #202024;
+      --separator: #333439;
+      --card-edge: #202024;
+      --text: #F6F6F9;
+      --text-2: #C0C0CA;
+      --text-3: #9797A1;
+      --tint: #FF5C89;
+      --fill: #D5005D;
+      --tint-wash: rgb(255 92 137 / 0.14);
+      --problem: #FF9B90;
+      --problem-wash: rgb(236 0 26 / 0.20);
+      --caution: #F1AD00;
+      --caution-wash: rgb(189 135 0 / 0.18);
+      --success: #00DF68;
+      --success-wash: rgb(0 175 81 / 0.16);
+      --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23C0C0CA' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 8 10 4.5 13.5 8M6.5 12 10 15.5 13.5 12'/%3E%3C/svg%3E");
+    }
+  }
+  @supports (color: color(display-p3 0 0 0)) {
+    :root {
+      --tint: color(display-p3 0.7047 0.0288 0.3145);
+      --fill: color(display-p3 0.7903 0.0693 0.3599);
+      --tint-wash: color(display-p3 0.7047 0.0288 0.3145 / 0.10);
+      --problem: color(display-p3 0.6839 0.1116 0.1095);
+      --problem-wash: color(display-p3 0.8784 0.0828 0.115 / 0.10);
+      --caution: color(display-p3 0.4918 0.3619 0.0768);
+      --caution-wash: color(display-p3 0.6318 0.4686 0.1106 / 0.18);
+      --success: color(display-p3 0.0946 0.4794 0.1819);
+      --success-wash: color(display-p3 0.133 0.6162 0.2426 / 0.12);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --tint: color(display-p3 0.9902 0.3136 0.518);
+        --fill: color(display-p3 0.7903 0.0693 0.3599);
+        --tint-wash: color(display-p3 0.9902 0.3136 0.518 / 0.14);
+        --problem: color(display-p3 0.9758 0.6069 0.5543);
+        --problem-wash: color(display-p3 0.8784 0.0828 0.115 / 0.20);
+        --caution: color(display-p3 0.9099 0.6852 0.2023);
+        --caution-wash: color(display-p3 0.7187 0.5349 0.1316 / 0.18);
+        --success: color(display-p3 0.392 0.8631 0.4584);
+        --success-wash: color(display-p3 0.1568 0.7011 0.2802 / 0.16);
+      }
+    }
+  }
+  :root {
+    --font: -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --radius-card: 22px;  /* CornerRadius card */
+    --radius-inner: 14px; /* concentric inside a 16 px card inset */
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; background: var(--page); }
+  body {
+    margin: 0; background: var(--page); color: var(--text);
+    font: 17px/1.47 var(--font); letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    padding: max(12px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(32px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  body > header, main, body > footer { max-width: 640px; margin-left: auto; margin-right: auto; }
+  h1 {
+    font-family: var(--rounded); font-weight: 700; font-size: 2rem; line-height: 1.15; letter-spacing: -0.01em;
+    margin: 16px 0 8px; overflow-wrap: anywhere;
+  }
+  h2 { font-size: 1.0625rem; line-height: 1.3; font-weight: 600; margin: 0 0 12px; scroll-margin-top: 16px; }
+  h2:focus { outline: 0; }
+  h2:focus-visible { outline: 3px solid var(--tint); outline-offset: 4px; border-radius: 4px; }
+  p { margin: 0 0 12px; }
+  p:last-child { margin-bottom: 0; }
+  b { font-weight: 600; }
+  a { color: var(--tint); }
+  .muted { color: var(--text-2); }
+  .subtitle { font-size: 1.0625rem; color: var(--text-2); margin-bottom: 12px; }
+  .hint { font-size: 0.9375rem; color: var(--text-2); }
+  .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+  /* Cards: opaque cells on the page, 22 pt corners, 16 pt inset. */
+  .card {
+    background: var(--cell); border: 1px solid var(--card-edge); border-radius: var(--radius-card);
+    padding: 16px; margin: 0 0 16px;
+  }
+
+  /* Top bar: back link and the language switch, a segmented control. */
+  .topbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 12px; }
+  .topbar .lang { margin-left: auto; }
+  a.back { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; font-weight: 500; text-decoration: none; color: var(--tint); }
+  a.back:hover { text-decoration: underline; }
+  .lang { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--raised); }
+  .lang button {
+    min-height: 44px; min-width: 44px; padding: 0 16px; border-radius: 999px; border: 0;
+    background: transparent; color: var(--text-2); font: inherit; font-size: 0.9375rem; font-weight: 500; cursor: pointer;
+  }
+  .lang button[aria-pressed="true"] { background: var(--tint-wash); color: var(--text); font-weight: 600; }
+
+  .privacy { display: flex; gap: 10px; align-items: flex-start; font-size: 0.9375rem; color: var(--text-2); margin: 0 0 20px; }
+  .privacy .glyph {
+    flex: none; width: 18px; height: 18px; margin-top: 2px; background: var(--success);
+    -webkit-mask: var(--lock) center / contain no-repeat; mask: var(--lock) center / contain no-repeat;
+  }
+
+  ol.steps { padding-left: 1.5em; margin: 4px 0 12px; }
+  ol.steps li { margin-bottom: 8px; padding-left: 2px; }
+  ol.steps li::marker { font-family: var(--rounded); font-weight: 600; color: var(--tint); font-variant-numeric: tabular-nums; }
+
+  /* Disclosures: a 44 pt summary row with a chevron that turns. */
+  details > summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    list-style: none; cursor: pointer; min-height: 44px; font-weight: 600;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::after {
+    content: ""; flex: none; width: 14px; height: 14px; background: var(--text-3);
+    -webkit-mask: var(--chev-right) center / contain no-repeat; mask: var(--chev-right) center / contain no-repeat;
+    transition: transform 0.2s ease;
+  }
+  details[open] > summary::after { transform: rotate(90deg); }
+  details[open] > summary { margin-bottom: 8px; }
+  details.card { padding-top: 6px; padding-bottom: 6px; }
+  details.card[open] { padding-bottom: 16px; }
+  details.how { font-size: 0.9375rem; }
+  details.how > summary { font-size: 1.0625rem; }
+  details.more { margin-top: 12px; border-top: 1px solid var(--separator); padding-top: 4px; }
+  details.more > summary { color: var(--tint); font-weight: 500; }
+  details.more > summary .sum-detail { display: block; font-weight: 400; font-size: 0.875rem; color: var(--text-2); }
+
+  label.field { display: block; font-size: 0.9375rem; color: var(--text-2); margin: 16px 0 8px; }
+  label.field:first-child { margin-top: 4px; }
+  select, input[type="text"], input[type="date"], input[type="number"] {
+    display: block; width: 100%; min-width: 0; min-height: 50px; padding: 12px 14px; font: inherit; color: var(--text);
+    background-color: var(--raised); border: 1px solid transparent; border-radius: var(--radius-inner);
+  }
+  select {
+    -webkit-appearance: none; appearance: none; padding-right: 44px; text-overflow: ellipsis;
+    background-image: var(--chevron); background-repeat: no-repeat; background-position: right 14px center; background-size: 20px 20px;
+  }
+  input[type="date"] { -webkit-appearance: none; appearance: none; }
+  select:hover, input:hover { border-color: var(--separator); }
+  input[type="text"]::placeholder { color: var(--text-3); }
+  input[aria-invalid="true"] { border-color: var(--problem); }
+  .field-error { margin: 8px 0 0; font-size: 0.9375rem; color: var(--problem); font-weight: 500; }
+  .field-error:empty { display: none; }
+  .row2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(8em, 1fr)); gap: 0 12px; }
+
+  /* Buttons: capsules on the one accent fill. */
+  .btn {
+    display: flex; align-items: center; justify-content: center; width: 100%; min-height: 52px; padding: 12px 22px;
+    border-radius: 999px; border: 0; background: var(--fill); color: var(--on-fill); font: inherit; font-weight: 600;
+    cursor: pointer; text-align: center; -webkit-tap-highlight-color: transparent; transition: transform 0.12s ease, filter 0.12s ease;
+  }
+  .btn:active { transform: scale(0.98); filter: brightness(0.92); }
+  .btn[disabled] { background: var(--raised); color: var(--text-2); cursor: not-allowed; transform: none; filter: none; }
+  .btn.secondary { background: var(--raised); color: var(--tint); }
+  .btn.small { width: auto; min-height: 44px; padding: 8px 18px; font-size: 0.9375rem; }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .btn + .btn { margin-top: 12px; }
+  .btn-row .btn + .btn { margin-top: 0; }
+  .file-input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+  :focus-visible { outline: 3px solid var(--tint); outline-offset: 2px; }
+  select:focus-visible, input[type="text"]:focus-visible, input[type="date"]:focus-visible, input[type="number"]:focus-visible { outline: 0; border-color: var(--tint); box-shadow: 0 0 0 3px var(--tint-wash); }
+  .file-input:focus-visible + label.btn { outline: 3px solid var(--tint); outline-offset: 2px; }
+
+  /* The step's main action. On phones it stays in reach while the preview scrolls past. */
+  .actionbar { margin-top: 16px; }
+  @media (max-width: 700px) {
+    .actionbar {
+      position: sticky; bottom: 0; z-index: 2; margin: 16px -16px 0; padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+      background: var(--cell); border-top: 1px solid var(--separator);
+    }
+  }
+
+  .check { display: flex; gap: 12px; align-items: flex-start; min-height: 48px; padding: 10px 0; cursor: pointer; }
+  .check + .check { border-top: 1px solid var(--separator); }
+  .check input { width: 22px; height: 22px; margin: 1px 0 0; flex: none; accent-color: var(--fill); }
+  .check > span { min-width: 0; overflow-wrap: anywhere; }
+  .check .sub { display: block; font-size: 0.875rem; color: var(--text-2); overflow-wrap: anywhere; }
+  .check.entry .num { display: block; }
+
+  /* Notices: a glyph and words; the hue only supports them. Text stays primary. */
+  .msg {
+    position: relative; border-radius: var(--radius-inner); padding: 12px 14px 12px 44px; margin: 12px 0 0;
+    font-size: 0.9375rem; line-height: 1.45; color: var(--text); background: var(--raised);
+  }
+  .msg::before {
+    content: ""; position: absolute; left: 14px; top: 13px; width: 20px; height: 20px; background: var(--text-2);
+    -webkit-mask: var(--g-info) center / contain no-repeat; mask: var(--g-info) center / contain no-repeat;
+  }
+  .msg.err { background: var(--problem-wash); }
+  .msg.err::before { background: var(--problem); -webkit-mask-image: var(--g-problem); mask-image: var(--g-problem); }
+  .msg.warn { background: var(--caution-wash); }
+  .msg.warn::before { background: var(--caution); -webkit-mask-image: var(--g-caution); mask-image: var(--g-caution); }
+  .msg.ok { background: var(--success-wash); }
+  .msg.ok::before { background: var(--success); -webkit-mask-image: var(--g-ok); mask-image: var(--g-ok); }
+  .msg p { margin: 0 0 8px; }
+  .msg p:last-child { margin: 0; }
+  .msg ol { margin: 6px 0 0; padding-left: 1.3em; }
+  .msg ol li { margin-bottom: 4px; }
+  .msg:focus { outline: 0; }
+  .msg:focus-visible { outline: 3px solid var(--tint); outline-offset: 2px; }
+  #download-status:focus { outline: 0; }
+
+  .big { font-family: var(--rounded); font-size: 1.25rem; line-height: 1.3; font-weight: 600; }
+  ul.examples { margin: 4px 0 12px; padding: 0; list-style: none; }
+  ul.examples li { padding: 10px 0; border-top: 1px solid var(--separator); }
+  ul.examples li:first-child { border-top: 0; }
+  ul.examples .sub { display: block; font-size: 0.875rem; color: var(--text-2); }
+  .hidden { display: none !important; }
+  .num { font-family: var(--rounded); font-variant-numeric: tabular-nums; }
+  .count { margin: 12px 0 0; font-size: 0.9375rem; }
+  .entries { margin-top: 4px; }
+  .group { border-top: 1px solid var(--separator); padding-top: 8px; margin-top: 8px; }
+  .group:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
+  .group h3 { font-size: 0.9375rem; font-weight: 600; margin: 4px 0 0; color: var(--text-2); overflow-wrap: anywhere; }
+  .tag { display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 1px 8px; border-radius: 999px; background: var(--tint-wash); color: var(--tint); margin-left: 6px; vertical-align: 1px; }
+  .ba { font-family: var(--rounded); font-variant-numeric: tabular-nums; }
+  .ba > span:first-child { display: block; }
+  .ba .arrow { color: var(--text-2); padding: 0 6px 0 0; }
+  .ba .after { font-weight: 600; color: var(--text); }
+  table.stats { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+  table.stats th, table.stats td { text-align: left; padding: 8px 0; border-top: 1px solid var(--separator); vertical-align: top; overflow-wrap: anywhere; }
+  table.stats tr:first-child th, table.stats tr:first-child td { border-top: 0; }
+  table.stats th { font-weight: 500; color: var(--text-2); padding-right: 12px; }
+  table.stats td.n { text-align: right; white-space: nowrap; font-family: var(--rounded); font-variant-numeric: tabular-nums; padding-left: 12px; }
+  .problem { padding: 12px 0; border-top: 1px solid var(--separator); }
+  .problem:first-child { border-top: 0; padding-top: 0; }
+  .problem h3 { font-family: var(--rounded); font-size: 1.0625rem; line-height: 1.3; font-weight: 600; margin: 0; }
+  .problem p { margin: 4px 0 0; font-size: 0.9375rem; }
+  .problem a.fix { display: inline-block; padding: 11px 0; line-height: 22px; font-weight: 600; text-decoration: none; }
+  .problem a.fix::after { content: ""; display: inline-block; width: 12px; height: 12px; margin-left: 6px; background: currentColor; -webkit-mask: var(--chev-right) center / contain no-repeat; mask: var(--chev-right) center / contain no-repeat; }
+  ul.tools { list-style: none; margin: 0; padding: 0; }
+  ul.tools li { margin: 0 0 12px; }
+  a.tool {
+    display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 16px; border-radius: var(--radius-card);
+    background: var(--cell); border: 1px solid var(--card-edge); color: var(--text); text-decoration: none;
+  }
+  a.tool:hover .tool-name { color: var(--tint); }
+  a.tool .tool-text { flex: 1; min-width: 0; }
+  a.tool .tool-name { display: block; font-weight: 600; font-size: 1.0625rem; line-height: 1.3; }
+  a.tool .tool-desc { display: block; font-size: 0.9375rem; color: var(--text-2); margin-top: 2px; }
+  a.tool::after { content: ""; flex: none; width: 14px; height: 14px; background: var(--text-3); -webkit-mask: var(--chev-right) center / contain no-repeat; mask: var(--chev-right) center / contain no-repeat; }
+  fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+  legend { padding: 0; font-size: 0.9375rem; color: var(--text-2); margin: 4px 0 4px; }
+
+  body > footer a { color: var(--text-1); text-decoration: underline; text-underline-offset: 2px; }
+  body > footer .footer-links { margin-top: 8px; }
+  body > footer { margin-top: 24px; padding: 0 4px; text-align: center; font-size: 0.8125rem; line-height: 1.45; color: var(--text-2); }
+  body > footer p { margin: 0 0 6px; }
+
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } .btn:active { transform: none; } }
+  @media (min-width: 560px) { h1 { font-size: 2.125rem; } }
+
+  .sub-h { font-size: 0.9375rem; font-weight: 600; color: var(--text-2); margin: 20px 0 4px; }
+  details > summary h2 { margin: 0; }
+  .msg, .hint, ol.steps { overflow-wrap: anywhere; }
+  .lang { flex-wrap: wrap; max-width: 100%; }
+  @media (max-width: 320px) {
+    .lang button { padding: 0 10px; }
+    table.stats td.n { white-space: normal; }
+  }
+  /* Glyphs as inline data images (allowed by img-src data:). */
+  :root {
+    --lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6.5 9V6.5a3.5 3.5 0 0 1 7 0V9' fill='none' stroke='black' stroke-width='2'/%3E%3Crect x='3.5' y='8.5' width='13' height='10' rx='2.5'/%3E%3C/svg%3E");
+    --chev-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3.5 13.5 10 7 16.5'/%3E%3C/svg%3E");
+    --g-problem: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' d='M8.7 2.3a1.5 1.5 0 0 1 2.6 0l7.6 13.4a1.5 1.5 0 0 1-1.3 2.3H2.4a1.5 1.5 0 0 1-1.3-2.3zM9 7h2v5H9zm1 6.6a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z'/%3E%3C/svg%3E");
+    --g-caution: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' d='M10 1a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM9 5h2v6.5H9zm1 8a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z'/%3E%3C/svg%3E");
+    --g-ok: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill-rule='evenodd' d='M10 1a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm-1.4 12.6L4.9 9.9l1.4-1.4 2.3 2.3 5.1-5.1 1.4 1.4z'/%3E%3C/svg%3E");
+    --g-info: var(--g-caution);
+  }
+</style>
+<style id="page-style">
+  /* This page only: text areas and the copy status. */
+  textarea {
+    display: block; width: 100%; min-width: 0; min-height: 50px; padding: 12px 14px; font: inherit; color: var(--text);
+    background-color: var(--raised); border: 1px solid transparent; border-radius: var(--radius-inner); resize: vertical;
+  }
+  textarea:hover { border-color: var(--separator); }
+  textarea::placeholder { color: var(--text-3); }
+  textarea:focus-visible { outline: 0; border-color: var(--tint); box-shadow: 0 0 0 3px var(--tint-wash); }
+  textarea.prompt { font: 0.8125rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; resize: none; overflow: hidden; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .copy-status { margin: 8px 0 0; font-size: 0.9375rem; color: var(--success); font-weight: 600; }
+  .copy-status.manual { color: var(--text); font-weight: 400; }
+  .copy-status:empty { display: none; }
+  h3.how-use { font-size: 1.0625rem; line-height: 1.3; font-weight: 600; margin: 24px 0 8px; }
+  fieldset .check:first-child { padding-top: 4px; }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="back" href="index.html" data-i18n="back"></a>
+  <div class="lang" role="group" aria-label="Language / Langue">
+    <button type="button" id="lang-en" lang="en" aria-pressed="true">English</button>
+    <button type="button" id="lang-fr" lang="fr" aria-pressed="false">Français</button>
+  </div>
+</header>
+
+<main>
+  <h1 data-i18n="title"></h1>
+  <p class="subtitle" data-i18n="subtitle"></p>
+  <p class="privacy"><span class="glyph" aria-hidden="true"></span><span data-i18n="privacy"></span></p>
+
+  <noscript>
+    <div class="msg err">
+      <p lang="en">This page needs JavaScript. On iPhone, the Files or Mail preview does not run it: open the page in Safari, or use a computer.</p>
+      <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
+    </div>
+  </noscript>
+
+  <details class="card how" id="how">
+    <summary data-i18n="rulesTitle"></summary>
+    <ol class="steps" data-i18n-html="rules"></ol>
+  </details>
+
+  <section class="card" id="kind-card" aria-labelledby="h-kind">
+    <h2 id="h-kind"></h2>
+    <fieldset aria-labelledby="h-kind">
+      <label class="check"><input type="radio" name="kind" value="tool" id="kind-tool"><span><span data-i18n="kindTool"></span><span class="sub" data-i18n="kindToolSub"></span></span></label>
+      <label class="check"><input type="radio" name="kind" value="piru" id="kind-piru"><span><span data-i18n="kindPiru"></span><span class="sub" data-i18n="kindPiruSub"></span></span></label>
+      <label class="check"><input type="radio" name="kind" value="site" id="kind-site"><span><span data-i18n="kindSite"></span><span class="sub" data-i18n="kindSiteSub"></span></span></label>
+    </fieldset>
+    <div id="tool-wrap" class="hidden">
+      <label class="field" for="tool" data-i18n="toolLabel"></label>
+      <select id="tool"></select>
+    </div>
+    <div id="text-wrap" class="hidden">
+      <label class="field" for="text" id="text-label"></label>
+      <textarea id="text" rows="4" maxlength="2000" aria-describedby="text-hint"></textarea>
+      <p class="hint" id="text-hint" data-i18n="textHint" style="margin:8px 0 0"></p>
+    </div>
+  </section>
+
+  <section class="card hidden" id="agent-card" aria-labelledby="h-agent">
+    <h2 id="h-agent"></h2>
+    <p class="hint" id="agent-hint" data-i18n="agentHint"></p>
+    <fieldset aria-labelledby="h-agent" aria-describedby="agent-hint">
+      <label class="check"><input type="radio" name="agent" value="claude" id="agent-claude"><span lang="en">Claude Code</span></label>
+      <label class="check"><input type="radio" name="agent" value="codex" id="agent-codex"><span lang="en">Codex</span></label>
+      <label class="check"><input type="radio" name="agent" value="cursor" id="agent-cursor"><span lang="en">Cursor</span></label>
+      <label class="check"><input type="radio" name="agent" value="other" id="agent-other"><span data-i18n="agentOther"></span></label>
+    </fieldset>
+  </section>
+
+  <section class="card hidden" id="platform-card" aria-labelledby="h-platform">
+    <h2 id="h-platform"></h2>
+    <fieldset aria-labelledby="h-platform">
+      <label class="check"><input type="radio" name="platform" value="ios" id="plat-ios"><span><span data-i18n="platIos"></span><span class="sub" data-i18n="platIosSub"></span></span></label>
+      <label class="check"><input type="radio" name="platform" value="both" id="plat-both"><span><span data-i18n="platBoth"></span><span class="sub" data-i18n="platBothSub"></span></span></label>
+    </fieldset>
+  </section>
+
+  <section class="card hidden" id="extras-card" aria-labelledby="h-extras">
+    <h2 id="h-extras"></h2>
+    <label class="field" for="details" data-i18n="detailsLabel"></label>
+    <textarea id="details" rows="3" maxlength="2000" aria-describedby="details-hint"></textarea>
+    <p class="hint" id="details-hint" data-i18n="detailsHint" style="margin:8px 0 4px"></p>
+    <label class="check"><input type="checkbox" id="self-test"><span><span data-i18n="selfTest"></span><span class="sub" data-i18n="selfTestSub"></span></span></label>
+  </section>
+
+  <section class="card hidden" id="result-card" aria-labelledby="h-result">
+    <h2 id="h-result"></h2>
+    <button type="button" class="btn" id="copy" data-i18n="copyBtn"></button>
+    <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+    <label class="field" for="prompt" data-i18n="promptLabel"></label>
+    <textarea class="prompt" id="prompt" rows="12" readonly spellcheck="false" lang="en"></textarea>
+    <h3 class="how-use" data-i18n="howUseTitle"></h3>
+    <ol class="steps" data-i18n-html="howUse"></ol>
+  </section>
+</main>
+
+<footer>
+  <p data-i18n="footer"></p>
+  <p data-i18n="siteNotice"></p>
+  <p class="footer-links"><a href="https://github.com/lammersbjorn/piru-tools" rel="noopener">GitHub</a> · <a href="https://github.com/lammersbjorn/piru-tools/blob/main/LICENSE" rel="noopener">MIT License</a> · <a href="https://github.com/lammersbjorn/piru-tools/blob/main/PRIVACY.md" rel="noopener">Privacy</a></p>
+</footer>
+
+<!-- Shared Piru backup core: pure logic, no DOM access, so it can be tested on its own. -->
+<script id="piru-core">
+"use strict";
+// Shared Piru backup core (same block in every tool). Pure logic: no DOM access.
+var PiruCore = (function () {
+  var SUPPORTED_VERSION = 2;
+  var HORIZON_MS = 24 * 60 * 60 * 1000; // Piru's session cap (SessionClustering.horizon)
+  var MAX_TS = Date.UTC(2100, 0, 1); // later times are refused as edits: surely a typo
+
+  // JSON parser that keeps source offsets, so edits touch only the changed values.
+  // Sets `repeatedKeys` on the root when any object repeats a key: Piru never writes one,
+  // and the tool and Piru might then read different values.
+  function parse(text) {
+    var i = 0, n = text.length, repeated = false;
+    if (text.charCodeAt(0) === 0xFEFF) i = 1;
+    function fail(what) { throw new SyntaxError("JSON " + what + " at " + i); }
+    function ws() {
+      while (i < n) { var c = text.charCodeAt(i); if (c === 32 || c === 9 || c === 10 || c === 13) i++; else break; }
+    }
+    function str() {
+      var s = i; i++;
+      while (i < n) {
+        var c = text.charCodeAt(i);
+        if (c === 34) { i++; return JSON.parse(text.slice(s, i)); }
+        if (c === 92) i += 2; else if (c < 32) fail("control character"); else i++;
+      }
+      fail("unterminated string");
+    }
+    var numRe = /-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?/y;
+    function value() {
+      ws();
+      var s = i, c = text[i];
+      if (c === "{") {
+        i++; var members = []; ws();
+        if (text[i] === "}") { i++; return { t: "o", s: s, e: i, m: members }; }
+        var seen = new Set();
+        for (;;) {
+          ws(); if (text[i] !== '"') fail("expected key");
+          var ks = i, key = str(); ws();
+          if (seen.has(key)) repeated = true; else seen.add(key);
+          if (text[i] !== ":") fail("expected colon"); i++;
+          var v = value(); members.push({ k: key, ks: ks, v: v }); ws();
+          if (text[i] === ",") { i++; continue; }
+          if (text[i] === "}") { i++; break; }
+          fail("expected , or }");
+        }
+        return { t: "o", s: s, e: i, m: members };
+      }
+      if (c === "[") {
+        i++; var items = []; ws();
+        if (text[i] === "]") { i++; return { t: "a", s: s, e: i, items: items }; }
+        for (;;) {
+          items.push(value()); ws();
+          if (text[i] === ",") { i++; continue; }
+          if (text[i] === "]") { i++; break; }
+          fail("expected , or ]");
+        }
+        return { t: "a", s: s, e: i, items: items };
+      }
+      if (c === '"') { var sv = str(); return { t: "s", s: s, e: i, v: sv }; }
+      if (text.startsWith("true", i)) { i += 4; return { t: "b", s: s, e: i, v: true }; }
+      if (text.startsWith("false", i)) { i += 5; return { t: "b", s: s, e: i, v: false }; }
+      if (text.startsWith("null", i)) { i += 4; return { t: "z", s: s, e: i, v: null }; }
+      numRe.lastIndex = i;
+      var m = numRe.exec(text);
+      if (m && m[0].length) { i += m[0].length; return { t: "n", s: s, e: i, v: Number(m[0]) }; }
+      fail("unexpected character");
+    }
+    var root = value(); ws();
+    if (i !== n) fail("trailing data");
+    root.repeatedKeys = repeated;
+    return root;
+  }
+
+  function member(obj, key) {
+    if (!obj || obj.t !== "o") return null;
+    for (var j = obj.m.length - 1; j >= 0; j--) if (obj.m[j].k === key) return obj.m[j];
+    return null;
+  }
+  function get(obj, key) { var mm = member(obj, key); return mm ? mm.v : null; }
+  function getStr(obj, key) { var v = get(obj, key); return v && v.t === "s" ? v.v : null; }
+  function getNum(obj, key) { var v = get(obj, key); return v && v.t === "n" ? v.v : null; }
+  function getBool(obj, key) { var v = get(obj, key); return !!(v && v.t === "b" && v.v); }
+  function arr(obj, key) { var v = get(obj, key); return v && v.t === "a" ? v.items.filter(function (x) { return x.t === "o"; }) : []; }
+  function firstArr(obj, keys) { for (var j = 0; j < keys.length; j++) { var v = get(obj, keys[j]); if (v && v.t === "a") return arr(obj, keys[j]); } return []; }
+  function present(obj, key) { var v = get(obj, key); return !!(v && v.t !== "z"); }
+
+  function fold(s) {
+    return String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+  }
+
+  // Reads a file's bytes and decides whether it is a plain Piru backup.
+  function analyze(bytes, fileName, opts) {
+    opts = opts || {};
+    var name = String(fileName || "");
+    if (/\.piruenc$/i.test(name)) return { ok: false, error: "encrypted" };
+    if (!bytes || bytes.length === 0) return { ok: false, error: "empty" };
+    var text;
+    try { text = new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes); }
+    catch (e) { return { ok: false, error: "notjson" }; }
+    var root;
+    try { root = parse(text); } catch (e) { return { ok: false, error: "notjson" }; }
+    if (root.t !== "o") return { ok: false, error: "notpiru" };
+    if (member(root, "sealed") && member(root, "kind")) return { ok: false, error: "encrypted" };
+    var ver = get(root, "piruExportVersion");
+    if (!ver) {
+      if (member(root, "experiences")) return { ok: false, error: "psylog" };
+      if (member(root, "doseEntries")) return { ok: false, error: "legacy" };
+      return { ok: false, error: "notpiru" };
+    }
+    if (ver.t !== "n" || !Number.isInteger(ver.v)) return { ok: false, error: "notpiru" };
+    if (root.repeatedKeys) return { ok: false, error: "repeated" };
+    // Piru refuses to import a newer format (DataExportImport.classify), and a newer format
+    // may mean fields this page would misread, so only the read-only inspector opens one.
+    if (ver.v > SUPPORTED_VERSION && !opts.allowNewer) return { ok: false, error: "newer", version: ver.v };
+    var sv = get(root, "sessions"), ov = get(root, "orphanDoses");
+    if ((sv && sv.t !== "a" && sv.t !== "z") || (ov && ov.t !== "a" && ov.t !== "z")) return { ok: false, error: "notpiru" };
+    var model = buildModel(text, root);
+    model.version = ver.v;
+    model.newer = ver.v > SUPPORTED_VERSION;
+    if (model.doses.length === 0 && !opts.allowEmpty) return { ok: false, error: "noentries", model: model };
+    return { ok: true, model: model };
+  }
+
+  function buildModel(text, root) {
+    var doses = [], sessions = [];
+    function addDose(node, arrNode, pos, sessionIdx) {
+      var sub = getStr(node, "substance");
+      if (sub === null) return;
+      doses.push({
+        i: doses.length, node: node, arr: arrNode, pos: pos, session: sessionIdx,
+        sub: sub, ts: getNum(node, "timestamp"), amount: getNum(node, "amount"),
+        unit: getStr(node, "unit") || "", route: getStr(node, "route") || "",
+        id: getStr(node, "id"), uid: getStr(node, "substanceUID"),
+        notes: getStr(node, "notes"), unknown: getBool(node, "isUnknownDose")
+      });
+    }
+    function walk(arrNode, sessionIdx) {
+      if (!arrNode || arrNode.t !== "a") return [];
+      var start = doses.length;
+      arrNode.items.forEach(function (it, pos) { if (it.t === "o") addDose(it, arrNode, pos, sessionIdx); });
+      var out = []; for (var k = start; k < doses.length; k++) out.push(k);
+      return out;
+    }
+    var sessArr = get(root, "sessions");
+    if (sessArr && sessArr.t === "a") {
+      sessArr.items.forEach(function (s, pos) {
+        if (s.t !== "o") return;
+        var idx = sessions.length;
+        var notesV = get(s, "notes");
+        var sess = {
+          i: idx, node: s, pos: pos, id: getStr(s, "id"), start: getNum(s, "startDate"),
+          title: getStr(s, "title"), note: getStr(s, "note"),
+          notesCount: notesV && notesV.t === "a" ? notesV.items.length : 0,
+          dosesArr: get(s, "doses"), doses: []
+        };
+        sessions.push(sess);
+        sess.doses = walk(sess.dosesArr, idx);
+      });
+    }
+    var orphanArr = get(root, "orphanDoses");
+    var orphans = walk(orphanArr, -1);
+
+    var records = {
+      favorites: arr(root, "favorites"),
+      quickLog: arr(root, "quickLogDoses"),
+      units: firstArr(root, ["customUnits", "customUnitPresets"]),
+      drinks: firstArr(root, ["drinkPresets", "customDrinkPresets"]),
+      daily: arr(root, "dailyDoseItems"),
+      occurrences: arr(root, "routineOccurrences"),
+      inventory: arr(root, "inventory"),
+      colors: arr(root, "substanceColors")
+    };
+    var customs = arr(root, "customSubstances").map(function (c) {
+      return { node: c, name: getStr(c, "name"), displayName: getStr(c, "displayName") };
+    }).filter(function (c) { return c.name; });
+
+    var counts = new Map();
+    doses.forEach(function (d) { counts.set(d.sub, (counts.get(d.sub) || 0) + 1); });
+    var customNames = new Set(customs.map(function (c) { return c.name; }));
+    var substances = Array.from(counts, function (e) {
+      var c = customs.find(function (x) { return x.name === e[0]; });
+      return { name: e[0], count: e[1], custom: customNames.has(e[0]), label: c && c.displayName && c.displayName !== e[0] ? c.displayName : null };
+    }).sort(function (a, b) { return b.count - a.count || a.name.localeCompare(b.name); });
+
+    return {
+      text: text, root: root, doses: doses, sessions: sessions, orphans: orphans, orphanArr: orphanArr && orphanArr.t === "a" ? orphanArr : null,
+      records: records, customs: customs, customNames: customNames, substances: substances,
+      bom: text.charCodeAt(0) === 0xFEFF, eol: /\r\n/.test(text.slice(0, 4096)) ? "\r\n" : "\n",
+      appVersion: getStr(root, "appVersion"), exportedAt: getNum(root, "exportedAt")
+    };
+  }
+
+  // Piru's import dedupe key (DataExportImport.doseDedupKey): lowercased substance and unit,
+  // millisecond time, amount and route. Rows with the same key are imported once.
+  function amountKey(a) { return a === 0 && 1 / a < 0 ? "-0" : String(a); }
+  // The time as Piru's key reads it: Date(ms:) then msSince1970, which truncates. Equal to
+  // the stored value for every realistic date; differs only within seconds of 1970.
+  function piruMs(ts) { return typeof ts === "number" ? Math.trunc((((ts / 1000) - 978307200) + 978307200) * 1000) : ts; }
+  function dedupKey(d, override) {
+    var o = override || {};
+    var sub = o.sub != null ? o.sub : d.sub, ts = o.ts != null ? o.ts : d.ts;
+    var amount = o.amount != null ? o.amount : d.amount, unit = o.unit != null ? o.unit : d.unit;
+    return sub.toLowerCase() + "|" + piruMs(ts) + "|" + amountKey(amount) + "|" + unit.toLowerCase() + "|" + d.route;
+  }
+
+  // ---- Duplicate groups ----
+  var NEAR_MS = 60 * 1000;
+  // Near duplicates treat the two micro signs (µ U+00B5, μ U+03BC) as the same unit,
+  // as Piru's DoseQuantity does; Piru's import dedupe does not.
+  function nearKey(d) {
+    var a = d.amount === 0 && 1 / d.amount < 0 ? "-0" : String(d.amount);
+    return d.sub.toLowerCase() + "|" + a + "|" + d.unit.toLowerCase().replace(/μ/g, "µ") + "|" + d.route;
+  }
+
+  // Exact groups use Piru's own import key; members stay in file order, so "first" is the
+  // copy Piru itself would keep.
+  function findDuplicates(model) {
+    var byKey = new Map();
+    model.doses.forEach(function (d) {
+      if (typeof d.ts !== "number" || typeof d.amount !== "number") return;
+      var k = dedupKey(d);
+      if (!byKey.has(k)) byKey.set(k, []);
+      byKey.get(k).push(d.i);
+    });
+    var exact = [];
+    byKey.forEach(function (list) { if (list.length > 1) exact.push({ kind: "exact", members: list }); });
+    exact.sort(function (a, b) { return a.members[0] - b.members[0]; });
+
+    // Near: one representative per exact key, chained within a minute of the group's first.
+    var reps = [];
+    byKey.forEach(function (list) { reps.push(model.doses[list[0]]); });
+    reps.sort(function (a, b) { var x = nearKey(a), y = nearKey(b); return x < y ? -1 : x > y ? 1 : a.ts - b.ts || a.i - b.i; });
+    var near = [], cur = null;
+    reps.forEach(function (d) {
+      if (cur && cur.key === nearKey(d) && d.ts - cur.start <= NEAR_MS) { cur.members.push(d.i); return; }
+      if (cur && cur.members.length > 1) near.push({ kind: "near", members: cur.members });
+      cur = { key: nearKey(d), start: d.ts, members: [d.i] };
+    });
+    if (cur && cur.members.length > 1) near.push({ kind: "near", members: cur.members });
+    near.forEach(function (g) { g.members.sort(function (a, b) { return a - b; }); });
+    near.sort(function (a, b) { return a.members[0] - b.members[0]; });
+    var empty = model.sessions.filter(function (s) { return s.doses.length === 0; }).map(function (s) { return s.i; });
+    return { exact: exact, near: near, alreadyEmpty: empty };
+  }
+
+  // ---- Byte-preserving edits ----
+  function applyEdits(text, edits, from, to) {
+    var s0 = from || 0, e0 = to == null ? text.length : to;
+    edits = edits.filter(function (ed) { return ed.s >= s0 && ed.e <= e0; });
+    edits.sort(function (a, b) { return a.s - b.s || a.e - b.e; });
+    var out = [], cur = s0;
+    edits.forEach(function (ed) {
+      if (ed.s < cur) throw new Error("Overlapping edits");
+      out.push(text.slice(cur, ed.s), ed.text); cur = ed.e;
+    });
+    out.push(text.slice(cur, e0));
+    return out.join("");
+  }
+
+  // Replaces one value in place; keeps the key, spacing and everything around it.
+  function setValueEdit(obj, key, valueText, edits) {
+    var mm = member(obj, key);
+    if (mm) edits.push({ s: mm.v.s, e: mm.v.e, text: valueText });
+    return !!mm;
+  }
+
+  // Removes keys from an object together with exactly one separating comma.
+  function removeKeysEdits(obj, keys, edits) {
+    var removeSet = new Set(keys.filter(function (k) { return member(obj, k); }));
+    if (!removeSet.size) return;
+    var m = obj.m, idx = 0;
+    while (idx < m.length) {
+      if (!removeSet.has(m[idx].k)) { idx++; continue; }
+      var a = idx; while (idx < m.length && removeSet.has(m[idx].k)) idx++;
+      var b = idx - 1;
+      if (idx < m.length) edits.push({ s: m[a].ks, e: m[idx].ks, text: "" });
+      else if (a > 0) edits.push({ s: m[a - 1].v.e, e: m[b].v.e, text: "" });
+      else edits.push({ s: m[a].ks, e: m[b].v.e, text: "" });
+    }
+  }
+
+  // An emptied array in Apple's pretty-printed shape: "[" EOL EOL indent "]".
+  function emptyArrayInner(text, arrNode) {
+    var inner = text.slice(arrNode.s + 1, arrNode.e - 1);
+    if (!/[\r\n]/.test(inner)) return "";
+    var eol = /\r\n/.test(inner) ? "\r\n" : "\n";
+    var lastNl = inner.lastIndexOf("\n");
+    var indent = inner.slice(lastNl + 1);
+    if (!/^[ \t]*$/.test(indent)) indent = "";
+    return eol + eol + indent;
+  }
+
+  // Removes the listed item positions from an array, with their separators only.
+  function removeItemsEdits(text, arrNode, positions, edits) {
+    var set = new Set(positions), items = arrNode.items;
+    if (!set.size) return;
+    if (set.size >= items.length && items.every(function (_, k) { return set.has(k); })) {
+      edits.push({ s: arrNode.s + 1, e: arrNode.e - 1, text: emptyArrayInner(text, arrNode) });
+      return;
+    }
+    var idx = 0;
+    while (idx < items.length) {
+      if (!set.has(idx)) { idx++; continue; }
+      var a = idx; while (idx < items.length && set.has(idx)) idx++;
+      var b = idx - 1;
+      if (idx < items.length) edits.push({ s: items[a].s, e: items[idx].s, text: "" });
+      else edits.push({ s: items[a - 1].e, e: items[b].e, text: "" });
+    }
+  }
+
+  // Removes doses (by model index) from their arrays. Sessions left with no doses are removed
+  // too when dropEmpty is set, as Piru does when a session's last entry moves away.
+  function removeDosesEdits(model, doseIdxs, dropEmpty, edits, extraSessions) {
+    var byArr = new Map(), removeSet = new Set(doseIdxs), emptied = [];
+    doseIdxs.forEach(function (k) {
+      var d = model.doses[k];
+      if (!byArr.has(d.arr)) byArr.set(d.arr, []);
+      byArr.get(d.arr).push(d.pos);
+    });
+    var dropSessions = [];
+    model.sessions.forEach(function (s) {
+      if (!s.doses.length || !s.doses.every(function (k) { return removeSet.has(k); })) return;
+      emptied.push(s.i);
+      if (dropEmpty) { dropSessions.push(s.pos); byArr.delete(s.dosesArr); }
+    });
+    byArr.forEach(function (positions, arrNode) { removeItemsEdits(model.text, arrNode, positions, edits); });
+    (extraSessions || []).forEach(function (i) { if (dropSessions.indexOf(model.sessions[i].pos) < 0) dropSessions.push(model.sessions[i].pos); });
+    if (dropSessions.length) removeItemsEdits(model.text, get(model.root, "sessions"), dropSessions, edits);
+    return emptied;
+  }
+
+  // Numbers as Piru writes them (Swift's shortest round-trip form); converted values drop
+  // binary noise such as 0.30000000000000004.
+  function formatNumber(x) {
+    if (!isFinite(x)) throw new Error("Not a finite number");
+    if (Number.isInteger(x) && Math.abs(x) < 1e21) return String(x);
+    return String(Number(x.toPrecision(15)));
+  }
+  function clean(x) { return Number(formatNumber(x)); }
+
+  // ---- Units (Shared/DoseQuantity.swift: bare spellings only) ----
+  var MASS = { "µg": 0.001, "μg": 0.001, "mcg": 0.001, "ug": 0.001, "microgram": 0.001, "micrograms": 0.001, "mcgs": 0.001, "ugs": 0.001,
+    "mg": 1, "mgs": 1, "milligram": 1, "milligrams": 1, "g": 1000, "gs": 1000, "gram": 1000, "grams": 1000, "gm": 1000 };
+  var VOLUME = { "ml": 1, "milliliter": 1, "milliliters": 1, "cc": 1 };
+  function unitInfo(unit) {
+    var k = String(unit || "").trim().toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(MASS, k)) return { family: "mass", mg: MASS[k] };
+    if (Object.prototype.hasOwnProperty.call(VOLUME, k)) return { family: "volume", mg: VOLUME[k] };
+    return null;
+  }
+  // Converts an amount between two units of one family, or returns null.
+  function convert(amount, from, to) {
+    var a = unitInfo(from), b = unitInfo(to);
+    if (!a || !b || a.family !== b.family || typeof amount !== "number") return null;
+    if (a.mg === b.mg) return amount;
+    var ratio = a.mg / b.mg;
+    var out = ratio >= 1 ? amount * Math.round(ratio) : amount / Math.round(1 / ratio);
+    return clean(out);
+  }
+  function isMicroVariant(u) { return /^[µμ]g$/.test(u) || /^(mcg|ug)$/i.test(u); }
+
+  // ---- Time zones: wall-clock arithmetic in an explicit IANA zone ----
+  var dtfCache = {};
+  function dtf(zone) {
+    if (!dtfCache[zone]) dtfCache[zone] = new Intl.DateTimeFormat("en-US", { timeZone: zone, hourCycle: "h23",
+      year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    return dtfCache[zone];
+  }
+  function wall(ts, zone) {
+    var p = {};
+    dtf(zone).formatToParts(new Date(ts)).forEach(function (x) { if (x.type !== "literal") p[x.type] = Number(x.value); });
+    return { y: p.year, mo: p.month, d: p.day, h: p.hour === 24 ? 0 : p.hour, mi: p.minute, s: p.second, ms: ((ts % 1000) + 1000) % 1000 };
+  }
+  function offsetMin(ts, zone) {
+    var p = wall(ts, zone);
+    return Math.round((Date.UTC(p.y, p.mo - 1, p.d, p.h, p.mi, p.s, p.ms) - ts) / 60000);
+  }
+  // Wall-clock time in `zone` to an instant. A time skipped by a DST change moves forward
+  // by the gap (gap: true); a repeated time takes `preferOffset` when it fits, else the first.
+  function fromWall(w, zone, preferOffset) {
+    var asUTC = Date.UTC(w.y, w.mo - 1, w.d, w.h, w.mi, w.s || 0, w.ms || 0);
+    var offs = [offsetMin(asUTC - 864e5 / 2, zone), offsetMin(asUTC + 864e5 / 2, zone)];
+    var cands = [];
+    offs.forEach(function (o) {
+      var ts = asUTC - o * 60000;
+      if (offsetMin(ts, zone) === o && cands.indexOf(ts) < 0) cands.push(ts);
+    });
+    cands.sort(function (a, b) { return a - b; });
+    if (!cands.length) return { ts: asUTC - offs[0] * 60000, gap: true };
+    if (cands.length > 1 && preferOffset != null) {
+      var hit = cands.filter(function (ts) { return offsetMin(ts, zone) === preferOffset; });
+      if (hit.length) return { ts: hit[0], ambiguous: true };
+    }
+    return { ts: cands[0], ambiguous: cands.length > 1 };
+  }
+  function pad(n, w) { return String(n).padStart(w || 2, "0"); }
+  function dayKey(ts, zone) { var w = wall(ts, zone); return w.y + "-" + pad(w.mo) + "-" + pad(w.d); }
+  function parseDay(s) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || "")); return m ? { y: +m[1], mo: +m[2], d: +m[3] } : null; }
+  // First instant of a calendar day in `zone` (null if the string is not a date).
+  function dayStart(s, zone, plusDays) {
+    var p = parseDay(s); if (!p) return null;
+    var u = new Date(Date.UTC(p.y, p.mo - 1, p.d + (plusDays || 0)));
+    return fromWall({ y: u.getUTCFullYear(), mo: u.getUTCMonth() + 1, d: u.getUTCDate(), h: 0, mi: 0, s: 0, ms: 0 }, zone).ts;
+  }
+  // Moves an instant by whole calendar days, keeping its wall-clock time in `zone`.
+  function shiftDays(ts, days, zone) {
+    var w = wall(ts, zone);
+    var u = new Date(Date.UTC(w.y, w.mo - 1, w.d + days));
+    var r = fromWall({ y: u.getUTCFullYear(), mo: u.getUTCMonth() + 1, d: u.getUTCDate(), h: w.h, mi: w.mi, s: w.s, ms: w.ms }, zone, offsetMin(ts, zone));
+    return r;
+  }
+  function daysBetween(a, b) { var x = parseDay(a), y = parseDay(b); return Math.round((Date.UTC(y.y, y.mo - 1, y.d) - Date.UTC(x.y, x.mo - 1, x.d)) / 864e5); }
+  function offsetLabel(min) { var s = min < 0 ? "−" : "+"; min = Math.abs(min); return "UTC" + s + pad(Math.floor(min / 60)) + ":" + pad(min % 60); }
+
+  // ---- Selection filters shared by the tools ----
+  // f: { sub, unit, from, to (YYYY-MM-DD, inclusive), zone }
+  function filterDoses(model, f) {
+    var lo = f.from ? dayStart(f.from, f.zone) : null, hi = f.to ? dayStart(f.to, f.zone, 1) : null;
+    return model.doses.filter(function (d) {
+      if (f.sub && d.sub !== f.sub) return false;
+      if (f.unit != null && f.unit !== "" && d.unit !== f.unit) return false;
+      if (lo != null && !(typeof d.ts === "number" && d.ts >= lo)) return false;
+      if (hi != null && !(typeof d.ts === "number" && d.ts < hi)) return false;
+      return true;
+    }).map(function (d) { return d.i; });
+  }
+
+  // Root layout of the file, for writing a new file in the same style.
+  function layout(model) {
+    var t = model.text, r = model.root, m0 = r.m[0];
+    var eol = model.eol, ind1 = "  ", colon = " : ", ind2 = "    ";
+    if (m0) {
+      var before = t.slice(r.s + 1, m0.ks), nl = before.lastIndexOf("\n");
+      ind1 = nl >= 0 ? before.slice(nl + 1) : "";
+      colon = t.slice(m0.ks, m0.v.s).replace(/^"(?:[^"\\]|\\.)*"/, "");
+      ind2 = ind1 + ind1;
+    }
+    var pretty = /\n/.test(t.slice(r.s, m0 ? m0.ks : r.e));
+    return { eol: pretty ? eol : "", ind1: ind1, ind2: ind2, colon: colon, pretty: pretty };
+  }
+
+  return {
+    SUPPORTED_VERSION: SUPPORTED_VERSION, HORIZON_MS: HORIZON_MS, MAX_TS: MAX_TS, piruMs: piruMs,
+    parse: parse, analyze: analyze, member: member, get: get, getStr: getStr, getNum: getNum, getBool: getBool, arr: arr, present: present, fold: fold,
+    dedupKey: dedupKey, findDuplicates: findDuplicates, NEAR_MS: NEAR_MS, applyEdits: applyEdits, setValueEdit: setValueEdit, removeKeysEdits: removeKeysEdits,
+    removeItemsEdits: removeItemsEdits, removeDosesEdits: removeDosesEdits, emptyArrayInner: emptyArrayInner,
+    formatNumber: formatNumber, clean: clean, unitInfo: unitInfo, convert: convert, isMicroVariant: isMicroVariant,
+    wall: wall, offsetMin: offsetMin, fromWall: fromWall, dayKey: dayKey, dayStart: dayStart, shiftDays: shiftDays,
+    daysBetween: daysBetween, offsetLabel: offsetLabel, filterDoses: filterDoses, layout: layout
+  };
+})();
+if (typeof module !== "undefined") module.exports = PiruCore;
+</script>
+
+<script id="piru-ui-kit">
+"use strict";
+// Shared page kit (same block in every tool): language switch, file opening, notices,
+// downloads, announcements and the entry picker. Page strings are merged over the shared ones.
+var PiruUI = (function () {
+  if (typeof document === "undefined") return null;
+  var C = PiruCore;
+  // Piru's own English menu names, marked as English inside French text.
+  function en(s) { return "<span lang=\"en\">" + s + "</span>"; }
+  var EXPORT_PATH = "Settings → Data &amp; Backup → Export… → Piru Backup";
+  var DELETE_PATH = "Settings → Data &amp; Backup → Delete Everything";
+  var S = {
+    en: {
+      back: "← All tools",
+      privacy: "Runs only on this device. Nothing is uploaded, and your file never leaves it.",
+      footer: "Works offline. Supported Piru backup format: version 2.",
+      siteNotice: "Hi! I'm working on Saiko Next, a private journal inspired by Piru. Along the way I'm making small free tools for Piru users who hit the same snags I did. They run entirely on your device, and your backup never leaves it. This site isn't affiliated with Piru.",
+      howTitle: "How it works",
+      openBtn: "Open your Piru backup",
+      exportHint: "Export it in Piru with <b>" + EXPORT_PATH + "</b>, not “Encrypted Backup”. Keep that file safe: it is your way back, and this page never changes it.",
+      stepExport: "In Piru, export <b>" + EXPORT_PATH + "</b>. Not “Encrypted Backup”: that file can't be read here.",
+      stepKeep: "<b>Keep that original file</b> safe. It is your way back, and this page never changes it.",
+      stepDownload: function (f) { return "Download the new file (<b>" + f + "</b>)."; },
+      stepImport: "In Piru, <b>" + DELETE_PATH + "</b>, then <b>Import…</b> the new file.",
+      whyDelete: "<b>Why delete everything first?</b> Piru adds a plain backup to the data it already has and skips only exact copies. The “Replace” choice exists only for encrypted backups. Without deleting first, removed entries would stay and changed entries would appear twice. Deleting, then importing, works like Replace.",
+      nextSteps: function (f) {
+        return "<p><b>Before you import</b></p><ol>" +
+          "<li>Keep your original backup safe. It is your only way back.</li>" +
+          "<li>In Piru, open <b>" + DELETE_PATH + "</b>. This also deletes Piru's own recovery copies, so do it only while your original backup is safe. Apple Health data is not affected.</li>" +
+          "<li>Then choose <b>Import…</b> and pick <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "— Choose —",
+      allSubstances: "All substances",
+      allUnits: "All units",
+      custom: "custom",
+      substance: "Substance",
+      unit: "Unit",
+      dateFrom: "From (date)",
+      dateTo: "Until (date, included)",
+      zone: "Time zone",
+      zoneDevice: function (z) { return z + " (this device)"; },
+      narrowTitle: "Pick dates or single entries",
+      narrowAll: "All dates, every entry ticked.",
+      narrowSome: function (n, m) { return n + " of " + m + " ticked."; },
+      tickAll: "Tick all",
+      untickAll: "Untick all",
+      showMore: function (n) { return "Show " + n + " more"; },
+      selected: function (n, m) { return n + " of " + m + (m === 1 ? " entry" : " entries") + " selected."; },
+      noMatch: "No entries match these filters.",
+      noSession: "no session",
+      sessionOf: function (d) { return "session of " + d; },
+      entries: function (n) { return n + (n === 1 ? " entry" : " entries"); },
+      loaded: function (name, n, m) { return "Opened " + name + ": " + n + (n === 1 ? " entry" : " entries") + ", " + m + (m === 1 ? " substance." : " substances."); },
+      newerRead: function (v) { return "This backup uses a newer Piru format (version " + v + ") than this page knows. Some details may be missing or misread."; },
+      more: function (n) { return "… and " + n + " more."; },
+      unchanged: "Everything else in the file stays byte-for-byte the same.",
+      done: function (f) { return "Downloaded " + f + ". Your original file is unchanged."; },
+      err: {
+        encrypted: "This is an encrypted backup, which can't be read here. In Piru, export " + EXPORT_PATH + " instead, then open that file.",
+        notjson: "This file is not a readable Piru backup. If it is an encrypted backup (.piruenc), export a plain “Piru Backup” instead.",
+        psylog: "This file is in PsychonautWiki format, not a Piru backup. In Piru, choose Export… → Piru Backup.",
+        legacy: "This file uses an old Piru format. Import it into Piru, then export a new “Piru Backup”.",
+        notpiru: "This file is not a Piru backup. Pick the file Piru created with Export… → Piru Backup.",
+        newer: "This backup uses a newer Piru format than this tool knows (version 2), so it can't edit it safely. Your file is unchanged.",
+        repeated: "This file repeats a field inside one record, which Piru never does. It may have been edited by hand. Export a fresh “Piru Backup” from Piru and open that.",
+        empty: "This file is empty.",
+        noentries: "This Piru backup has no journal entries.",
+        read: "Couldn't read this file."
+      }
+    },
+    fr: {
+      back: "← Tous les outils",
+      privacy: "Fonctionne uniquement sur cet appareil. Rien n'est envoyé, votre fichier ne le quitte jamais.",
+      footer: "Fonctionne hors ligne. Format de sauvegarde Piru pris en charge : version 2.",
+      siteNotice: "Bonjour ! Je développe Saiko Next, un journal privé inspiré de Piru. En chemin, je crée de petits outils gratuits pour les utilisateurs de Piru qui rencontrent les mêmes soucis que moi. Ils fonctionnent entièrement sur votre appareil et votre sauvegarde ne le quitte jamais. Ce site n'est pas affilié à Piru.",
+      howTitle: "Comment faire",
+      openBtn: "Ouvrir votre sauvegarde Piru",
+      exportHint: "Exportez-la dans Piru avec <b>" + en(EXPORT_PATH) + "</b>, pas « " + en("Encrypted Backup") + " ». Gardez ce fichier en lieu sûr : c'est votre copie de secours, et cette page ne le modifie jamais.",
+      stepExport: "Dans Piru, exportez <b>" + en(EXPORT_PATH) + "</b>. Pas « " + en("Encrypted Backup") + " » : ce fichier ne peut pas être lu ici.",
+      stepKeep: "<b>Gardez ce fichier d'origine</b> en lieu sûr. C'est votre copie de secours, et cette page ne le modifie jamais.",
+      stepDownload: function (f) { return "Téléchargez le nouveau fichier (<b>" + f + "</b>)."; },
+      stepImport: "Dans Piru, <b>" + en(DELETE_PATH) + "</b>, puis <b>" + en("Import…") + "</b> avec le nouveau fichier.",
+      whyDelete: "<b>Pourquoi tout effacer d'abord ?</b> Piru ajoute une sauvegarde non chiffrée aux données déjà présentes et ignore seulement les copies exactes. Le choix « " + en("Replace") + " » n'existe que pour les sauvegardes chiffrées. Sans effacer d'abord, les entrées retirées resteraient et les entrées modifiées apparaîtraient deux fois. Effacer puis importer revient à remplacer.",
+      nextSteps: function (f) {
+        return "<p><b>Avant d'importer</b></p><ol>" +
+          "<li>Gardez votre sauvegarde d'origine en lieu sûr. C'est votre seule copie de secours.</li>" +
+          "<li>Dans Piru, ouvrez <b>" + en(DELETE_PATH) + "</b>. Cela efface aussi les copies de récupération internes de Piru : faites-le seulement si votre sauvegarde d'origine est bien gardée. Les données d'Apple Santé ne sont pas touchées.</li>" +
+          "<li>Puis choisissez <b>" + en("Import…") + "</b> et prenez <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "— Choisir —",
+      allSubstances: "Toutes les substances",
+      allUnits: "Toutes les unités",
+      custom: "perso",
+      substance: "Substance",
+      unit: "Unité",
+      dateFrom: "Du (date)",
+      dateTo: "Au (date, incluse)",
+      zone: "Fuseau horaire",
+      zoneDevice: function (z) { return z + " (cet appareil)"; },
+      narrowTitle: "Choisir des dates ou des entrées précises",
+      narrowAll: "Toutes les dates, toutes les entrées cochées.",
+      narrowSome: function (n, m) { return n + " sur " + m + (n > 1 ? " cochées." : " cochée."); },
+      tickAll: "Tout cocher",
+      untickAll: "Tout décocher",
+      showMore: function (n) { return "Afficher " + n + " de plus"; },
+      selected: function (n, m) { return n + " sur " + m + (m > 1 ? " entrées sélectionnées." : " entrée sélectionnée."); },
+      noMatch: "Aucune entrée ne correspond à ces filtres.",
+      noSession: "sans session",
+      sessionOf: function (d) { return "session du " + d; },
+      entries: function (n) { return n + (n > 1 ? " entrées" : " entrée"); },
+      loaded: function (name, n, m) { return "Fichier ouvert, " + name + " : " + n + (n > 1 ? " entrées" : " entrée") + ", " + m + (m > 1 ? " substances." : " substance."); },
+      newerRead: function (v) { return "Cette sauvegarde utilise un format Piru plus récent (version " + v + ") que celui que connaît cette page. Certains détails peuvent manquer ou être mal lus."; },
+      more: function (n) { return "… et " + n + " autre" + (n > 1 ? "s" : "") + "."; },
+      unchanged: "Tout le reste du fichier reste identique, octet pour octet.",
+      done: function (f) { return "Téléchargé : " + f + ". Votre fichier d'origine n'a pas changé."; },
+      err: {
+        encrypted: "C'est une sauvegarde chiffrée, qui ne peut pas être lue ici. Dans Piru, exportez plutôt " + en(EXPORT_PATH) + ", puis ouvrez ce fichier.",
+        notjson: "Ce fichier n'est pas une sauvegarde Piru lisible. S'il s'agit d'une sauvegarde chiffrée (.piruenc), exportez plutôt une « " + en("Piru Backup") + " » sans chiffrement.",
+        psylog: "Ce fichier est au format PsychonautWiki, pas une sauvegarde Piru. Dans Piru, choisissez " + en("Export… → Piru Backup") + ".",
+        legacy: "Ce fichier utilise un ancien format Piru. Importez-le dans Piru, puis exportez une nouvelle « " + en("Piru Backup") + " ».",
+        notpiru: "Ce fichier n'est pas une sauvegarde Piru. Choisissez le fichier créé par Piru avec " + en("Export… → Piru Backup") + ".",
+        newer: "Cette sauvegarde utilise un format Piru plus récent que celui que connaît cet outil (version 2) : il ne peut pas la modifier sans risque. Votre fichier n'a pas changé.",
+        repeated: "Ce fichier répète un champ dans un même enregistrement, ce que Piru ne fait jamais. Il a peut-être été modifié à la main. Exportez une nouvelle « " + en("Piru Backup") + " » depuis Piru et ouvrez-la.",
+        empty: "Ce fichier est vide.",
+        noentries: "Cette sauvegarde Piru ne contient aucune entrée de journal.",
+        read: "Impossible de lire ce fichier."
+      }
+    }
+  };
+
+  var LANG_KEY = "piru-tool-lang";
+  var ALL = "\u0000all";
+  var T = null, lang = "en", renderFn = function () {};
+  try { var saved = window.localStorage.getItem(LANG_KEY); if (saved === "fr" || saved === "en") lang = saved; } catch (e) { /* storage unavailable: stay in English */ }
+  var $ = function (id) { return document.getElementById(id); };
+
+  function el(tag, attrs, text) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) { if (attrs[k] != null) e.setAttribute(k, attrs[k]); });
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function msg(kind, text) { return el("div", { class: "msg " + kind }, text); }
+  function t() { return T[lang]; }
+  function locale() { return lang === "fr" ? "fr-FR" : "en-GB"; }
+  function reducedMotion() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return true; } }
+
+  // One polite live region per page for short status lines; the preview itself is not live,
+  // so a long list is never read out on every change.
+  var announceTimer = null, lastAnnounced = "";
+  function announce(text) {
+    var box = $("announce");
+    if (!box) return;
+    clearTimeout(announceTimer);
+    announceTimer = setTimeout(function () {
+      if (text === lastAnnounced) return;
+      lastAnnounced = text; box.textContent = text;
+    }, 450);
+  }
+
+  // Moves focus to a step's heading once the step before it is done.
+  function focusStep(cardId) {
+    var card = $(cardId); if (!card || card.classList.contains("hidden")) return;
+    var h = card.querySelector("h2"); if (!h) return;
+    h.setAttribute("tabindex", "-1");
+    h.focus({ preventScroll: true });
+    h.scrollIntoView({ block: "start", behavior: reducedMotion() ? "auto" : "smooth" });
+  }
+
+  function setLang(l, remember) {
+    lang = l;
+    if (remember) { try { window.localStorage.setItem(LANG_KEY, l); } catch (e) { /* storage unavailable */ } }
+    document.documentElement.lang = l;
+    $("lang-fr").setAttribute("aria-pressed", String(l === "fr"));
+    $("lang-en").setAttribute("aria-pressed", String(l === "en"));
+    document.querySelectorAll("[data-i18n]").forEach(function (e) { e.textContent = T[l][e.getAttribute("data-i18n")]; });
+    document.querySelectorAll("[data-i18n-html]").forEach(function (e) { e.innerHTML = T[l][e.getAttribute("data-i18n-html")]; });
+    document.title = T[l].title;
+    lastAnnounced = "";
+    renderFn();
+  }
+
+  function init(pageT, render) {
+    T = { en: Object.assign({}, S.en, pageT.en), fr: Object.assign({}, S.fr, pageT.fr) };
+    ["en", "fr"].forEach(function (l) {
+      var x = T[l];
+      var list = typeof x.steps === "function" ? x.steps(x) : x.stepDo && !x.steps ? [x.stepExport, x.stepKeep, x.stepDo, x.stepDownload(x.fileName), x.stepImport] : null;
+      if (list) x.steps = list.map(function (h) { return "<li>" + h + "</li>"; }).join("");
+      if (typeof x.nextSteps === "function") x.nextSteps = x.fileName ? x.nextSteps(x.fileName) : "";
+    });
+    renderFn = render || renderFn;
+    if (!$("announce")) document.querySelector("main").appendChild(el("p", { id: "announce", class: "sr-only", "aria-live": "polite" }));
+    $("lang-en").addEventListener("click", function () { setLang("en", true); });
+    $("lang-fr").addEventListener("click", function () { setLang("fr", true); });
+    setLang(lang);
+  }
+
+  // Opens a backup and hands the analysis to `cb(result, fileName)`. The file is only read.
+  function onFile(input, opts, cb) {
+    input.addEventListener("change", function (ev) {
+      var f = ev.target.files && ev.target.files[0];
+      if (!f) return;
+      var reader = new FileReader();
+      reader.onload = function () { cb(C.analyze(new Uint8Array(reader.result), f.name, opts), f.name); };
+      reader.onerror = function () { cb({ ok: false, error: "read" }, f.name); };
+      reader.readAsArrayBuffer(f);
+      ev.target.value = "";
+    });
+  }
+
+  function renderLoad(box, res, fileName) {
+    box.textContent = "";
+    if (!res) return;
+    if (!res.ok) { var e = msg("err"); e.innerHTML = t().err[res.error] || t().err.read; box.appendChild(e); return; } // static strings only
+    var m = res.model;
+    box.appendChild(msg("ok", t().loaded(fileName, m.doses.length, m.substances.length)));
+    if (m.newer) box.appendChild(msg("warn", t().newerRead(m.version)));
+  }
+
+  function download(text, name) {
+    var blob = new Blob([text], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = el("a", { href: url, download: name });
+    a.style.display = "none";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+  }
+  // Shows the "downloaded" line in a status box and moves focus there.
+  function downloaded(box, text, focus) {
+    box.textContent = "";
+    var m = msg("ok", text); m.setAttribute("tabindex", "-1");
+    box.appendChild(m);
+    if (focus) m.focus();
+  }
+
+  function deviceZone() { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"; } catch (e) { return "UTC"; } }
+  function fmtDate(ts, zone, withOffset) {
+    if (typeof ts !== "number" || !isFinite(new Date(ts).getTime())) return "?";
+    var s;
+    try { s = new Date(ts).toLocaleString(locale(), { timeZone: zone || undefined, dateStyle: "medium", timeStyle: "short" }); }
+    catch (e) { s = new Date(ts).toISOString(); }
+    return withOffset && zone ? s + " (" + C.offsetLabel(C.offsetMin(ts, zone)) + ")" : s;
+  }
+  function fmtDay(ts, zone) {
+    if (typeof ts !== "number" || !isFinite(new Date(ts).getTime())) return "?";
+    try { return new Date(ts).toLocaleDateString(locale(), { timeZone: zone || undefined, dateStyle: "medium" }); }
+    catch (e) { return new Date(ts).toISOString().slice(0, 10); }
+  }
+  function fmtAmount(x) {
+    if (typeof x !== "number") return "?";
+    var s = C.formatNumber(x);
+    return lang === "fr" ? s.replace(".", ",") : s;
+  }
+  function doseLine(d, zone) {
+    return fmtDate(d.ts, zone) + " · " + (d.unknown ? "?" : fmtAmount(d.amount)) + " " + d.unit + (d.route ? " · " + d.route : "");
+  }
+  function sessionLabel(model, d, zone) {
+    if (d.session < 0) return t().noSession;
+    var s = model.sessions[d.session];
+    return s.title ? s.title : t().sessionOf(fmtDay(s.start, zone));
+  }
+  // Substance list: a "Choose" placeholder, then optionally "All substances", then each name.
+  function substanceOptions(sel, model, withAll, keep) {
+    var prev = keep ? sel.value : "";
+    sel.textContent = "";
+    sel.appendChild(el("option", { value: "" }, t().choose));
+    if (withAll) sel.appendChild(el("option", { value: ALL }, t().allSubstances + " — " + t().entries(model.doses.length)));
+    model.substances.forEach(function (s) {
+      sel.appendChild(el("option", { value: s.name }, s.name + (s.label ? " (" + s.label + ")" : "") + (s.custom ? " [" + t().custom + "]" : "") + " — " + t().entries(s.count)));
+    });
+    if (prev && Array.prototype.some.call(sel.options, function (o) { return o.value === prev; })) sel.value = prev;
+  }
+
+  // Time zone select: this device's zone first, then every zone the browser knows.
+  function zoneSelect(sel, onChange) {
+    var dev = deviceZone(), zones = [];
+    try { zones = Intl.supportedValuesOf("timeZone"); } catch (e) { zones = []; }
+    if (zones.indexOf("UTC") < 0) zones = zones.concat(["UTC"]);
+    function fill() {
+      var prev = sel.value || dev;
+      sel.textContent = "";
+      sel.appendChild(el("option", { value: dev }, t().zoneDevice(dev)));
+      zones.forEach(function (z) { if (z !== dev) sel.appendChild(el("option", { value: z }, z)); });
+      sel.value = prev;
+    }
+    sel.addEventListener("change", onChange);
+    return { fill: fill, value: function () { return sel.value || dev; }, isDevice: function () { return (sel.value || dev) === dev; } };
+  }
+
+  // Entry picker: choose a substance (and unit), then optionally narrow down by date or
+  // untick single entries inside a closed disclosure.
+  // opts: { requireSubstance (no "All substances" choice), unitFilter, zone(): string, onChange() }
+  function Picker(root, opts) {
+    var ids = { sub: root.id + "-sub", unit: root.id + "-unit", from: root.id + "-from", to: root.id + "-to", count: root.id + "-count" };
+    root.textContent = "";
+    var subLab = el("label", { class: "field", for: ids.sub }); var sub = el("select", { id: ids.sub, "aria-describedby": ids.count });
+    root.appendChild(subLab); root.appendChild(sub);
+    if (opts.afterSub) root.appendChild(opts.afterSub);
+    var unitWrap = el("div", { class: "hidden" });
+    var unitLab = el("label", { class: "field", for: ids.unit }); var unit = el("select", { id: ids.unit, "aria-describedby": ids.count });
+    unitWrap.appendChild(unitLab); unitWrap.appendChild(unit); root.appendChild(unitWrap);
+    var count = el("p", { class: "muted count", id: ids.count }); root.appendChild(count);
+    var narrow = el("details", { class: "more" });
+    var sum = el("summary"), sumTitle = el("span"), sumDetail = el("span", { class: "sum-detail" });
+    var sumText = el("span"); sumText.appendChild(sumTitle); sumText.appendChild(sumDetail); sum.appendChild(sumText);
+    narrow.appendChild(sum); root.appendChild(narrow);
+    var dates = el("div", { class: "row2" });
+    var fromBox = el("div"), toBox = el("div");
+    var fromLab = el("label", { class: "field", for: ids.from }); var from = el("input", { type: "date", id: ids.from });
+    var toLab = el("label", { class: "field", for: ids.to }); var to = el("input", { type: "date", id: ids.to });
+    fromBox.appendChild(fromLab); fromBox.appendChild(from); toBox.appendChild(toLab); toBox.appendChild(to);
+    dates.appendChild(fromBox); dates.appendChild(toBox); narrow.appendChild(dates);
+    var bar = el("div", { class: "btn-row", style: "margin-top:16px" });
+    var all = el("button", { type: "button", class: "btn small secondary" }); var none = el("button", { type: "button", class: "btn small secondary" });
+    bar.appendChild(all); bar.appendChild(none); narrow.appendChild(bar);
+    var list = el("div", { class: "entries" }); narrow.appendChild(list);
+    var moreBtn = el("button", { type: "button", class: "btn small secondary hidden" }); narrow.appendChild(moreBtn);
+
+    var model = null, unticked = new Set(), limit = 50, cand = [];
+    function subValue() { return sub.value === ALL ? "" : sub.value; }
+    function chosen() { return !!model && sub.value !== ""; }
+    function filters() { return { sub: subValue(), unit: opts.unitFilter ? unit.value : "", from: from.value, to: to.value, zone: opts.zone() }; }
+    function compute() {
+      cand = [];
+      if (!chosen()) return;
+      cand = C.filterDoses(model, filters());
+      cand.sort(function (a, b) { return (model.doses[a].ts || 0) - (model.doses[b].ts || 0) || a - b; });
+    }
+    function selected() { return cand.filter(function (k) { return !unticked.has(k); }); }
+    function fillUnits() {
+      var prev = unit.value; unit.textContent = "";
+      unit.appendChild(el("option", { value: "" }, t().allUnits));
+      if (model && subValue()) {
+        var c = new Map();
+        model.doses.forEach(function (d) { if (d.sub === subValue()) c.set(d.unit, (c.get(d.unit) || 0) + 1); });
+        Array.from(c).sort(function (a, b) { return b[1] - a[1]; }).forEach(function (e) {
+          unit.appendChild(el("option", { value: e[0] }, (e[0] || "—") + " — " + t().entries(e[1])));
+        });
+      }
+      if (Array.prototype.some.call(unit.options, function (o) { return o.value === prev; })) unit.value = prev;
+      // A unit filter only helps when the substance was logged in more than one unit.
+      unitWrap.classList.toggle("hidden", !(opts.unitFilter && unit.options.length > 2));
+    }
+    function renderCount() {
+      var tt = t(), n = selected().length;
+      count.textContent = cand.length ? tt.selected(n, cand.length) : tt.noMatch;
+      sumDetail.textContent = !from.value && !to.value && n === cand.length ? tt.narrowAll : (from.value || "…") + " – " + (to.value || "…") + " · " + tt.narrowSome(n, cand.length);
+    }
+    function renderList() {
+      var tt = t(), zone = opts.zone();
+      subLab.textContent = tt.substance; unitLab.textContent = tt.unit; fromLab.textContent = tt.dateFrom; toLab.textContent = tt.dateTo;
+      all.textContent = tt.tickAll; none.textContent = tt.untickAll; sumTitle.textContent = tt.narrowTitle;
+      list.textContent = "";
+      var show = chosen();
+      [count, narrow].forEach(function (x) { x.classList.toggle("hidden", !show); });
+      moreBtn.classList.add("hidden");
+      if (!show) return;
+      renderCount();
+      bar.classList.toggle("hidden", !cand.length);
+      if (!narrow.open) return; // the list is built only when someone opens it
+      cand.slice(0, limit).forEach(function (k) {
+        var d = model.doses[k];
+        var lab = el("label", { class: "check entry" });
+        var input = el("input", { type: "checkbox" });
+        input.checked = !unticked.has(k);
+        input.addEventListener("change", function () {
+          if (input.checked) unticked.delete(k); else unticked.add(k);
+          renderCount();
+          opts.onChange();
+        });
+        var span = el("span");
+        span.appendChild(el("span", { class: "num" }, doseLine(d, zone)));
+        span.appendChild(el("span", { class: "sub" }, (opts.requireSubstance ? "" : d.sub + " · ") + sessionLabel(model, d, zone)));
+        lab.appendChild(input); lab.appendChild(span);
+        list.appendChild(lab);
+      });
+      if (cand.length > limit) { moreBtn.textContent = tt.showMore(Math.min(50, cand.length - limit)); moreBtn.classList.remove("hidden"); }
+    }
+    function changed(resetLimit) { if (resetLimit) limit = 50; compute(); renderList(); opts.onChange(); }
+    sub.addEventListener("change", function () { unticked = new Set(); fillUnits(); changed(true); });
+    unit.addEventListener("change", function () { changed(true); });
+    from.addEventListener("change", function () { changed(true); });
+    to.addEventListener("change", function () { changed(true); });
+    narrow.addEventListener("toggle", function () { renderList(); });
+    all.addEventListener("click", function () { cand.forEach(function (k) { unticked.delete(k); }); renderList(); opts.onChange(); });
+    none.addEventListener("click", function () { cand.forEach(function (k) { unticked.add(k); }); renderList(); opts.onChange(); });
+    moreBtn.addEventListener("click", function () {
+      var first = limit; limit += 50; renderList();
+      var next = list.querySelectorAll("input")[first]; if (next) next.focus();
+    });
+    return {
+      setModel: function (m) { model = m; unticked = new Set(); limit = 50; sub.value = ""; from.value = ""; to.value = ""; narrow.open = false; this.render(false); compute(); renderList(); },
+      render: function (keep) { if (!model) { renderList(); return; } substanceOptions(sub, model, !opts.requireSubstance, keep !== false); fillUnits(); compute(); renderList(); },
+      refresh: function () { compute(); renderList(); },
+      chosen: chosen, selected: selected, total: function () { return cand.length; },
+      substance: function () { return subValue(); }, unit: function () { return unit.value; }
+    };
+  }
+
+  return {
+    init: init, t: t, lang: function () { return lang; }, locale: locale, $: $, el: el, msg: msg, en: en,
+    announce: announce, focusStep: focusStep, downloaded: downloaded, reducedMotion: reducedMotion,
+    onFile: onFile, renderLoad: renderLoad, download: download, deviceZone: deviceZone, zoneSelect: zoneSelect,
+    fmtDate: fmtDate, fmtDay: fmtDay, fmtAmount: fmtAmount, doseLine: doseLine, sessionLabel: sessionLabel,
+    substanceOptions: substanceOptions, Picker: Picker
+  };
+})();
+</script>
+
+<script id="prompt-logic">
+"use strict";
+// Contribution prompts (same block on index.html and prompt-maker.html). Pure logic: no DOM access.
+// The prompt is plain text. User text is cleaned here and only ever shown as text, never as HTML.
+var PiruPrompt = (function () {
+  var PIRU_REPO = "https://github.com/kageroumado/piru";
+  var TOOLS_REPO = "https://github.com/lammersbjorn/piru-tools";
+  var TOOLS_SITE = "https://lammersbjorn.github.io/piru-tools/";
+  var MAX_TEXT = 2000;
+  var TOOLS = [
+    { id: "inspector", name: "Inspect a backup", page: "inspector.html", what: "show what the journal contains and flag possible problems, without changing anything" },
+    { id: "move-substance", name: "Move entries to another substance", page: "move-substance.html", what: "move doses that were logged under the wrong substance to the right one" },
+    { id: "duplicates", name: "Remove duplicates", page: "duplicates.html", what: "find entries logged twice and keep one of each" },
+    { id: "unit-fixer", name: "Fix units", page: "unit-fixer.html", what: "convert entries between units, or fix an amount logged in the wrong unit" },
+    { id: "time-shift", name: "Shift entries in time", page: "time-shift.html", what: "move entries by hours and minutes, or to another date, for example after a wrong clock or time zone" },
+    { id: "split-out", name: "Split out entries", page: "split-out.html", what: "move chosen entries, such as a friend's, out of the journal into a separate backup" }
+  ];
+  var RULES = "README, any CONTRIBUTING, AGENTS.md or CLAUDE.md";
+  // Only small wording changes per assistant; no claims about features an assistant may lack.
+  var AGENTS = {
+    claude: { rules: RULES, run: "Run the build and the tests yourself in the terminal and show me the results.", runTests: "Run the tests yourself in the terminal and show me the results." },
+    codex: { rules: RULES, run: "Run the build and the tests yourself and show me the results. If you can't run them where you are, for example without Xcode or network access, tell me the exact commands to run instead.", runTests: "Run the tests yourself and show me the results. If you can't run them where you are, tell me the exact commands to run instead." },
+    cursor: { rules: "README, any CONTRIBUTING, AGENTS.md, CLAUDE.md or Cursor rules (.cursor/rules)", run: "Run the build and the tests in the terminal and show me the results.", runTests: "Run the tests in the terminal and show me the results." },
+    other: { rules: RULES, run: "Run the build and the tests yourself if you can; otherwise tell me the exact commands to run.", runTests: "Run the tests yourself if you can; otherwise tell me the exact commands to run." }
+  };
+  var PLATFORM = {
+    ios: "Platform: iOS only. Leave any other platform's code untouched.",
+    both: "Platforms: iOS and Android. First check whether the Piru repository contains an Android app. If it does, build the feature on both, with the same behaviour, following each platform's own patterns. If it doesn't, build it for iOS only and say so in the pull request."
+  };
+
+  function tool(id) { for (var j = 0; j < TOOLS.length; j++) if (TOOLS[j].id === id) return TOOLS[j]; return null; }
+
+  // Free text as plain prompt text: no control or direction-override characters, no runs of
+  // blank lines, at most MAX_TEXT characters.
+  function clean(s) {
+    s = String(s == null ? "" : s).replace(/\r\n?/g, "\n").replace(/\t/g, "  ");
+    s = s.replace(/[\u0000-\u0009\u000B-\u001F\u007F-\u009F؜‎‏‪-‮⁦-⁩]/g, "");
+    s = s.replace(/[  ]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+    var chars = Array.from(s);
+    if (chars.length > MAX_TEXT) s = chars.slice(0, MAX_TEXT).join("").trim() + " …";
+    return s;
+  }
+  // Continuation lines are indented so multi-line text stays inside its field.
+  function indent(s) { return s.split("\n").map(function (l, k) { return k && l ? "  " + l : l; }).join("\n"); }
+
+  function workWithMe(o, piru) {
+    var a = AGENTS[o.agent] || AGENTS.other;
+    var L = ["", "How to work with me:",
+      "- Before writing code, show me your plan and wait for my go-ahead.",
+      "- " + (piru ? a.run : a.runTests)];
+    if (o.selfTest) L.push(piru
+      ? "- I will test it on my own copy of Piru with synthetic data before the pull request is opened. When the feature works, stop, give me short steps to install your build and test it, and wait for my go-ahead."
+      : "- I will test the page on my own copy with made-up backups before the pull request is opened. When it works, stop, tell me how to open it locally, and wait for my go-ahead.");
+    L.push("- Show me the pull request title and description before you open it. Open it from my fork with the GitHub CLI (gh pr create) if it is installed and signed in; otherwise tell me how to open it on github.com.");
+    return L;
+  }
+
+  // o: { kind: "tool" | "piru" | "site", tool, text, agent, platform: "ios" | "both", details, selfTest }
+  function piruPrompt(o) {
+    var t = o.kind === "tool" ? tool(o.tool) : null, isTool = o.kind === "tool";
+    var a = AGENTS[o.agent] || AGENTS.other;
+    var feature = isTool
+      ? (t ? t.name + ": " + t.what + ". Matching page: " + t.page + "."
+           : "[Name one tool from " + TOOLS_SITE + " here, for example “Remove duplicates”.]")
+      : (clean(o.text) ? indent(clean(o.text)) : "[Describe the feature here.]");
+    var details = clean(o.details);
+    var L = [
+      "You are contributing a feature to Piru, an open-source substance journal app (" + PIRU_REPO + "). Your goal is one small, high-quality pull request that the maintainer would be happy to merge.",
+      "",
+      "Feature to build: " + feature
+    ];
+    if (details) L.push("", "Details from me: " + indent(details));
+    L.push("");
+    if (isTool) L.push("Reference implementation: " + TOOLS_REPO + " (MIT licensed, offline web tools that do this on exported Piru backups). Read the matching HTML page to understand the exact behaviour, edge cases and safety rules. Reimplement it natively inside Piru on Piru's own data model; do not embed the web page.");
+    else L.push("Reference implementation: there is none. Work out the exact behaviour, edge cases and safety rules from the description above and from how Piru already works, and include them in your plan before writing code.");
+    L.push("",
+      "Before writing code:",
+      "1. Fork and clone Piru. Read its " + a.rules + ", and follow them exactly.",
+      "2. Find how Piru stores doses, sessions, custom substances, medications and stock, and how its import, export and duplicate detection work (look for DataExportImport and the model types). Match its naming, architecture, localisation and UI patterns.",
+      "3. Check open issues and pull requests so you don't duplicate work, and keep the change limited to this one feature.",
+      "",
+      "Requirements:",
+      "- Data safety first: show a clear preview of exactly what will change; ask for confirmation; offer Undo or make a recovery backup before any destructive change; never touch records the user didn't select.",
+      "- Reuse Piru's existing views, components and strings style. No new dependencies.",
+      "- Localise all new strings the way Piru does.",
+      "- Accessible: VoiceOver labels, Dynamic Type at the largest sizes, sufficient contrast.",
+      "- " + (PLATFORM[o.platform] || PLATFORM.ios),
+      "",
+      "Verify before opening the PR:",
+      "- Add unit tests for the core logic, covering " + (isTool ? "edge cases" : "the edge cases that apply") + " (micro sign µ vs Greek μ, time zones and daylight saving, empty sessions, custom substances, large journals).",
+      "- Build the app and run the full existing test suite; everything must pass.",
+      "- Run the feature in the simulator on synthetic data only and take before/after screenshots.",
+      "",
+      "Open the pull request:",
+      "- Clear title and a short description of the problem it solves, how it works, how you tested it, and the screenshots.",
+      "- State that it was written with AI assistance and that you reviewed and tested it.");
+    if (isTool) L.push("- Credit the reference: \"Behaviour based on lammersbjorn/piru-tools (MIT).\"");
+    L.push("- Keep it small and focused; one feature per pull request.");
+    if (isTool) L.push("",
+      "After Piru merges it:",
+      "- Open an issue or pull request on " + TOOLS_REPO + " saying which tool Piru now includes (link the merged PR), so it can be removed from the tools site.");
+    return L.concat(workWithMe(o, true)).join("\n");
+  }
+
+  function sitePrompt(o) {
+    var a = AGENTS[o.agent] || AGENTS.other;
+    var text = clean(o.text), details = clean(o.details);
+    var L = [
+      "You are adding a new tool to Piru tools (" + TOOLS_REPO + "), a set of free, offline, single-page web tools that fix or check exported backups of Piru, an open-source substance journal app (" + PIRU_REPO + "). Your goal is one small, high-quality pull request that the maintainer would be happy to merge.",
+      "",
+      "Tool to build: " + (text ? indent(text) : "[Describe the tool here.]")
+    ];
+    if (details) L.push("", "Details from me: " + indent(details));
+    L.push("",
+      "First, a check: if this really belongs inside Piru itself, tell me before you start. A pull request to Piru may serve people better than a web tool.",
+      "",
+      "Before writing code:",
+      "1. Fork and clone lammersbjorn/piru-tools. Read its README, PRIVACY and LICENSE, and any CONTRIBUTING, AGENTS.md" + (o.agent === "cursor" ? ", CLAUDE.md or Cursor rules (.cursor/rules)" : " or CLAUDE.md") + ", and follow them exactly.",
+      "2. Study an existing tool page, such as unit-fixer.html, and copy its structure exactly: one standalone HTML file; the same strict Content-Security-Policy with no network access; the same shared CSS and design tokens; the same English and French i18n tables and language switch; the same footer; and the same shared backup parsing and validation, unchanged, which refuses encrypted backups and backup versions above 2.",
+      "3. Check open issues and pull requests so you don't duplicate work.",
+      "",
+      "Requirements:",
+      "- Edit byte for byte: only the intended values change. Unknown fields, key order, spacing and line endings stay exactly as they were.",
+      "- Data safety first: show a clear preview of exactly what will change, never change the original file, and explain how to import the result into Piru.",
+      "- Everything runs on the device: no network requests, no analytics, no external fonts or scripts.",
+      "- Translate every new string into English and French.",
+      "- Accessible: one h1, labelled controls, status messages in an aria-live region, focus moved to each new step, 44 pt touch targets, reduced motion respected, 4.5:1 text contrast in dark and light mode.",
+      "- Add the tool to index.html and to the README.",
+      "",
+      "Verify before opening the PR:",
+      "- Add a small node test that runs the tool's logic on synthetic, made-up backups (never real data). Assert that only the intended bytes change and that the output is still valid Piru JSON. Run any existing tests too; everything must pass.",
+      "- Check the page in a browser at phone width (390 px) in dark and light mode, in English and French, with no console errors and no network requests.",
+      "",
+      "Open the pull request on lammersbjorn/piru-tools:",
+      "- Clear title and a short description of what the tool does, why it is needed, and how you tested it, with screenshots.",
+      "- State that it was written with AI assistance and that you reviewed and tested it.",
+      "- Keep it to one tool per pull request.");
+    return L.concat(workWithMe(o, false)).join("\n");
+  }
+
+  function build(o) { return o.kind === "site" ? sitePrompt(o) : piruPrompt(o); }
+  // The quick prompt: a Piru pull request, with the tool left for the person to fill in.
+  function quick() { return build({ kind: "tool", tool: null, agent: "other", platform: "ios" }); }
+
+  return { TOOLS: TOOLS, tool: tool, clean: clean, build: build, quick: quick, MAX_TEXT: MAX_TEXT };
+})();
+if (typeof module !== "undefined") module.exports = PiruPrompt;
+</script>
+
+<script id="tool-ui">
+"use strict";
+(function () {
+  if (typeof document === "undefined") return;
+  var U = PiruUI, $ = U.$, P = PiruPrompt, el = U.el;
+  var resultShown = false;
+
+  function checked(name) { var r = document.querySelector('input[name="' + name + '"]:checked'); return r ? r.value : ""; }
+  function show(id, on) { $(id).classList.toggle("hidden", !on); }
+  function state() {
+    return { kind: checked("kind"), tool: $("tool").value, text: $("text").value, agent: checked("agent"),
+      platform: checked("platform"), details: $("details").value, selfTest: $("self-test").checked };
+  }
+  // The read-only prompt grows to its full height, so the page scrolls instead of the box.
+  function fit() { var a = $("prompt"); a.style.height = "auto"; a.style.height = (a.scrollHeight + 2) + "px"; }
+
+  function fillTools() {
+    var sel = $("tool"), prev = sel.value, tt = U.t();
+    sel.textContent = "";
+    sel.appendChild(el("option", { value: "" }, tt.choose));
+    P.TOOLS.forEach(function (x) { sel.appendChild(el("option", { value: x.id }, tt.toolNames[x.id])); });
+    sel.value = prev;
+  }
+
+  // Shows each step once the one before it is answered, and rebuilds the prompt.
+  function update() {
+    var s = state(), tt = U.t(), piru = s.kind === "tool" || s.kind === "piru";
+    show("tool-wrap", s.kind === "tool");
+    show("text-wrap", s.kind === "piru" || s.kind === "site");
+    $("text-label").textContent = s.kind === "site" ? tt.textSite : tt.textPiru;
+    var kindDone = !!s.kind && (s.kind === "tool" ? !!P.tool(s.tool) : !!P.clean(s.text));
+    var agentDone = kindDone && !!s.agent;
+    var ready = agentDone && (!piru || !!s.platform);
+    show("agent-card", kindDone);
+    show("platform-card", agentDone && piru);
+    show("extras-card", ready);
+    show("result-card", ready);
+    var n = 1;
+    $("h-kind").textContent = (n++) + ". " + tt.sKind;
+    $("h-agent").textContent = (n++) + ". " + tt.sAgent;
+    if (s.kind !== "site") $("h-platform").textContent = (n++) + ". " + tt.sPlatform;
+    $("h-extras").textContent = (n++) + ". " + tt.sExtras;
+    $("h-result").textContent = (n++) + ". " + tt.sResult;
+    if (ready) {
+      var text = P.build(s);
+      if ($("prompt").value !== text) { $("prompt").value = text; $("copy-status").textContent = ""; }
+      fit();
+      if (!resultShown) U.announce(tt.ready);
+    }
+    resultShown = ready;
+  }
+
+  // Copies with the Clipboard API, else by selecting the prompt; "Copied" goes to a live region.
+  function copy() {
+    var status = $("copy-status"), area = $("prompt"), text = area.value;
+    status.classList.remove("manual");
+    function done() { status.textContent = ""; setTimeout(function () { status.textContent = U.t().copied; }, 60); }
+    function fallback() {
+      area.focus(); area.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      if (ok) { done(); return; }
+      status.classList.add("manual");
+      status.textContent = U.t().copyManual;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback);
+    else fallback();
+  }
+
+  document.querySelectorAll('input[type="radio"], #self-test, #tool').forEach(function (x) { x.addEventListener("change", update); });
+  ["text", "details"].forEach(function (id) { $(id).addEventListener("input", update); });
+  $("copy").addEventListener("click", copy);
+  window.addEventListener("resize", function () { if (resultShown) fit(); });
+
+  var TOOL_NAMES_EN = {}, TOOL_NAMES_FR = {
+    inspector: "Inspecter une sauvegarde", "move-substance": "Déplacer des entrées vers une autre substance",
+    duplicates: "Supprimer les doublons", "unit-fixer": "Corriger les unités",
+    "time-shift": "Décaler des entrées dans le temps", "split-out": "Séparer des entrées"
+  };
+  P.TOOLS.forEach(function (x) { TOOL_NAMES_EN[x.id] = x.name; });
+
+  U.init({
+    en: {
+      title: "Make a prompt to contribute",
+      subtitle: "Build a ready-to-paste prompt for your AI coding assistant, to bring a feature into Piru or to add a tool to this site.",
+      privacy: "Runs only on this device. Nothing you type here is sent anywhere.",
+      rulesTitle: "Before you start",
+      rules: "<li>Send one small pull request per tool or feature.</li>" +
+        "<li>Test it on your own copy first, with made-up data, never your real journal.</li>" +
+        "<li>The Piru developer decides what gets merged into Piru.</li>" +
+        "<li>Once Piru includes a tool, please open an issue or pull request on <b>lammersbjorn/piru-tools</b> so it can be removed from this site.</li>",
+      sKind: "What do you want to build?",
+      kindTool: "Bring an existing tool into Piru",
+      kindToolSub: "A pull request to Piru that builds one of these tools into the app.",
+      kindPiru: "Add something new to Piru",
+      kindPiruSub: "A pull request to Piru for a feature you describe.",
+      kindSite: "Add a new tool to this site",
+      kindSiteSub: "A pull request to lammersbjorn/piru-tools for a tool you're missing.",
+      toolLabel: "Which tool?",
+      toolNames: TOOL_NAMES_EN,
+      textPiru: "Describe the feature",
+      textSite: "Describe the tool you're missing",
+      textHint: "A sentence or two is enough. The prompt is in English, so English works best here.",
+      sAgent: "Which agent?",
+      agentHint: "This only changes small wording, such as how to run the tests.",
+      agentOther: "Another assistant",
+      sPlatform: "Platforms",
+      platIos: "iOS only",
+      platIosSub: "The change stays in the iOS app.",
+      platBoth: "iOS and Android",
+      platBothSub: "The assistant first checks whether Piru has an Android app, and builds for both only if it does.",
+      sExtras: "Optional extras",
+      detailsLabel: "Anything else the assistant should know? (optional)",
+      detailsHint: "For example where the feature should live, or a case it must handle.",
+      selfTest: "I'll test on my own copy with synthetic data",
+      selfTestSub: "The assistant stops before the pull request so you can test first.",
+      sResult: "Your prompt",
+      promptLabel: "Prompt, ready to paste (in English)",
+      copyBtn: "Copy the prompt",
+      copied: "Copied",
+      copyManual: "Copying didn't work here. The prompt is selected: copy it with your device's copy command.",
+      ready: "Your prompt is ready in the last step.",
+      howUseTitle: "How to use",
+      howUse: "<li>Open your AI coding assistant in a new, empty folder.</li>" +
+        "<li>Paste the prompt and send it.</li>" +
+        "<li>Review its plan before it writes code, and ask for changes where you disagree.</li>" +
+        "<li>Check the pull request yourself before it is submitted: the changes, the tests and the screenshots.</li>"
+    },
+    fr: {
+      title: "Créer un prompt pour contribuer",
+      subtitle: "Préparez un prompt prêt à coller pour votre assistant de code IA, pour ajouter une fonctionnalité à Piru ou un outil à ce site.",
+      privacy: "Fonctionne uniquement sur cet appareil. Rien de ce que vous tapez ici n'est envoyé.",
+      rulesTitle: "Avant de commencer",
+      rules: "<li>Envoyez une petite pull request par outil ou par fonctionnalité.</li>" +
+        "<li>Testez-la d'abord sur votre propre copie, avec des données fictives, jamais votre vrai journal.</li>" +
+        "<li>C'est le développeur de Piru qui décide de ce qui est intégré à Piru.</li>" +
+        "<li>Quand Piru inclut un outil, merci d'ouvrir une issue ou une pull request sur <b>lammersbjorn/piru-tools</b> pour qu'il soit retiré de ce site.</li>",
+      sKind: "Que voulez-vous créer ?",
+      kindTool: "Intégrer un outil existant à Piru",
+      kindToolSub: "Une pull request à Piru qui intègre l'un de ces outils dans l'app.",
+      kindPiru: "Ajouter quelque chose de nouveau à Piru",
+      kindPiruSub: "Une pull request à Piru pour une fonctionnalité que vous décrivez.",
+      kindSite: "Ajouter un nouvel outil à ce site",
+      kindSiteSub: "Une pull request à lammersbjorn/piru-tools pour un outil qui vous manque.",
+      toolLabel: "Quel outil ?",
+      toolNames: TOOL_NAMES_FR,
+      textPiru: "Décrivez la fonctionnalité",
+      textSite: "Décrivez l'outil qui vous manque",
+      textHint: "Une ou deux phrases suffisent. Le prompt est en anglais : l'anglais fonctionne donc mieux ici.",
+      sAgent: "Quel assistant ?",
+      agentHint: "Cela ne change que de petites formulations, par exemple la façon de lancer les tests.",
+      agentOther: "Un autre assistant",
+      sPlatform: "Plateformes",
+      platIos: "iOS uniquement",
+      platIosSub: "La modification reste dans l'app iOS.",
+      platBoth: "iOS et Android",
+      platBothSub: "L'assistant vérifie d'abord si Piru a une app Android, et ne développe pour les deux que si c'est le cas.",
+      sExtras: "Options supplémentaires",
+      detailsLabel: "Autre chose que l'assistant doit savoir ? (facultatif)",
+      detailsHint: "Par exemple l'écran où placer la fonctionnalité, ou un cas qu'elle doit gérer.",
+      selfTest: "Je testerai sur ma propre copie avec des données fictives",
+      selfTestSub: "L'assistant s'arrête avant la pull request pour que vous puissiez tester d'abord.",
+      sResult: "Votre prompt",
+      promptLabel: "Prompt prêt à coller (en anglais)",
+      copyBtn: "Copier le prompt",
+      copied: "Copié",
+      copyManual: "La copie n'a pas fonctionné ici. Le prompt est sélectionné : copiez-le avec la commande Copier de votre appareil.",
+      ready: "Votre prompt est prêt, à la dernière étape.",
+      howUseTitle: "Mode d'emploi",
+      howUse: "<li>Ouvrez votre assistant de code IA dans un nouveau dossier vide.</li>" +
+        "<li>Collez le prompt et envoyez-le.</li>" +
+        "<li>Relisez son plan avant qu'il écrive du code, et demandez des changements si vous n'êtes pas d'accord.</li>" +
+        "<li>Vérifiez vous-même la pull request avant qu'elle soit envoyée : les modifications, les tests et les captures d'écran.</li>"
+    }
+  }, function () { fillTools(); update(); });
+})();
+</script>
+</body>
+</html>
