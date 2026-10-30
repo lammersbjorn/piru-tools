@@ -340,6 +340,7 @@
       <p lang="en">This page needs JavaScript. On iPhone, the Files or Mail preview does not run it: open the page in Safari, or use a computer.</p>
       <p lang="fr">Cette page a besoin de JavaScript pour fonctionner. Sur iPhone, l'aperçu de l'app Fichiers ou de Mail ne l'exécute pas : ouvrez la page dans Safari, ou utilisez un ordinateur.</p>
       <p lang="zh-Hans">此页面需要 JavaScript。在 iPhone 上，“文件”或“邮件”的预览不会运行它：请在 Safari 中打开此页面，或者使用电脑。</p>
+      <p lang="es">Esta página necesita JavaScript. En iPhone, la vista previa de Archivos o de Mail no lo ejecuta: abre la página en Safari o usa un ordenador.</p>
     </div>
   </noscript>
 
@@ -1049,6 +1050,66 @@ var PiruUI = (function () {
         noentries: "这个 Piru 备份里没有日志记录。",
         read: "无法读取这个文件。"
       }
+    },
+    es: {
+      langLabel: "Idioma (Language)",
+      privacyLink: "Privacidad",
+      back: "← Todas las herramientas",
+      privacy: "Funciona solo en este dispositivo. No se sube nada y tu archivo nunca sale de él.",
+      footer: "Funciona sin conexión. Formato de copia de seguridad de Piru compatible: versión 2.",
+      siteNotice: "¡Hola! Estoy creando Saiko Next, un diario privado inspirado en Piru. Por el camino hago pequeñas herramientas gratuitas para quienes usan Piru y se topan con los mismos problemas que yo. Funcionan por completo en tu dispositivo y tu copia de seguridad nunca sale de él. Este sitio no está afiliado a Piru.",
+      howTitle: "Cómo funciona",
+      openBtn: "Abrir tu copia de seguridad de Piru",
+      exportHint: "Expórtala en Piru con <b>" + en(EXPORT_PATH) + "</b>, no con “" + en("Encrypted Backup") + "”. Guarda bien ese archivo: es tu forma de volver atrás, y esta página nunca lo modifica.",
+      stepExport: "En Piru, exporta <b>" + en(EXPORT_PATH) + "</b>. No “" + en("Encrypted Backup") + "”: ese archivo no se puede leer aquí.",
+      stepKeep: "<b>Guarda bien ese archivo original</b>. Es tu forma de volver atrás, y esta página nunca lo modifica.",
+      stepDownload: function (f) { return "Descarga el archivo nuevo (<b>" + f + "</b>)."; },
+      stepImport: "En Piru, usa <b>" + en(DELETE_PATH) + "</b> y luego <b>" + en("Import…") + "</b> con el archivo nuevo.",
+      whyDelete: "<b>¿Por qué borrarlo todo primero?</b> Piru añade una copia de seguridad sin cifrar a los datos que ya tiene y solo omite las copias exactas. La opción “" + en("Replace") + "” solo existe para las copias de seguridad cifradas. Si no borras primero, las entradas eliminadas seguirían ahí y las entradas modificadas aparecerían dos veces. Borrar y luego importar equivale a “" + en("Replace") + "”.",
+      nextSteps: function (f) {
+        return "<p><b>Antes de importar</b></p><ol>" +
+          "<li>Guarda bien tu copia de seguridad original. Es tu única forma de volver atrás.</li>" +
+          "<li>En Piru, abre <b>" + en(DELETE_PATH) + "</b>. Esto también borra las copias de recuperación propias de Piru, así que hazlo solo mientras tu copia de seguridad original esté a salvo. Los datos de Apple Salud no se ven afectados.</li>" +
+          "<li>Después elige <b>" + en("Import…") + "</b> y selecciona <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "— Elegir —",
+      allSubstances: "Todas las sustancias",
+      allUnits: "Todas las unidades",
+      custom: "personalizada",
+      substance: "Sustancia",
+      unit: "Unidad",
+      dateFrom: "Desde (fecha)",
+      dateTo: "Hasta (fecha, incluida)",
+      zone: "Zona horaria",
+      zoneDevice: function (z) { return z + " (este dispositivo)"; },
+      narrowTitle: "Elegir fechas o entradas concretas",
+      narrowAll: "Todas las fechas, todas las entradas marcadas.",
+      narrowSome: function (n, m) { return n + " de " + m + plural(n, { one: " marcada.", other: " marcadas." }); },
+      tickAll: "Marcar todas",
+      untickAll: "Desmarcar todas",
+      showMore: function (n) { return "Mostrar " + n + " más"; },
+      selected: function (n, m) { return n + " de " + m + plural(m, { one: " entrada seleccionada.", other: " entradas seleccionadas." }); },
+      noMatch: "Ninguna entrada coincide con estos filtros.",
+      noSession: "sin sesión",
+      sessionOf: function (d) { return "sesión del " + d; },
+      entries: function (n) { return n + plural(n, { one: " entrada", other: " entradas" }); },
+      loaded: function (name, n, m) { return "Abierto " + name + ": " + n + plural(n, { one: " entrada", other: " entradas" }) + ", " + m + plural(m, { one: " sustancia.", other: " sustancias." }); },
+      newerRead: function (v) { return "Esta copia de seguridad usa un formato de Piru más nuevo (versión " + v + ") que el que conoce esta página. Puede que falten detalles o que algunos se lean mal."; },
+      more: function (n) { return "… y " + n + " más."; },
+      unchanged: "Todo lo demás del archivo queda exactamente igual, byte a byte.",
+      done: function (f) { return "Descargado " + f + ". Tu archivo original no ha cambiado."; },
+      err: {
+        encrypted: "Es una copia de seguridad cifrada, que no se puede leer aquí. En Piru, exporta en su lugar " + en(EXPORT_PATH) + " y abre ese archivo.",
+        notjson: "Este archivo no es una copia de seguridad de Piru legible. Si es una copia cifrada (.piruenc), exporta en su lugar una “" + en("Piru Backup") + "” sin cifrar.",
+        psylog: "Este archivo está en formato PsychonautWiki, no es una copia de seguridad de Piru. En Piru, elige " + en("Export… → Piru Backup") + ".",
+        legacy: "Este archivo usa un formato antiguo de Piru. Impórtalo en Piru y luego exporta una nueva “" + en("Piru Backup") + "”.",
+        notpiru: "Este archivo no es una copia de seguridad de Piru. Elige el archivo que creó Piru con " + en("Export… → Piru Backup") + ".",
+        newer: "Esta copia de seguridad usa un formato de Piru más nuevo que el que conoce esta herramienta (versión 2), así que no puede editarla de forma segura. Tu archivo no ha cambiado.",
+        repeated: "Este archivo repite un campo dentro de un mismo registro, algo que Piru nunca hace. Puede que se haya editado a mano. Exporta una “" + en("Piru Backup") + "” nueva desde Piru y abre esa.",
+        empty: "Este archivo está vacío.",
+        noentries: "Esta copia de seguridad de Piru no tiene entradas de diario.",
+        read: "No se pudo leer este archivo."
+      }
     }
   };
 
@@ -1668,6 +1729,34 @@ if (typeof module !== "undefined") module.exports = PiruUnits;
       showMore: function (n) { return "再显示 " + n + " 项"; },
       onlySelected: "未选中的记录不会被改动。",
       downloadBtn: "下载修正后的备份"
+    },
+    es: {
+      title: "Corregir unidades en entradas de Piru",
+      subtitle: "Convierte entradas a otra unidad o corrige cantidades registradas en la unidad equivocada.",
+      fileName: FILE,
+      stepDo: "Ábrelo aquí, elige una sustancia y el cambio, y revisa cada antes y después.",
+      s1: "1. Abre tu copia de seguridad de Piru", s2: "2. Elige las entradas", s3: "3. Elige el cambio", s4: "4. Revisa y descarga",
+      unitsCaption: "Entradas de esta sustancia por unidad, con las cantidades más frecuentes",
+      modeConvert: "Convertir a otra unidad",
+      modeConvertHint: "La misma cantidad: 500 mg pasan a ser 0,5 g.",
+      modeRelabel: "Cambiar la unidad y multiplicar la cantidad",
+      modeRelabelHint: "Para una unidad equivocada: “5 mg” que debería ser “5 g” mantiene el 5 con el factor 1.",
+      convTo: "Unidad nueva", relTo: "Unidad nueva", relTyped: "Unidad, exactamente como debe mostrarla Piru",
+      factor: "Multiplicar la cantidad por", factorHint: "1 mantiene el número. 1000 convierte 5 en 5000; 0,001 o 1/1000 convierte 5000 en 5.",
+      groupStandard: "Unidades habituales", groupBackup: "Otras unidades de tu copia de seguridad", typeOther: "Escribir otra unidad…",
+      badFactor: "Escribe un número distinto de 0, como 1, 1000, 0,001 o 1/1000.",
+      badUnit: "Escribe la unidad, por ejemplo mg.",
+      willChange: function (n, s) { return n + PiruUI.plural(n, { one: " entrada de “" + s + "” cambiará.", other: " entradas de “" + s + "” cambiarán." }); },
+      skipFamily: function (n, u) { return n + PiruUI.plural(n, { one: " entrada seleccionada se queda como está: su unidad", other: " entradas seleccionadas se quedan como están: su unidad" }) + " no se puede convertir a " + u + " (por ejemplo, mL a mg). Si la unidad era incorrecta, usa “Cambiar la unidad y multiplicar la cantidad”."; },
+      skipSame: function (n) { return n + PiruUI.plural(n, { one: " entrada seleccionada ya tiene", other: " entradas seleccionadas ya tienen" }) + " esta unidad y esta cantidad."; },
+      collisions: function (n) { return n + PiruUI.plural(n, { one: " entrada cambiada queda idéntica", other: " entradas cambiadas quedan idénticas" }) + " a otra entrada (misma hora, cantidad, unidad y vía). Piru solo importará una de cada."; },
+      negative: function (n) { return n + PiruUI.plural(n, { one: " entrada recibe", other: " entradas reciben" }) + " una cantidad negativa. Revisa el factor."; },
+      microNote: "Aquí, µg usa el signo micro (U+00B5), que es el que escribe Piru. Al buscar duplicados, la importación de Piru lo trata como una unidad distinta de la letra griega μ (U+03BC).",
+      becomes: "se convierte en",
+      moreUnits: function (n) { return "… y " + n + PiruUI.plural(n, { one: " unidad más", other: " unidades más" }) + " (mira la lista “Unidad” más abajo)."; },
+      showMore: function (n) { return "Mostrar " + n + " más"; },
+      onlySelected: "Las entradas no seleccionadas no se tocan.",
+      downloadBtn: "Descargar la copia corregida"
     }
   }, function () { render(); });
 
