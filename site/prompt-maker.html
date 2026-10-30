@@ -360,6 +360,7 @@
       <p lang="de">Diese Seite braucht JavaScript. Auf dem iPhone führt die Vorschau in Dateien oder Mail es nicht aus: Öffne die Seite in Safari oder nutze einen Computer.</p>
       <p lang="nl">Deze pagina heeft JavaScript nodig. Op de iPhone voert de voorvertoning in Bestanden of Mail dat niet uit: open de pagina in Safari, of gebruik een computer.</p>
       <p lang="pt-BR">Esta página precisa de JavaScript. No iPhone, a pré-visualização do Arquivos ou do Mail não executa JavaScript: abra a página no Safari ou use um computador.</p>
+      <p lang="ru">Этой странице нужен JavaScript. На iPhone предпросмотр в «Файлах» или «Почте» его не запускает: откройте страницу в Safari или на компьютере.</p>
     </div>
   </noscript>
 
@@ -1316,6 +1317,66 @@ var PiruUI = (function () {
         noentries: "Este backup do Piru não tem nenhum registro no diário.",
         read: "Não foi possível ler este arquivo."
       }
+    },
+    ru: {
+      langLabel: "Язык (Language)",
+      privacyLink: "Конфиденциальность",
+      back: "← Все инструменты",
+      privacy: "Работает только на этом устройстве. Ничего не отправляется, ваш файл никуда не уходит.",
+      footer: "Работает без интернета. Поддерживаемый формат резервной копии Piru: версия 2.",
+      siteNotice: "Привет! Я делаю Saiko Next, личный журнал по мотивам Piru. Попутно я создаю небольшие бесплатные инструменты для тех, кто пользуется Piru и сталкивается с теми же проблемами, что и я. Они работают целиком на вашем устройстве, и ваша резервная копия никуда с него не уходит. Этот сайт не связан с Piru.",
+      howTitle: "Как это работает",
+      openBtn: "Открыть резервную копию Piru",
+      exportHint: "Экспортируйте её в Piru через <b>" + en(EXPORT_PATH) + "</b>, а не «" + en("Encrypted Backup") + "». Храните этот файл в надёжном месте: с его помощью можно всё вернуть, и эта страница никогда его не меняет.",
+      stepExport: "В Piru экспортируйте <b>" + en(EXPORT_PATH) + "</b>. Не «" + en("Encrypted Backup") + "»: такой файл здесь не прочитать.",
+      stepKeep: "<b>Сохраните исходный файл</b> в надёжном месте. С его помощью можно всё вернуть, и эта страница никогда его не меняет.",
+      stepDownload: function (f) { return "Скачайте новый файл (<b>" + f + "</b>)."; },
+      stepImport: "В Piru выберите <b>" + en(DELETE_PATH) + "</b>, затем <b>" + en("Import…") + "</b> и новый файл.",
+      whyDelete: "<b>Зачем сначала всё удалять?</b> Piru добавляет обычную резервную копию к уже имеющимся данным и пропускает только точные копии. Вариант «" + en("Replace") + "» есть только для зашифрованных резервных копий. Если не удалить всё заранее, убранные записи останутся, а изменённые появятся дважды. Удаление и затем импорт работают как «" + en("Replace") + "».",
+      nextSteps: function (f) {
+        return "<p><b>Перед импортом</b></p><ol>" +
+          "<li>Храните исходную резервную копию в надёжном месте. Только с её помощью можно всё вернуть.</li>" +
+          "<li>В Piru откройте <b>" + en(DELETE_PATH) + "</b>. Это удалит и внутренние копии Piru для восстановления, поэтому делайте это, только пока исходная резервная копия в сохранности. Данные в приложении «Здоровье» это не затронет.</li>" +
+          "<li>Затем выберите <b>" + en("Import…") + "</b> и файл <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "— Выбрать —",
+      allSubstances: "Все вещества",
+      allUnits: "Все единицы",
+      custom: "своё",
+      substance: "Вещество",
+      unit: "Единица",
+      dateFrom: "С (дата)",
+      dateTo: "По (дата, включительно)",
+      zone: "Часовой пояс",
+      zoneDevice: function (z) { return z + " (это устройство)"; },
+      narrowTitle: "Выбрать даты или отдельные записи",
+      narrowAll: "Все даты, отмечены все записи.",
+      narrowSome: function (n, m) { return "Отмечено " + n + " из " + m + "."; },
+      tickAll: "Отметить все",
+      untickAll: "Снять все",
+      showMore: function (n) { return "Показать ещё " + n; },
+      selected: function (n, m) { return "Выбрано " + n + " из " + m + " " + plural(m, { one: "записи", few: "записей", many: "записей", other: "записи" }) + "."; },
+      noMatch: "Нет записей, подходящих под эти фильтры.",
+      noSession: "без сессии",
+      sessionOf: function (d) { return "сессия от " + d; },
+      entries: function (n) { return n + " " + plural(n, { one: "запись", few: "записи", many: "записей", other: "записи" }); },
+      loaded: function (name, n, m) { return "Открыт файл " + name + ": " + n + " " + plural(n, { one: "запись", few: "записи", many: "записей", other: "записи" }) + ", " + m + " " + plural(m, { one: "вещество", few: "вещества", many: "веществ", other: "вещества" }) + "."; },
+      newerRead: function (v) { return "Эта резервная копия в более новом формате Piru (версия " + v + "), чем знает эта страница. Некоторые данные могут отсутствовать или читаться неверно."; },
+      more: function (n) { return "… и ещё " + n + "."; },
+      unchanged: "Всё остальное в файле остаётся неизменным, байт в байт.",
+      done: function (f) { return "Скачан файл " + f + ". Исходный файл не изменился."; },
+      err: {
+        encrypted: "Это зашифрованная резервная копия, её здесь не прочитать. Вместо неё экспортируйте в Piru " + en(EXPORT_PATH) + " и откройте этот файл.",
+        notjson: "Этот файл не читается как резервная копия Piru. Если это зашифрованная копия (.piruenc), экспортируйте вместо неё обычную «" + en("Piru Backup") + "».",
+        psylog: "Этот файл в формате PsychonautWiki, а не резервная копия Piru. В Piru выберите " + en("Export… → Piru Backup") + ".",
+        legacy: "Этот файл в старом формате Piru. Импортируйте его в Piru, затем экспортируйте новую «" + en("Piru Backup") + "».",
+        notpiru: "Этот файл не резервная копия Piru. Выберите файл, созданный в Piru через " + en("Export… → Piru Backup") + ".",
+        newer: "Эта резервная копия в более новом формате Piru, чем знает этот инструмент (версия 2), поэтому он не может безопасно её изменить. Ваш файл не изменён.",
+        repeated: "В этом файле одно поле повторяется внутри одной записи, чего Piru никогда не делает. Возможно, файл правили вручную. Экспортируйте из Piru свежую «" + en("Piru Backup") + "» и откройте её.",
+        empty: "Этот файл пустой.",
+        noentries: "В этой резервной копии Piru нет записей журнала.",
+        read: "Не удалось прочитать файл."
+      }
     }
   };
 
@@ -2201,6 +2262,56 @@ if (typeof module !== "undefined") module.exports = PiruPrompt;
         "<li>Cole o prompt e envie.</li>" +
         "<li>Revise o plano dele antes que ele escreva código, e peça mudanças onde não concordar.</li>" +
         "<li>Confira você mesmo o pull request antes de ele ser enviado: as mudanças, os testes e as capturas de tela.</li>"
+    },
+    ru: {
+      title: "Создать промпт для доработки",
+      subtitle: "Соберите готовый промпт для вашего ИИ-ассистента для кода, чтобы добавить функцию в Piru или инструмент на этот сайт.",
+      privacy: "Работает только на этом устройстве. Ничего из того, что вы здесь вводите, никуда не отправляется.",
+      rulesTitle: "Перед началом",
+      rules: "<li>Отправляйте по одному небольшому pull request на инструмент или функцию.</li>" +
+        "<li>Сначала проверьте его на своей копии приложения, с выдуманными данными, никогда на своём настоящем журнале.</li>" +
+        "<li>Что принять в Piru, решает разработчик Piru.</li>" +
+        "<li>Когда инструмент появится в Piru, откройте issue или pull request в <b>lammersbjorn/piru-tools</b>, чтобы его убрали с этого сайта.</li>",
+      sKind: "Что вы хотите сделать?",
+      kindTool: "Перенести инструмент в Piru",
+      kindToolSub: "Pull request в Piru, который встраивает один из этих инструментов в приложение.",
+      kindPiru: "Добавить в Piru что-то новое",
+      kindPiruSub: "Pull request в Piru для функции, которую вы опишете.",
+      kindSite: "Добавить инструмент на этот сайт",
+      kindSiteSub: "Pull request в lammersbjorn/piru-tools для инструмента, которого вам не хватает.",
+      toolLabel: "Какой инструмент?",
+      toolNames: {
+        inspector: "Проверить резервную копию", "move-substance": "Перенести записи на другое вещество",
+        duplicates: "Убрать дубликаты", "unit-fixer": "Исправить единицы",
+        "time-shift": "Сдвинуть записи во времени", "split-out": "Отделить записи"
+      },
+      textPiru: "Опишите функцию",
+      textSite: "Опишите, какого инструмента не хватает",
+      textHint: "Хватит одного-двух предложений. Промпт на английском, поэтому здесь лучше писать по-английски.",
+      sAgent: "Какой ассистент?",
+      agentHint: "Это меняет лишь мелкие формулировки, например как запускать тесты.",
+      agentOther: "Другой ассистент",
+      sPlatform: "Платформы",
+      platIos: "Только iOS",
+      platIosSub: "Изменение касается только приложения для iOS.",
+      platBoth: "iOS и Android",
+      platBothSub: "Ассистент сначала проверит, есть ли у Piru приложение для Android, и сделает для обеих платформ, только если оно есть.",
+      sExtras: "Дополнительно",
+      detailsLabel: "Что ещё стоит знать ассистенту? (по желанию)",
+      detailsHint: "Например, где должна находиться функция или какой случай она должна учитывать.",
+      selfTest: "Я проверю на своей копии приложения с выдуманными данными",
+      selfTestSub: "Ассистент остановится перед pull request, чтобы вы сначала всё проверили.",
+      sResult: "Ваш промпт",
+      promptLabel: "Готовый промпт (на английском)",
+      copyBtn: "Копировать промпт",
+      copied: "Скопировано",
+      copyManual: "Скопировать здесь не получилось. Промпт выделен: скопируйте его обычной командой копирования на вашем устройстве.",
+      ready: "Ваш промпт готов, он на последнем шаге.",
+      howUseTitle: "Как использовать",
+      howUse: "<li>Откройте ИИ-ассистента для кода в новой пустой папке.</li>" +
+        "<li>Вставьте промпт и отправьте его.</li>" +
+        "<li>Прочитайте его план до того, как он начнёт писать код, и попросите изменений, если с чем-то не согласны.</li>" +
+        "<li>Перед отправкой сами проверьте pull request: изменения, тесты и скриншоты.</li>"
     }
   }, function () { fillTools(); update(); });
 })();

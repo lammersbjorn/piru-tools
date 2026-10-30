@@ -344,6 +344,7 @@
       <p lang="de">Diese Seite braucht JavaScript. Auf dem iPhone führt die Vorschau in Dateien oder Mail es nicht aus: Öffne die Seite in Safari oder nutze einen Computer.</p>
       <p lang="nl">Deze pagina heeft JavaScript nodig. Op de iPhone voert de voorvertoning in Bestanden of Mail dat niet uit: open de pagina in Safari, of gebruik een computer.</p>
       <p lang="pt-BR">Esta página precisa de JavaScript. No iPhone, a pré-visualização do Arquivos ou do Mail não executa JavaScript: abra a página no Safari ou use um computador.</p>
+      <p lang="ru">Этой странице нужен JavaScript. На iPhone предпросмотр в «Файлах» или «Почте» его не запускает: откройте страницу в Safari или на компьютере.</p>
     </div>
   </noscript>
 
@@ -1269,6 +1270,66 @@ var PiruUI = (function () {
         noentries: "Este backup do Piru não tem nenhum registro no diário.",
         read: "Não foi possível ler este arquivo."
       }
+    },
+    ru: {
+      langLabel: "Язык (Language)",
+      privacyLink: "Конфиденциальность",
+      back: "← Все инструменты",
+      privacy: "Работает только на этом устройстве. Ничего не отправляется, ваш файл никуда не уходит.",
+      footer: "Работает без интернета. Поддерживаемый формат резервной копии Piru: версия 2.",
+      siteNotice: "Привет! Я делаю Saiko Next, личный журнал по мотивам Piru. Попутно я создаю небольшие бесплатные инструменты для тех, кто пользуется Piru и сталкивается с теми же проблемами, что и я. Они работают целиком на вашем устройстве, и ваша резервная копия никуда с него не уходит. Этот сайт не связан с Piru.",
+      howTitle: "Как это работает",
+      openBtn: "Открыть резервную копию Piru",
+      exportHint: "Экспортируйте её в Piru через <b>" + en(EXPORT_PATH) + "</b>, а не «" + en("Encrypted Backup") + "». Храните этот файл в надёжном месте: с его помощью можно всё вернуть, и эта страница никогда его не меняет.",
+      stepExport: "В Piru экспортируйте <b>" + en(EXPORT_PATH) + "</b>. Не «" + en("Encrypted Backup") + "»: такой файл здесь не прочитать.",
+      stepKeep: "<b>Сохраните исходный файл</b> в надёжном месте. С его помощью можно всё вернуть, и эта страница никогда его не меняет.",
+      stepDownload: function (f) { return "Скачайте новый файл (<b>" + f + "</b>)."; },
+      stepImport: "В Piru выберите <b>" + en(DELETE_PATH) + "</b>, затем <b>" + en("Import…") + "</b> и новый файл.",
+      whyDelete: "<b>Зачем сначала всё удалять?</b> Piru добавляет обычную резервную копию к уже имеющимся данным и пропускает только точные копии. Вариант «" + en("Replace") + "» есть только для зашифрованных резервных копий. Если не удалить всё заранее, убранные записи останутся, а изменённые появятся дважды. Удаление и затем импорт работают как «" + en("Replace") + "».",
+      nextSteps: function (f) {
+        return "<p><b>Перед импортом</b></p><ol>" +
+          "<li>Храните исходную резервную копию в надёжном месте. Только с её помощью можно всё вернуть.</li>" +
+          "<li>В Piru откройте <b>" + en(DELETE_PATH) + "</b>. Это удалит и внутренние копии Piru для восстановления, поэтому делайте это, только пока исходная резервная копия в сохранности. Данные в приложении «Здоровье» это не затронет.</li>" +
+          "<li>Затем выберите <b>" + en("Import…") + "</b> и файл <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "— Выбрать —",
+      allSubstances: "Все вещества",
+      allUnits: "Все единицы",
+      custom: "своё",
+      substance: "Вещество",
+      unit: "Единица",
+      dateFrom: "С (дата)",
+      dateTo: "По (дата, включительно)",
+      zone: "Часовой пояс",
+      zoneDevice: function (z) { return z + " (это устройство)"; },
+      narrowTitle: "Выбрать даты или отдельные записи",
+      narrowAll: "Все даты, отмечены все записи.",
+      narrowSome: function (n, m) { return "Отмечено " + n + " из " + m + "."; },
+      tickAll: "Отметить все",
+      untickAll: "Снять все",
+      showMore: function (n) { return "Показать ещё " + n; },
+      selected: function (n, m) { return "Выбрано " + n + " из " + m + " " + plural(m, { one: "записи", few: "записей", many: "записей", other: "записи" }) + "."; },
+      noMatch: "Нет записей, подходящих под эти фильтры.",
+      noSession: "без сессии",
+      sessionOf: function (d) { return "сессия от " + d; },
+      entries: function (n) { return n + " " + plural(n, { one: "запись", few: "записи", many: "записей", other: "записи" }); },
+      loaded: function (name, n, m) { return "Открыт файл " + name + ": " + n + " " + plural(n, { one: "запись", few: "записи", many: "записей", other: "записи" }) + ", " + m + " " + plural(m, { one: "вещество", few: "вещества", many: "веществ", other: "вещества" }) + "."; },
+      newerRead: function (v) { return "Эта резервная копия в более новом формате Piru (версия " + v + "), чем знает эта страница. Некоторые данные могут отсутствовать или читаться неверно."; },
+      more: function (n) { return "… и ещё " + n + "."; },
+      unchanged: "Всё остальное в файле остаётся неизменным, байт в байт.",
+      done: function (f) { return "Скачан файл " + f + ". Исходный файл не изменился."; },
+      err: {
+        encrypted: "Это зашифрованная резервная копия, её здесь не прочитать. Вместо неё экспортируйте в Piru " + en(EXPORT_PATH) + " и откройте этот файл.",
+        notjson: "Этот файл не читается как резервная копия Piru. Если это зашифрованная копия (.piruenc), экспортируйте вместо неё обычную «" + en("Piru Backup") + "».",
+        psylog: "Этот файл в формате PsychonautWiki, а не резервная копия Piru. В Piru выберите " + en("Export… → Piru Backup") + ".",
+        legacy: "Этот файл в старом формате Piru. Импортируйте его в Piru, затем экспортируйте новую «" + en("Piru Backup") + "».",
+        notpiru: "Этот файл не резервная копия Piru. Выберите файл, созданный в Piru через " + en("Export… → Piru Backup") + ".",
+        newer: "Эта резервная копия в более новом формате Piru, чем знает этот инструмент (версия 2), поэтому он не может безопасно её изменить. Ваш файл не изменён.",
+        repeated: "В этом файле одно поле повторяется внутри одной записи, чего Piru никогда не делает. Возможно, файл правили вручную. Экспортируйте из Piru свежую «" + en("Piru Backup") + "» и откройте её.",
+        empty: "Этот файл пустой.",
+        noentries: "В этой резервной копии Piru нет записей журнала.",
+        read: "Не удалось прочитать файл."
+      }
     }
   };
 
@@ -1958,6 +2019,33 @@ if (typeof module !== "undefined") module.exports = PiruInspect;
         longSessions: { title: function (n) { return n + PiruUI.plural(n, { one: " sessão dura", other: " sessões duram" }) + " mais de 24 horas"; }, text: function () { return "Mais longa do que o Piru cria sozinho. Muitas vezes causada por um registro com data errada."; }, fix: "Corrija com Ajustar o horário de registros" },
         emptySessions: { title: function (n) { return n + PiruUI.plural(n, { one: " sessão não tem", other: " sessões não têm" }) + " nenhum registro"; }, text: function () { return "O Piru as importa como sessões vazias."; }, fix: "Remova com Remover duplicados" },
         repeatedSessionIds: { title: function (n) { return n + PiruUI.plural(n, { one: " sessão repete", other: " sessões repetem" }) + " o id de outra sessão"; }, text: function () { return "Na importação, o Piru junta as sessões que têm o mesmo id."; }, fix: null }
+      }
+    },
+    ru: {
+      title: "Проверка резервной копии Piru",
+      subtitle: "Посмотрите, что внутри резервной копии Piru, и найдите возможные проблемы. Ничего не меняется и не скачивается.",
+      exportHint: "Экспортируйте её в Piru через <b>" + U.en("Settings → Data &amp; Backup → Export… → Piru Backup") + "</b>, а не «" + U.en("Encrypted Backup") + "».",
+      s1: "Открыть резервную копию Piru", sProblems: "Возможные проблемы", sOverview: "Обзор", sDetails: "Подробно по веществам и способам", sSubs: "Записи по веществам", sRoutes: "Записи по способам приёма", sOther: "Другие данные",
+      version: "Версия формата", app: "Экспортировано из", exported: "Дата экспорта", notRecorded: "не указано", range: "Записи с – по",
+      entriesL: "Записи", substancesL: "Вещества", sessionsL: "Сессии", orphansL: "Записи без сессии", sessionNotesL: "Заметки к сессиям",
+      customsL: "Свои вещества", medsL: "Ежедневные лекарства", stockL: "Запасы", favL: "Избранное", quickL: "Кнопки быстрой записи", unitsL: "Свои единицы",
+      showMore: function (n) { return "Показать ещё " + n; },
+      noProblems: "Проблем не найдено.",
+      problemsFound: function (n) { return PiruUI.plural(n, { one: "Найдена " + n + " возможная проблема.", few: "Найдено " + n + " возможные проблемы.", many: "Найдено " + n + " возможных проблем.", other: "Найдено " + n + " возможной проблемы." }); },
+      usual: "обычно", customCase: function (n) { return "своё вещество пишется как «" + n + "»"; },
+      readOnly: "Эта страница только читает ваш файл. Чтобы что-то изменить, откройте тот же файл в инструменте по ссылке выше.",
+      p: {
+        duplicates: { title: function (n, p) { return n + " " + PiruUI.plural(n, { one: "повторяющаяся запись", few: "повторяющиеся записи", many: "повторяющихся записей", other: "повторяющейся записи" }) + " в " + p.groups + " " + PiruUI.plural(p.groups, { one: "группе", other: "группах" }); }, text: function () { return "То же вещество, время, количество, единица и способ приёма: так записи сравнивает импорт Piru."; }, fix: "Исправить: «Убрать дубликаты»" },
+        nearDuplicates: { title: function (n) { return n + " " + PiruUI.plural(n, { one: "почти одинаковая запись", few: "почти одинаковые записи", many: "почти одинаковых записей", other: "почти одинаковой записи" }); }, text: function () { return "То же вещество, количество, единица и способ приёма, записаны с разницей меньше минуты."; }, fix: "Проверить: «Убрать дубликаты»" },
+        future: { title: function (n) { return n + " " + PiruUI.plural(n, { one: "запись", few: "записи", many: "записей", other: "записи" }) + " далеко в будущем"; }, text: function () { return "Больше чем через день после даты экспорта (или сегодняшнего дня). Часто это ошибка в дате или годе."; }, fix: "Исправить: «Сдвинуть записи во времени»" },
+        noTime: { title: function (n) { return n + " " + PiruUI.plural(n, { one: "запись", few: "записи", many: "записей", other: "записи" }) + " без читаемого времени"; }, text: function () { return "Piru может отказаться импортировать этот файл."; }, fix: "Снова экспортируйте резервную копию из Piru." },
+        zero: { title: function (n) { return n + " " + PiruUI.plural(n, { one: "запись", few: "записи", many: "записей", other: "записи" }) + " с количеством 0"; }, text: function () { return "Не отмечены как неизвестная доза."; }, fix: "Исправьте эти записи в Piru." },
+        negative: { title: function (n) { return n + " " + PiruUI.plural(n, { one: "запись", few: "записи", many: "записей", other: "записи" }) + " с отрицательным количеством"; }, text: function () { return "Умножение на −1 сделает их положительными."; }, fix: "Исправить: «Исправить единицы» (множитель −1)" },
+        units: { title: function (n) { return n + " " + PiruUI.plural(n, { one: "запись", few: "записи", many: "записей", other: "записи" }) + " с необычной для вещества единицей"; }, text: function (p) { return "Используется меньше чем в 10 % записей этого вещества, или для одного вещества встречаются оба знака микро (µ и μ)."; }, fix: "Исправить: «Исправить единицы»" },
+        unknownSubstance: { title: function (n, p) { return n + " " + PiruUI.plural(n, { one: "запись", few: "записи", many: "записей", other: "записи" }) + " с веществом, которое Piru не может распознать"; }, text: function () { return "В резервной копии нет ссылки на библиотеку и нет своего вещества с точно таким названием. Часто это опечатка или переименованное вещество."; }, fix: "Исправить: «Перенести записи на другое вещество»" },
+        longSessions: { title: function (n) { return n + " " + PiruUI.plural(n, { one: "сессия длится", few: "сессии длятся", many: "сессий длятся", other: "сессии длятся" }) + " больше 24 часов"; }, text: function () { return "Дольше, чем Piru делает сессии сам. Часто из-за записи с неверной датой."; }, fix: "Исправить: «Сдвинуть записи во времени»" },
+        emptySessions: { title: function (n) { return n + " " + PiruUI.plural(n, { one: "сессия", few: "сессии", many: "сессий", other: "сессии" }) + " без записей"; }, text: function () { return "Piru импортирует их как пустые сессии."; }, fix: "Удалить: «Убрать дубликаты»" },
+        repeatedSessionIds: { title: function (n) { return n + " " + PiruUI.plural(n, { one: "сессия повторяет", few: "сессии повторяют", many: "сессий повторяют", other: "сессии повторяют" }) + " ID другой сессии"; }, text: function () { return "При импорте Piru объединяет сессии с одинаковым ID."; }, fix: null }
       }
     }
   }, function () { render(); });
