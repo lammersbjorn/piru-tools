@@ -342,6 +342,7 @@
       <p lang="zh-Hans">此页面需要 JavaScript。在 iPhone 上，“文件”或“邮件”的预览不会运行它：请在 Safari 中打开此页面，或者使用电脑。</p>
       <p lang="es">Esta página necesita JavaScript. En iPhone, la vista previa de Archivos o de Mail no lo ejecuta: abre la página en Safari o usa un ordenador.</p>
       <p lang="de">Diese Seite braucht JavaScript. Auf dem iPhone führt die Vorschau in Dateien oder Mail es nicht aus: Öffne die Seite in Safari oder nutze einen Computer.</p>
+      <p lang="nl">Deze pagina heeft JavaScript nodig. Op de iPhone voert de voorvertoning in Bestanden of Mail dat niet uit: open de pagina in Safari, of gebruik een computer.</p>
     </div>
   </noscript>
 
@@ -1157,6 +1158,66 @@ var PiruUI = (function () {
         noentries: "Dieses Piru-Backup enthält keine Journaleinträge.",
         read: "Diese Datei konnte nicht gelesen werden."
       }
+    },
+    nl: {
+      langLabel: "Taal (Language)",
+      privacyLink: "Privacy",
+      back: "← Alle tools",
+      privacy: "Werkt alleen op dit apparaat. Er wordt niets geüpload en je bestand blijft altijd hier.",
+      footer: "Werkt offline. Ondersteund Piru-back-upformaat: versie 2.",
+      siteNotice: "Hoi! Ik werk aan Saiko Next, een privédagboek geïnspireerd op Piru. Onderweg maak ik kleine, gratis tools voor Piru-gebruikers die tegen dezelfde dingen aanlopen als ik. Ze werken volledig op je eigen apparaat en je back-up blijft altijd daar. Deze site is niet verbonden aan Piru.",
+      howTitle: "Zo werkt het",
+      openBtn: "Open je Piru-back-up",
+      exportHint: "Exporteer hem in Piru via <b>" + en(EXPORT_PATH) + "</b>, niet via “" + en("Encrypted Backup") + "”. Bewaar dat bestand goed: daarmee kun je altijd terug, en deze pagina verandert het nooit.",
+      stepExport: "Exporteer in Piru via <b>" + en(EXPORT_PATH) + "</b>. Niet via “" + en("Encrypted Backup") + "”: dat bestand kan hier niet worden gelezen.",
+      stepKeep: "<b>Bewaar dat originele bestand</b> goed. Daarmee kun je altijd terug, en deze pagina verandert het nooit.",
+      stepDownload: function (f) { return "Download het nieuwe bestand (<b>" + f + "</b>)."; },
+      stepImport: "Kies in Piru <b>" + en(DELETE_PATH) + "</b> en daarna <b>" + en("Import…") + "</b> met het nieuwe bestand.",
+      whyDelete: "<b>Waarom eerst alles wissen?</b> Piru voegt een gewone back-up toe aan de gegevens die er al zijn en slaat alleen exacte kopieën over. De keuze “" + en("Replace") + "” is er alleen voor versleutelde back-ups. Als je niet eerst alles wist, blijven verwijderde registraties staan en verschijnen gewijzigde registraties twee keer. Eerst wissen en dan importeren werkt hetzelfde als “" + en("Replace") + "”.",
+      nextSteps: function (f) {
+        return "<p><b>Voordat je importeert</b></p><ol>" +
+          "<li>Bewaar je originele back-up goed. Alleen daarmee kun je terug.</li>" +
+          "<li>Open in Piru <b>" + en(DELETE_PATH) + "</b>. Dit wist ook de eigen herstelkopieën van Piru, dus doe het alleen als je originele back-up veilig bewaard is. Je gegevens in Apple Gezondheid blijven onaangetast.</li>" +
+          "<li>Kies daarna <b>" + en("Import…") + "</b> en selecteer <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "— Kies —",
+      allSubstances: "Alle middelen",
+      allUnits: "Alle eenheden",
+      custom: "eigen",
+      substance: "Middel",
+      unit: "Eenheid",
+      dateFrom: "Vanaf (datum)",
+      dateTo: "Tot en met (datum)",
+      zone: "Tijdzone",
+      zoneDevice: function (z) { return z + " (dit apparaat)"; },
+      narrowTitle: "Kies datums of losse registraties",
+      narrowAll: "Alle datums, alle registraties aangevinkt.",
+      narrowSome: function (n, m) { return n + " van " + m + " aangevinkt."; },
+      tickAll: "Alles aanvinken",
+      untickAll: "Alles uitvinken",
+      showMore: function (n) { return "Nog " + n + " tonen"; },
+      selected: function (n, m) { return n + " van " + m + plural(m, { one: " registratie", other: " registraties" }) + " geselecteerd."; },
+      noMatch: "Geen registraties die bij deze filters passen.",
+      noSession: "geen sessie",
+      sessionOf: function (d) { return "sessie van " + d; },
+      entries: function (n) { return n + plural(n, { one: " registratie", other: " registraties" }); },
+      loaded: function (name, n, m) { return name + " geopend: " + n + plural(n, { one: " registratie", other: " registraties" }) + ", " + m + plural(m, { one: " middel.", other: " middelen." }); },
+      newerRead: function (v) { return "Deze back-up gebruikt een nieuwer Piru-formaat (versie " + v + ") dan deze pagina kent. Sommige gegevens kunnen ontbreken of verkeerd worden gelezen."; },
+      more: function (n) { return "… en nog " + n + "."; },
+      unchanged: "Al het andere in het bestand blijft byte voor byte hetzelfde.",
+      done: function (f) { return f + " gedownload. Je originele bestand is niet veranderd."; },
+      err: {
+        encrypted: "Dit is een versleutelde back-up. Die kan hier niet worden gelezen. Exporteer in Piru in plaats daarvan via " + en(EXPORT_PATH) + " en open dat bestand.",
+        notjson: "Dit bestand is geen leesbare Piru-back-up. Is het een versleutelde back-up (.piruenc)? Exporteer dan een gewone “" + en("Piru Backup") + "”.",
+        psylog: "Dit bestand heeft het PsychonautWiki-formaat en is geen Piru-back-up. Kies in Piru " + en("Export… → Piru Backup") + ".",
+        legacy: "Dit bestand gebruikt een oud Piru-formaat. Importeer het in Piru en exporteer daarna een nieuwe “" + en("Piru Backup") + "”.",
+        notpiru: "Dit bestand is geen Piru-back-up. Kies het bestand dat Piru heeft gemaakt met " + en("Export… → Piru Backup") + ".",
+        newer: "Deze back-up gebruikt een nieuwer Piru-formaat dan deze tool kent (versie 2), dus de tool kan hem niet veilig bewerken. Je bestand is niet veranderd.",
+        repeated: "In dit bestand staat een veld twee keer in één record. Dat doet Piru nooit, dus misschien is het met de hand bewerkt. Exporteer een nieuwe “" + en("Piru Backup") + "” uit Piru en open die.",
+        empty: "Dit bestand is leeg.",
+        noentries: "Deze Piru-back-up bevat geen registraties in het dagboek.",
+        read: "Dit bestand kon niet worden gelezen."
+      }
     }
   };
 
@@ -1796,6 +1857,40 @@ if (typeof module !== "undefined") module.exports = PiruDuplicates;
       piruDedupe: "Pirus Import überspringt exakte Duplikate schon von selbst. Hier wählst du, welche Kopie bleibt, findest Beinahe-Duplikate und räumst leere Sessions auf.",
       downloadBtn: "Bereinigtes Backup herunterladen",
       relinked: function (n) { return n + PiruUI.plural(n, { one: " Eintrag im Erinnerungsverlauf zeigte", other: " Einträge im Erinnerungsverlauf zeigten" }) + " auf eine entfernte Kopie und " + PiruUI.plural(n, { one: "zeigt", other: "zeigen" }) + " jetzt auf die behaltene."; }
+    },
+    nl: {
+      title: "Dubbele Piru-registraties verwijderen",
+      subtitle: "Vind registraties die twee keer in een Piru-back-up staan en houd er telkens één over.",
+      fileName: FILE,
+      stepDo: "Open hem hier, controleer de groepen dubbelingen en vink elke kopie uit die je wilt houden.",
+      s1: "1. Open je Piru-back-up", s2: "2. Controleer de dubbelingen", s3: "3. Downloaden",
+      optionsTitle: "Opties",
+      optionsNow: function (near, empty) { return (near ? "Bijna-dubbelingen getoond" : "Alleen exacte dubbelingen") + " · " + (empty ? "lege sessies verwijderd" : "lege sessies behouden"); },
+      optNear: "Zoek ook bijna-dubbelingen: zelfde middel, hoeveelheid, eenheid en toediening binnen een minuut",
+      optEmpty: "Verwijder sessies die zonder registraties achterblijven, zoals Piru doet als de laatste registratie uit een sessie verdwijnt",
+      optAlready: function (n) { return "Verwijder ook " + n + PiruUI.plural(n, { one: " sessie die al leeg was", other: " sessies die al leeg waren" }); },
+      groupsTitle: function (n) { return "Kies welke kopieën weg mogen (" + n + PiruUI.plural(n, { one: " groep)", other: " groepen)" }); },
+      groupsDefault: "Standaard blijft van elke groep de eerste kopie staan, de kopie die Piru zelf ook zou houden.",
+      groupsIntro: "Aangevinkte kopieën worden verwijderd. Vink een kopie uit om die ook te houden, of vink de eerste aan en een andere uit om die andere te houden.",
+      foundExact: function (g, n) { return g + PiruUI.plural(g, { one: " groep", other: " groepen" }) + " exacte dubbelingen (zelfde middel, tijd, hoeveelheid, eenheid en toediening, zoals de import van Piru ze vergelijkt): " + n + PiruUI.plural(n, { one: " kopie te veel.", other: " kopieën te veel." }); },
+      noExact: "Geen exacte dubbelingen gevonden.",
+      foundNear: function (n) { return "Nog " + n + PiruUI.plural(n, { one: " groep lijkt", other: " groepen lijken" }) + " op bijna-dubbelingen, binnen een minuut na elkaar geregistreerd. Zet ze aan bij Opties."; },
+      exactTag: "exact", nearTag: "binnen een minuut",
+      removeCopy: "Verwijderen", first: "eerste", note: "Notitie:",
+      unitSpelling: function (u) { return "eenheid geschreven als “" + u + "”"; },
+      sessionOfShort: function (d) { return "sessie van " + d; },
+      showMore: function (n) { return "Nog " + n + " groepen tonen"; },
+      nothing: "Er wordt niets verwijderd.",
+      willRemove: function (n) { return n + PiruUI.plural(n, { one: " registratie wordt verwijderd.", other: " registraties worden verwijderd." }); },
+      allGone: function (n) { return "In " + n + PiruUI.plural(n, { one: " groep", other: " groepen" }) + " is elke kopie aangevinkt. Die registratie zou dan helemaal verdwijnen."; },
+      emptiedDrop: function (n) { return n + PiruUI.plural(n, { one: " sessie blijft", other: " sessies blijven" }) + " zonder registraties achter en " + PiruUI.plural(n, { one: "wordt", other: "worden" }) + " verwijderd."; },
+      emptiedKeep: function (n) { return n + PiruUI.plural(n, { one: " sessie blijft", other: " sessies blijven" }) + " zonder registraties achter, maar " + PiruUI.plural(n, { one: "blijft", other: "blijven" }) + " in het bestand staan. Piru zou ze als lege sessies tonen."; },
+      emptiedContent: function (n, names) { return n + " daarvan " + PiruUI.plural(n, { one: "heeft", other: "hebben" }) + " een titel of sessienotities, die mee verdwijnen: " + names + ". Wil je ze als lege sessies houden? Pas dat aan bij Opties."; },
+      alreadyDrop: function (n) { return n + PiruUI.plural(n, { one: " sessie die al leeg was, wordt verwijderd.", other: " sessies die al leeg waren, worden verwijderd." }); },
+      keptExact: function (n) { return "In " + n + PiruUI.plural(n, { one: " groep", other: " groepen" }) + " heb je meer dan één exacte kopie gehouden. De import van Piru houdt van identieke registraties toch alleen de eerste over."; },
+      piruDedupe: "De import van Piru slaat exacte dubbelingen al over. Hier kies je zelf welke kopie blijft, vind je bijna-dubbelingen en ruim je lege sessies op.",
+      downloadBtn: "Opgeschoonde back-up downloaden",
+      relinked: function (n) { return n + PiruUI.plural(n, { one: " item uit de herinneringsgeschiedenis verwees", other: " items uit de herinneringsgeschiedenis verwezen" }) + " naar een verwijderde kopie en " + PiruUI.plural(n, { one: "verwijst", other: "verwijzen" }) + " nu naar de kopie die blijft."; }
     }
   }, function () { if (state.res) render(); });
 

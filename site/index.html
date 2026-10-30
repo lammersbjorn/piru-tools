@@ -378,6 +378,7 @@
       <p lang="zh-Hans">此页面需要 JavaScript。在 iPhone 上，“文件”或“邮件”的预览不会运行它：请在 Safari 中打开此页面，或者使用电脑。</p>
       <p lang="es">Esta página necesita JavaScript. En iPhone, la vista previa de Archivos o de Mail no lo ejecuta: abre la página en Safari o usa un ordenador.</p>
       <p lang="de">Diese Seite braucht JavaScript. Auf dem iPhone führt die Vorschau in Dateien oder Mail es nicht aus: Öffne die Seite in Safari oder nutze einen Computer.</p>
+      <p lang="nl">Deze pagina heeft JavaScript nodig. Op de iPhone voert de voorvertoning in Bestanden of Mail dat niet uit: open de pagina in Safari, of gebruik een computer.</p>
     </div>
   </noscript>
 
@@ -1185,6 +1186,66 @@ var PiruUI = (function () {
         noentries: "Dieses Piru-Backup enthält keine Journaleinträge.",
         read: "Diese Datei konnte nicht gelesen werden."
       }
+    },
+    nl: {
+      langLabel: "Taal (Language)",
+      privacyLink: "Privacy",
+      back: "← Alle tools",
+      privacy: "Werkt alleen op dit apparaat. Er wordt niets geüpload en je bestand blijft altijd hier.",
+      footer: "Werkt offline. Ondersteund Piru-back-upformaat: versie 2.",
+      siteNotice: "Hoi! Ik werk aan Saiko Next, een privédagboek geïnspireerd op Piru. Onderweg maak ik kleine, gratis tools voor Piru-gebruikers die tegen dezelfde dingen aanlopen als ik. Ze werken volledig op je eigen apparaat en je back-up blijft altijd daar. Deze site is niet verbonden aan Piru.",
+      howTitle: "Zo werkt het",
+      openBtn: "Open je Piru-back-up",
+      exportHint: "Exporteer hem in Piru via <b>" + en(EXPORT_PATH) + "</b>, niet via “" + en("Encrypted Backup") + "”. Bewaar dat bestand goed: daarmee kun je altijd terug, en deze pagina verandert het nooit.",
+      stepExport: "Exporteer in Piru via <b>" + en(EXPORT_PATH) + "</b>. Niet via “" + en("Encrypted Backup") + "”: dat bestand kan hier niet worden gelezen.",
+      stepKeep: "<b>Bewaar dat originele bestand</b> goed. Daarmee kun je altijd terug, en deze pagina verandert het nooit.",
+      stepDownload: function (f) { return "Download het nieuwe bestand (<b>" + f + "</b>)."; },
+      stepImport: "Kies in Piru <b>" + en(DELETE_PATH) + "</b> en daarna <b>" + en("Import…") + "</b> met het nieuwe bestand.",
+      whyDelete: "<b>Waarom eerst alles wissen?</b> Piru voegt een gewone back-up toe aan de gegevens die er al zijn en slaat alleen exacte kopieën over. De keuze “" + en("Replace") + "” is er alleen voor versleutelde back-ups. Als je niet eerst alles wist, blijven verwijderde registraties staan en verschijnen gewijzigde registraties twee keer. Eerst wissen en dan importeren werkt hetzelfde als “" + en("Replace") + "”.",
+      nextSteps: function (f) {
+        return "<p><b>Voordat je importeert</b></p><ol>" +
+          "<li>Bewaar je originele back-up goed. Alleen daarmee kun je terug.</li>" +
+          "<li>Open in Piru <b>" + en(DELETE_PATH) + "</b>. Dit wist ook de eigen herstelkopieën van Piru, dus doe het alleen als je originele back-up veilig bewaard is. Je gegevens in Apple Gezondheid blijven onaangetast.</li>" +
+          "<li>Kies daarna <b>" + en("Import…") + "</b> en selecteer <b>" + f + "</b>.</li></ol>";
+      },
+      choose: "— Kies —",
+      allSubstances: "Alle middelen",
+      allUnits: "Alle eenheden",
+      custom: "eigen",
+      substance: "Middel",
+      unit: "Eenheid",
+      dateFrom: "Vanaf (datum)",
+      dateTo: "Tot en met (datum)",
+      zone: "Tijdzone",
+      zoneDevice: function (z) { return z + " (dit apparaat)"; },
+      narrowTitle: "Kies datums of losse registraties",
+      narrowAll: "Alle datums, alle registraties aangevinkt.",
+      narrowSome: function (n, m) { return n + " van " + m + " aangevinkt."; },
+      tickAll: "Alles aanvinken",
+      untickAll: "Alles uitvinken",
+      showMore: function (n) { return "Nog " + n + " tonen"; },
+      selected: function (n, m) { return n + " van " + m + plural(m, { one: " registratie", other: " registraties" }) + " geselecteerd."; },
+      noMatch: "Geen registraties die bij deze filters passen.",
+      noSession: "geen sessie",
+      sessionOf: function (d) { return "sessie van " + d; },
+      entries: function (n) { return n + plural(n, { one: " registratie", other: " registraties" }); },
+      loaded: function (name, n, m) { return name + " geopend: " + n + plural(n, { one: " registratie", other: " registraties" }) + ", " + m + plural(m, { one: " middel.", other: " middelen." }); },
+      newerRead: function (v) { return "Deze back-up gebruikt een nieuwer Piru-formaat (versie " + v + ") dan deze pagina kent. Sommige gegevens kunnen ontbreken of verkeerd worden gelezen."; },
+      more: function (n) { return "… en nog " + n + "."; },
+      unchanged: "Al het andere in het bestand blijft byte voor byte hetzelfde.",
+      done: function (f) { return f + " gedownload. Je originele bestand is niet veranderd."; },
+      err: {
+        encrypted: "Dit is een versleutelde back-up. Die kan hier niet worden gelezen. Exporteer in Piru in plaats daarvan via " + en(EXPORT_PATH) + " en open dat bestand.",
+        notjson: "Dit bestand is geen leesbare Piru-back-up. Is het een versleutelde back-up (.piruenc)? Exporteer dan een gewone “" + en("Piru Backup") + "”.",
+        psylog: "Dit bestand heeft het PsychonautWiki-formaat en is geen Piru-back-up. Kies in Piru " + en("Export… → Piru Backup") + ".",
+        legacy: "Dit bestand gebruikt een oud Piru-formaat. Importeer het in Piru en exporteer daarna een nieuwe “" + en("Piru Backup") + "”.",
+        notpiru: "Dit bestand is geen Piru-back-up. Kies het bestand dat Piru heeft gemaakt met " + en("Export… → Piru Backup") + ".",
+        newer: "Deze back-up gebruikt een nieuwer Piru-formaat dan deze tool kent (versie 2), dus de tool kan hem niet veilig bewerken. Je bestand is niet veranderd.",
+        repeated: "In dit bestand staat een veld twee keer in één record. Dat doet Piru nooit, dus misschien is het met de hand bewerkt. Exporteer een nieuwe “" + en("Piru Backup") + "” uit Piru en open die.",
+        empty: "Dit bestand is leeg.",
+        noentries: "Deze Piru-back-up bevat geen registraties in het dagboek.",
+        read: "Dit bestand kon niet worden gelezen."
+      }
     }
   };
 
@@ -1871,6 +1932,37 @@ if (typeof module !== "undefined") module.exports = PiruPrompt;
       copied: "Kopiert",
       copyFallback: "Der Kurz-Prompt (auf Englisch)",
       copyManual: "Kopieren hat hier nicht funktioniert. Der Prompt ist unten markiert: Kopiere ihn mit dem Kopierbefehl deines Geräts."
+    },
+    nl: {
+      title: "Piru-tools",
+      subtitle: "Gratis hulpmiddelen die een Piru-back-up repareren of controleren, offline in je browser.",
+      privacy: "Elke tool werkt alleen op dit apparaat. Er wordt niets geüpload en je bestand blijft altijd hier.",
+      toolsTitle: "Tools",
+      inspectorName: "Back-up controleren",
+      inspectorDesc: "Bekijk wat er in een back-up staat en spoor mogelijke problemen op. Verandert niets.",
+      moveName: "Registraties naar een ander middel verplaatsen",
+      moveDesc: "Corrigeer doses die onder het verkeerde middel zijn geregistreerd.",
+      dupName: "Dubbelingen verwijderen",
+      dupDesc: "Vind registraties die twee keer zijn ingevoerd en houd er telkens één over.",
+      unitName: "Eenheden corrigeren",
+      unitDesc: "Reken registraties om naar een andere eenheid, of corrigeer een hoeveelheid die in de verkeerde eenheid staat.",
+      timeName: "Registraties in de tijd verschuiven",
+      timeDesc: "Verschuif registraties een aantal uren en minuten, of naar een andere datum.",
+      splitName: "Registraties afsplitsen",
+      splitDesc: "Zet gekozen registraties, bijvoorbeeld die van een vriend, in een aparte back-up.",
+      contribTag: "Bijdragen",
+      promptName: "Prompt maken om bij te dragen",
+      promptDesc: "Breng een tool naar Piru, of voeg hier een nieuwe tool toe, met je AI-codeassistent.",
+      contribTitle: "Wil je deze tools liever in Piru zelf?",
+      contribBody: "Deze tools repareren back-ups van buitenaf. Het zou beter zijn als Piru dit zelf kon. Gebruik je een AI-codeassistent zoals Claude Code, Codex of Cursor? Dan kun je een van deze tools ombouwen tot een echte Piru-functie en die als pull request naar Piru sturen.",
+      contribMake: "Prompt maken",
+      contribCopy: "Snelle prompt kopiëren (Engels)",
+      contribLater: "Niet nu",
+      contribClose: "Sluiten",
+      contribFine: "Stuur graag één kleine pull request per tool, en test die eerst op je eigen kopie. De ontwikkelaar van Piru beslist wat er wordt opgenomen. Zit een tool eenmaal in Piru? Open dan een issue of pull request op lammersbjorn/piru-tools, zodat de tool van deze site kan worden gehaald.",
+      copied: "Gekopieerd",
+      copyFallback: "De snelle prompt (in het Engels)",
+      copyManual: "Kopiëren lukte hier niet. De prompt is hieronder geselecteerd: kopieer hem met de kopieeropdracht van je apparaat."
     }
   }, render);
 
